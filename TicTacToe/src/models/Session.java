@@ -6,7 +6,9 @@
 package models;
 
 
-
-public class Player {
-     
+public class Session {
+    Player p1 ,p2 ;
+    String p1Pick,p2Pick,winner,mode;
+    boolean status; // 0 for paused session 1 for running
+    Board board;
 }

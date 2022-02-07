@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package models;
-
-
-
-public class Player {
-     
+package controllers;
+import models.Session;
+/**
+ *
+ * @author YasserOsama
+ */
+public class SessionManager {
+    Vector<Session> sessions;
 }
