@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client.models;
+package models;
+
+import client.models.*;
 
 /**
  *
@@ -13,8 +15,10 @@ public class Person extends Player{
     //Person attribute
     private String username;
     private String email;
+    private String password;
+    private int id ;
     private int score;
-    private boolean status;
+    private String status;
     private String last_seen;
     private int total_score;
     private int games_played;
@@ -22,10 +26,23 @@ public class Person extends Player{
     private int games_lost;
     private int draws;
 //Constructor
-    public Person(String username, String email, int score, boolean status, String last_seen, int total_score, int games_played, int games_won, int games_lost, int draws) {
+    public Person(){
+        this.username = "";
+        this.email = "";
+        this.password="";
+        this.score = 0;
+        this.status = "offline";
+        this.last_seen = "";
+        this.total_score = 0;
+        this.games_played = 0;
+        this.games_won = 0;
+        this.games_lost = 0;
+        this.draws = 0;
+    };
+    public Person(String username, String email , int id, String status, String last_seen, int total_score, int games_played, int games_won, int games_lost, int draws) {
         this.username = username;
         this.email = email;
-        this.score = score;
+        this.id=id;
         this.status = status;
         this.last_seen = last_seen;
         this.total_score = total_score;
@@ -50,7 +67,13 @@ public class Person extends Player{
     public void setEmail(String email) {
         this.email = email;
     }
-
+    
+    public void setPassword(String password){
+        this.password = password;
+    }
+    public String getPassword (){
+        return this.password;
+    }
     public int getScore() {
         return score;
     }
@@ -59,14 +82,16 @@ public class Person extends Player{
         this.score = score;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isOnline() {
+        return status == "online" ? true : false ;
     }
-
-    public void setStatus(boolean status) {
+    public String getStatus(){
+        return this.status;
+    }
+    public void setStatus(String status) {
         this.status = status;
     }
-
+   
     public String getLast_seen() {
         return last_seen;
     }

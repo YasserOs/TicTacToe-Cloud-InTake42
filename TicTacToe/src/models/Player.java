@@ -3,12 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.models;
+package models;
 
-/**
- *
- * @author Mostafa
- */
-public class Server {
-    
+import client.models.*;
+
+public class Player {
+     
 }
