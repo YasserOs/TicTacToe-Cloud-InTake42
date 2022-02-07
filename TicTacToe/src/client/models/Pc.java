@@ -5,6 +5,10 @@
  */
 package client.models;
 
-public class Player {
-     
+/**
+ *
+ * @author Mostafa
+ */
+public class Pc extends Player{
+    
 }
