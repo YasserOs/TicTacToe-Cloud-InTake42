@@ -5,6 +5,8 @@
  */
 package models;
 
+import java.util.Date;
+
 
 
 /**
@@ -19,7 +21,7 @@ public class Person extends Player{
     private int id ;
     private int score;
     private String status;
-    private String last_seen;
+    private Date last_seen;
     private int total_score;
     private int games_played;
     private int games_won;
@@ -32,14 +34,14 @@ public class Person extends Player{
         this.password="";
         this.score = 0;
         this.status = "offline";
-        this.last_seen = "";
+        this.last_seen = new Date(0000, 00, 00);
         this.total_score = 0;
         this.games_played = 0;
         this.games_won = 0;
         this.games_lost = 0;
         this.draws = 0;
     };
-    public Person(String username, String email , int id, String status, String last_seen, int total_score, int games_played, int games_won, int games_lost, int draws) {
+    public Person(String username, String email , int id, String status, Date last_seen, int total_score, int games_played, int games_won, int games_lost, int draws) {
         this.username = username;
         this.email = email;
         this.id=id;
@@ -50,10 +52,6 @@ public class Person extends Player{
         this.games_won = games_won;
         this.games_lost = games_lost;
         this.draws = draws;
-    }
-
-    public Person(String string, String string0, int aInt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public String getUsername() {
@@ -96,11 +94,11 @@ public class Person extends Player{
         this.status = status;
     }
    
-    public String getLast_seen() {
+    public Date getLast_seen() {
         return last_seen;
     }
 
-    public void setLast_seen(String last_seen) {
+    public void setLast_seen(Date last_seen) {
         this.last_seen = last_seen;
     }
 
