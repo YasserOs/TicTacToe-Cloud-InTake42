@@ -225,7 +225,7 @@ public class Database {
 
         String allPlayers = new String();
         ArrayList<String> playerList = new ArrayList<String>();
-        
+        playerList.add(allPlayers);
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement selectstatement = conn.createStatement();
@@ -245,6 +245,124 @@ public class Database {
         conn.close();
         return playerList;
 
+    }
+    public boolean createGame(String playerOneName, String playerTwoName){
+        String mode;
+        if(playerTwoName == "Computer"){
+            mode = new String("Single player");
+        }else{
+            mode = new String("MultiPlayer");
+        }
+        String query = new String("insert into games(player_one_name, player_two_name, game_state, game_mode, game_result, winner) values(?, ?, 'ongoing', ?, 'TBD','TBD')");
+        
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement createGameStatement = conn.prepareCall(query);
+            createGameStatement.setString(1, playerOneName);
+            createGameStatement.setString(2, playerTwoName);
+            createGameStatement.setString(3, mode);
+            createGameStatement.executeUpdate();
+            createGameStatement.close();
+           
+        } catch (SQLException ex) {
+           
+             System.err.println(ex.getMessage());
+            return false;
+            
+        }
+        try {
+            Statement selectUserStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs= selectUserStatement.executeQuery("select * from players where username='" +playerOneName +"'");
+            rs.next();
+            int games = rs.getInt("games_played")+1;
+            rs.updateInt("games_played", games);
+            rs.updateRow();
+            selectUserStatement.close();
+          conn.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+        return true;
+    }
+    public boolean updateGame(String winner, String loser, int gameID){
+        String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement updateGameStatement = conn.prepareStatement(query);
+            updateGameStatement.setString(1, "Finished");
+            updateGameStatement.setString(2, "Resolved");
+            updateGameStatement.setString(3, winner);
+            updateGameStatement.setInt(4, gameID);
+            updateGameStatement.executeUpdate();
+            updateGameStatement.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+       try{
+           // updating the winner
+           Statement selectPlayerStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+           ResultSet rs =selectPlayerStatement.executeQuery("select * from players where username='" + winner + "'");
+           rs.next();
+           int gamesWon = rs.getInt("games_won")+1;
+           int score = rs.getInt("total_score")+3;
+           rs.updateInt("total_score", score);
+           rs.updateInt("games_won", gamesWon);
+           rs.updateRow();
+           // updating the loser
+           if((!loser.equals("Computer"))){
+           rs = selectPlayerStatement.executeQuery("select * from players where username='" + loser + "'");
+           rs.next();
+           int gamesLost = rs.getInt("games_Lost")+1;
+           rs.updateInt("games_Lost", gamesLost);
+           rs.updateRow();
+           }
+           
+           selectPlayerStatement.close();
+           conn.close();
+       }catch(SQLException ex){
+           ex.printStackTrace();
+            System.err.println(ex.getMessage());
+       }
+       
+        return true;
+    }
+    public boolean draw(String playerOne, String PlayerTwo, int gameID){
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+             String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+            PreparedStatement drawGameStatement = conn.prepareStatement(query);
+            drawGameStatement.setString(1, "Finished");
+            drawGameStatement.setString(2, "Draw");
+            drawGameStatement.setString(3, "None");
+            drawGameStatement.setInt(4, gameID);
+            drawGameStatement.executeUpdate();
+            drawGameStatement.close();
+            query = "select * from players where username='" + playerOne + "'";
+            Statement updatePlayersStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = updatePlayersStatement.executeQuery(query);
+            rs.next();
+            int draws=rs.getInt("draws") +1 ;
+            int score = rs.getInt("total_score")+1;
+            rs.updateInt("total_score", score);
+            rs.updateInt("draws", draws);
+            rs.updateRow();
+            if(!(PlayerTwo.equals("Computer"))){
+            rs = updatePlayersStatement.executeQuery("select * from players where username='" + PlayerTwo + "'");
+            rs.next();
+            int drawsSec = rs.getInt("draws")+1;
+            int scoreSec = rs.getInt("total_score")+1;
+            rs.updateInt("total_score", scoreSec);
+            rs.updateInt("draws", drawsSec);
+            rs.updateRow();
+            }
+            updatePlayersStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return true;
     }
 
     
