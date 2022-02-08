@@ -53,7 +53,9 @@ public class Person extends Player{
         this.games_lost = games_lost;
         this.draws = draws;
     }
-
+    public Person(String string, String string0, int aInt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     public String getUsername() {
         return username;
     }
