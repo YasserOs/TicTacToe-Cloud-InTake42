@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Vector;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class Database {
 
@@ -194,7 +197,55 @@ public class Database {
          conn.close();
         return true;
     }
-    
+    //In database
+    public ArrayList<String> getLeaderBoard () throws SQLException{
+        String leaderBoard = new String();
+        ArrayList<String> leaderList = new ArrayList<String>();
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement selectstatement = conn.createStatement();
+            String leaderBoardQuery = new String("select id,username, status, last_seen,total_score, games_played, games_won, games_lost from players where username not in('Computer') order by total_score desc limit 10;");
+            ResultSet rs = selectstatement.executeQuery(leaderBoardQuery);
+            while(rs.next()){
+                Date dateSql = rs.getDate("last_seen");
+                String date = dateSql.toString();
+                 leaderBoard=String.valueOf(rs.getInt("id")) + ":" + rs.getString("username") + ":" + rs.getString("status") + ":" + date + ":" + String.valueOf(rs.getInt("total_score")) + ":" + String.valueOf(rs.getInt("games_played")) + ":" + String.valueOf(rs.getInt("games_won")) + ":" + String.valueOf(rs.getInt("games_lost"));
+                leaderList.add(leaderBoard);
+            }
+            selectstatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            conn.close();
+        }
+        conn.close();
+        return leaderList;
+        
+    }
+    public ArrayList<String> allPlayers() throws SQLException {
+
+        String allPlayers = new String();
+        ArrayList<String> playerList = new ArrayList<String>();
+        
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement selectstatement = conn.createStatement();
+            String leaderBoardQuery = new String("select id,username, status, last_seen,total_score, games_played, games_won, games_lost from players where username not in('Computer') order by total_score desc;");
+            ResultSet rs = selectstatement.executeQuery(leaderBoardQuery);
+            while (rs.next()) {
+                Date dateSql = rs.getDate("last_seen");
+                String date = dateSql.toString();
+                allPlayers =  String.valueOf(rs.getInt("id")) + ":" + rs.getString("username") + ":" + rs.getString("status") + ":" + date + ":" + String.valueOf(rs.getInt("total_score")) + ":" + String.valueOf(rs.getInt("games_played")) + ":" + String.valueOf(rs.getInt("games_won")) + ":" + String.valueOf(rs.getInt("games_lost"));
+                playerList.add(allPlayers);
+            }
+            selectstatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            conn.close();
+        }
+        conn.close();
+        return playerList;
+
+    }
 
     
 }
