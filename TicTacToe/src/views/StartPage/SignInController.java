@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package views.StartPage;
 
+import views.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,12 +21,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
  *
  * @author Hossam
  */
-public class SingUpController implements Initializable {
-
+public class SignInController implements Initializable {
+    
     @FXML
     private Button loginbtn;
     @FXML
@@ -33,28 +33,25 @@ public class SingUpController implements Initializable {
     @FXML
     private TextField username;
     @FXML
-    private TextField email;
-    @FXML
     private TextField password;
     
     @FXML
-    private void SignUPandle(ActionEvent event) {
-        System.out.println("You clikced on signiup");
-        // sing up functionality should be implemented here
+    private void SignNHandle(ActionEvent event) {
+        System.out.println("You clikced on signin ");
+        // sign in functionality should be implemented here
     }
     
-    public void SwitchtoSignN(ActionEvent event) throws IOException
+    public void SwitchtoSignUp(ActionEvent event) throws IOException
     {
-        Parent signNView = FXMLLoader.load(getClass().getResource("SignIn.fxml"));
-        Scene signNViewScene = new Scene(signNView);
+        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SingUp.fxml"));
+        Scene signUpViewScene = new Scene(signUpView);
         
-       
+        //This line gets the Stage information
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         
-        window.setScene(signNViewScene);
+        window.setScene(signUpViewScene);
         window.show();
     }
-    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
