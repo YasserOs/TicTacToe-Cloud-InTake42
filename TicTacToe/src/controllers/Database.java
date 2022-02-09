@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Vector;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class Database {
 
@@ -194,7 +197,173 @@ public class Database {
          conn.close();
         return true;
     }
-    
+    //In database
+    public ArrayList<String> getLeaderBoard () throws SQLException{
+        String leaderBoard = new String();
+        ArrayList<String> leaderList = new ArrayList<String>();
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement selectstatement = conn.createStatement();
+            String leaderBoardQuery = new String("select id,username, status, last_seen,total_score, games_played, games_won, games_lost from players where username not in('Computer') order by total_score desc limit 10;");
+            ResultSet rs = selectstatement.executeQuery(leaderBoardQuery);
+            while(rs.next()){
+                Date dateSql = rs.getDate("last_seen");
+                String date = dateSql.toString();
+                 leaderBoard=String.valueOf(rs.getInt("id")) + ":" + rs.getString("username") + ":" + rs.getString("status") + ":" + date + ":" + String.valueOf(rs.getInt("total_score")) + ":" + String.valueOf(rs.getInt("games_played")) + ":" + String.valueOf(rs.getInt("games_won")) + ":" + String.valueOf(rs.getInt("games_lost"));
+                leaderList.add(leaderBoard);
+            }
+            selectstatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            conn.close();
+        }
+        conn.close();
+        return leaderList;
+        
+    }
+    public ArrayList<String> allPlayers() throws SQLException {
+
+        String allPlayers = new String();
+        ArrayList<String> playerList = new ArrayList<String>();
+        playerList.add(allPlayers);
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement selectstatement = conn.createStatement();
+            String leaderBoardQuery = new String("select id,username, status, last_seen,total_score, games_played, games_won, games_lost from players where username not in('Computer') order by total_score desc;");
+            ResultSet rs = selectstatement.executeQuery(leaderBoardQuery);
+            while (rs.next()) {
+                Date dateSql = rs.getDate("last_seen");
+                String date = dateSql.toString();
+                allPlayers =  String.valueOf(rs.getInt("id")) + ":" + rs.getString("username") + ":" + rs.getString("status") + ":" + date + ":" + String.valueOf(rs.getInt("total_score")) + ":" + String.valueOf(rs.getInt("games_played")) + ":" + String.valueOf(rs.getInt("games_won")) + ":" + String.valueOf(rs.getInt("games_lost"));
+                playerList.add(allPlayers);
+            }
+            selectstatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            conn.close();
+        }
+        conn.close();
+        return playerList;
+
+    }
+    public boolean createGame(String playerOneName, String playerTwoName){
+        String mode;
+        if(playerTwoName == "Computer"){
+            mode = new String("Single player");
+        }else{
+            mode = new String("MultiPlayer");
+        }
+        String query = new String("insert into games(player_one_name, player_two_name, game_state, game_mode, game_result, winner) values(?, ?, 'ongoing', ?, 'TBD','TBD')");
+        
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement createGameStatement = conn.prepareCall(query);
+            createGameStatement.setString(1, playerOneName);
+            createGameStatement.setString(2, playerTwoName);
+            createGameStatement.setString(3, mode);
+            createGameStatement.executeUpdate();
+            createGameStatement.close();
+           
+        } catch (SQLException ex) {
+           
+             System.err.println(ex.getMessage());
+            return false;
+            
+        }
+        try {
+            Statement selectUserStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs= selectUserStatement.executeQuery("select * from players where username='" +playerOneName +"'");
+            rs.next();
+            int games = rs.getInt("games_played")+1;
+            rs.updateInt("games_played", games);
+            rs.updateRow();
+            selectUserStatement.close();
+          conn.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+        return true;
+    }
+    public boolean updateGame(String winner, String loser, int gameID){
+        String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement updateGameStatement = conn.prepareStatement(query);
+            updateGameStatement.setString(1, "Finished");
+            updateGameStatement.setString(2, "Resolved");
+            updateGameStatement.setString(3, winner);
+            updateGameStatement.setInt(4, gameID);
+            updateGameStatement.executeUpdate();
+            updateGameStatement.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            return false;
+        }
+       try{
+           // updating the winner
+           Statement selectPlayerStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+           ResultSet rs =selectPlayerStatement.executeQuery("select * from players where username='" + winner + "'");
+           rs.next();
+           int gamesWon = rs.getInt("games_won")+1;
+           int score = rs.getInt("total_score")+3;
+           rs.updateInt("total_score", score);
+           rs.updateInt("games_won", gamesWon);
+           rs.updateRow();
+           // updating the loser
+           if((!loser.equals("Computer"))){
+           rs = selectPlayerStatement.executeQuery("select * from players where username='" + loser + "'");
+           rs.next();
+           int gamesLost = rs.getInt("games_Lost")+1;
+           rs.updateInt("games_Lost", gamesLost);
+           rs.updateRow();
+           }
+           
+           selectPlayerStatement.close();
+           conn.close();
+       }catch(SQLException ex){
+           ex.printStackTrace();
+            System.err.println(ex.getMessage());
+       }
+       
+        return true;
+    }
+    public boolean draw(String playerOne, String PlayerTwo, int gameID){
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+             String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+            PreparedStatement drawGameStatement = conn.prepareStatement(query);
+            drawGameStatement.setString(1, "Finished");
+            drawGameStatement.setString(2, "Draw");
+            drawGameStatement.setString(3, "None");
+            drawGameStatement.setInt(4, gameID);
+            drawGameStatement.executeUpdate();
+            drawGameStatement.close();
+            query = "select * from players where username='" + playerOne + "'";
+            Statement updatePlayersStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet rs = updatePlayersStatement.executeQuery(query);
+            rs.next();
+            int draws=rs.getInt("draws") +1 ;
+            int score = rs.getInt("total_score")+1;
+            rs.updateInt("total_score", score);
+            rs.updateInt("draws", draws);
+            rs.updateRow();
+            if(!(PlayerTwo.equals("Computer"))){
+            rs = updatePlayersStatement.executeQuery("select * from players where username='" + PlayerTwo + "'");
+            rs.next();
+            int drawsSec = rs.getInt("draws")+1;
+            int scoreSec = rs.getInt("total_score")+1;
+            rs.updateInt("total_score", scoreSec);
+            rs.updateInt("draws", drawsSec);
+            rs.updateRow();
+            }
+            updatePlayersStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return true;
+    }
 
     
 }
