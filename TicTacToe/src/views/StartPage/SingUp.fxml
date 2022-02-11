@@ -37,12 +37,12 @@
                <children>
                   <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="31.0" layoutY="18.0" prefHeight="58.0" prefWidth="264.0" textFill="#f70000">
                      <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
                </children>
             </AnchorPane>
-            <Button fx:id="singupbtn" layoutX="388.0" layoutY="350.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
+            <Button fx:id="singupbtn" layoutX="388.0" layoutY="350.0" mnemonicParsing="false" onAction="#SignUPhandle" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
           </children>
       </AnchorPane>
    </children>
