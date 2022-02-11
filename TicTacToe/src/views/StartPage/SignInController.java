@@ -36,9 +36,17 @@ public class SignInController implements Initializable {
     private TextField password;
     
     @FXML
-    private void SignNHandle(ActionEvent event) {
+    private void SignNHandle(ActionEvent event) throws IOException {
         System.out.println("You clikced on signin ");
         
+        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Scene signUpViewScene = new Scene(signUpView);
+        
+        //This line gets the Stage information
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        
+        window.setScene(signUpViewScene);
+        window.show();
     }
     
     public void SwitchtoSignUp(ActionEvent event) throws IOException

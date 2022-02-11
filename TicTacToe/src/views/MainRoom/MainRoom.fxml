@@ -24,8 +24,8 @@
    <center>
       <AnchorPane prefHeight="688.0" prefWidth="378.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="multiBTN" layoutX="41.0" layoutY="229.0" mnemonicParsing="false" onAction="#PlayMulti" prefHeight="73.0" prefWidth="305.0" style="-fx-background-color: #A0B2BE;" text="Play with a friend" />
-            <Button fx:id="signleBTN" layoutX="41.0" layoutY="116.0" mnemonicParsing="false" onAction="#PlaySingle" prefHeight="81.0" prefWidth="305.0" style="-fx-background-color: #A0B2BE;" text="Play vs Computer" />
+            <Button fx:id="multiBTN" layoutX="41.0" layoutY="229.0" mnemonicParsing="false" onAction="#PlayVsFriend" prefHeight="73.0" prefWidth="305.0" style="-fx-background-color: #A0B2BE;" text="Play with a friend" />
+            <Button fx:id="signleBTN" layoutX="41.0" layoutY="116.0" mnemonicParsing="false" onAction="#PlayVsAI" prefHeight="81.0" prefWidth="305.0" style="-fx-background-color: #A0B2BE;" text="Play vs Computer" />
             <Button fx:id="showBTN" layoutX="41.0" layoutY="336.0" mnemonicParsing="false" onAction="#ShowPlayers" prefHeight="81.0" prefWidth="305.0" style="-fx-background-color: #A0B2BE;" text="Show list of players" />
          </children>
       </AnchorPane>

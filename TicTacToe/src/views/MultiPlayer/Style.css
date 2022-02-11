@@ -1,0 +1,29 @@
+ #backbtn ,#restartbtn,.label,#sendbtn {
+    -fx-background-color: 
+    #4A569D;
+        /* linear-gradient(#38424b 0%, #0B7FAB 20%, #080E2C 100%), */
+      
+    -fx-background-radius: 5,4,3,5;
+    -fx-background-insets: 0,1,2,0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-font-family: "Arial";
+    -fx-text-fill: linear-gradient(white, #d0d0d0);
+    -fx-font-size: 12px;
+    /*-fx-padding: 10 20 10 20;*/
+}
+
+#btn1 ,#btn2 ,#btn3 ,#btn4 ,#btn5 ,#btn6 ,#btn7 ,#btn8 ,#btn9 {
+    
+    -fx-background-color: rgba(11, 127, 171, 0.5);
+
+}
+
+/* background: #E6DADA;  /* fallback for old browsers  
+background: linear-gradient(to right, #274046, #E6DADA);   */
+
+#ap {
+
+    -fx-background-color:#E6DADA,
+    linear-gradient(to right, #274046, #E6DADA);
+}

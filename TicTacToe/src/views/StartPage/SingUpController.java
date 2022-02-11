@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package views.StartPage;
-
+import views.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -45,7 +45,9 @@ public class SingUpController  {
     @FXML
     private Label txtalert ;
     @FXML
-    private void SignUPandle(ActionEvent event) {
+    
+    
+    private void SignUPhandle(ActionEvent event) {
 
         //check for a vaild mail
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
@@ -75,7 +77,7 @@ public class SingUpController  {
  
     }
     
-      public void SwitchtoSignN(ActionEvent event) throws IOException
+ public void SwitchtoSignN(ActionEvent event) throws IOException
     {
         Parent signNView = FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
         Scene signNViewScene = new Scene(signNView);
@@ -87,6 +89,7 @@ public class SingUpController  {
         window.show();
     }
 
-}
+    
+  
 
-   
+}
