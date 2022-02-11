@@ -19,20 +19,30 @@
                   <Image url="@images/tictactoe.jpg" />
                </image>
             </ImageView>
-            <AnchorPane id="anchorPane" layoutX="348.0" layoutY="76.0">
+            <AnchorPane id="anchorPane" layoutX="346.0" layoutY="53.0" prefHeight="267.0" prefWidth="360.0">
                <children>
-                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="71.0" layoutY="38.0" prefHeight="58.0" prefWidth="233.0" stylesheets="@newCascadeStyleSheet.css" text="SignUp Form" textFill="WHITE">
+                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="83.0" layoutY="27.0" prefHeight="58.0" prefWidth="233.0" stylesheets="@newCascadeStyleSheet.css" text="SignUp Form" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="32.0" />
                      </font>
                   </Label>
-                  <PasswordField id="field" fx:id="password" layoutX="46.0" layoutY="185.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Password" />
-                  <TextField id="field" fx:id="username" layoutX="41.0" layoutY="96.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Email Address" />
-                  <Button fx:id="singupbtn" layoutX="44.0" layoutY="232.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
-                  <TextField id="field" fx:id="username1" layoutX="44.0" layoutY="141.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
+                  <PasswordField id="field" fx:id="txtpassword" layoutX="41.0" layoutY="185.0" prefHeight="31.0" prefWidth="318.0" promptText="Your Password" />
+                  <TextField id="field" fx:id="txtemail" layoutX="41.0" layoutY="96.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Email Address" />
+                  <TextField id="field" fx:id="txtusername" layoutX="41.0" layoutY="140.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
+                  <PasswordField id="field" fx:id="txtpassword1" layoutX="41.0" layoutY="235.0" prefHeight="31.0" prefWidth="318.0" promptText="Please Confirm Password" />
                </children>
             </AnchorPane>
-            <Button fx:id="loginbtn" layoutX="385.0" layoutY="411.0" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="31.0" prefWidth="317.0" text="Sign in" />
+            <Button fx:id="loginbtn" layoutX="388.0" layoutY="398.0" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="31.0" prefWidth="317.0" text="Sign in" />
+            <AnchorPane layoutX="388.0" layoutY="430.0" prefHeight="96.0" prefWidth="318.0">
+               <children>
+                  <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="31.0" layoutY="18.0" prefHeight="58.0" prefWidth="264.0" textFill="#f70000">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <Button fx:id="singupbtn" layoutX="388.0" layoutY="350.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
           </children>
       </AnchorPane>
    </children>

@@ -38,7 +38,7 @@ public class SignInController implements Initializable {
     @FXML
     private void SignNHandle(ActionEvent event) {
         System.out.println("You clikced on signin ");
-        // sign in functionality should be implemented here
+        
     }
     
     public void SwitchtoSignUp(ActionEvent event) throws IOException

@@ -5,10 +5,12 @@
  */
 package views.StartPage;
 
-import views.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -25,26 +28,54 @@ import javafx.stage.Stage;
  *
  * @author Hossam
  */
-public class SingUpController implements Initializable {
+public class SingUpController  {
 
     @FXML
     private Button loginbtn;
     @FXML
     private Button singupbtn;
     @FXML
-    private TextField username;
+    private TextField txtusername;
     @FXML
-    private TextField email;
+    private TextField txtemail;
     @FXML
-    private TextField password;
-    
+    private TextField txtpassword;
+    @FXML
+     private TextField txtpassword1;
+    @FXML
+    private Label txtalert ;
     @FXML
     private void SignUPandle(ActionEvent event) {
-        System.out.println("You clikced on signiup");
-        // sing up functionality should be implemented here
+
+        //check for a vaild mail
+        String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(txtemail.getText());
+        String userName = txtusername.getText().trim();
+        String email    = txtemail.getText().trim();
+        String password = txtpassword.getText().trim();
+        String cpassword = txtpassword1.getText().trim();
+
+        if (userName.isEmpty() || email.isEmpty()
+                || password.isEmpty()) {
+            Platform.runLater(() -> {
+                txtalert.setText("Empty Fields is Required");
+            });
+
+        } else if (!matcher.matches()) {
+            Platform.runLater(() -> {
+                txtalert.setText("Please enter a valid mail");
+            });
+
+        } else if(!txtpassword.getText().equals(txtpassword1.getText())){
+                Platform.runLater(()->{
+                  txtalert.setText("Please check your password");
+                }); 
+        }
+ 
     }
     
-    public void SwitchtoSignN(ActionEvent event) throws IOException
+      public void SwitchtoSignN(ActionEvent event) throws IOException
     {
         Parent signNView = FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
         Scene signNViewScene = new Scene(signNView);
@@ -55,11 +86,7 @@ public class SingUpController implements Initializable {
         window.setScene(signNViewScene);
         window.show();
     }
-    
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+
 }
+
+   
