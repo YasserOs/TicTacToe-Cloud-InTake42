@@ -4,9 +4,12 @@
  * and open the template in the editor.
  */
 package views.StartPage;
+import controllers.Server;
 import views.*;
+import models.*;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,7 +50,7 @@ public class SingUpController  {
     @FXML
     
     
-    private void SignUPhandle(ActionEvent event) {
+    private void SignUPhandle(ActionEvent event) throws SQLException {
 
         //check for a vaild mail
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
@@ -74,22 +77,20 @@ public class SingUpController  {
                   txtalert.setText("Please check your password");
                 }); 
         }
+        // signed user
+        Person p ;
+        Server.updatePlayersVector(p);
  
     }
     
  public void SwitchtoSignN(ActionEvent event) throws IOException
     {
-        Parent signNView = FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
-        Scene signNViewScene = new Scene(signNView);
-        
-       
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
+        Parent signNView = loader.load();
+        Scene signNViewScene = new Scene(signNView);        
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
         window.setScene(signNViewScene);
         window.show();
     }
-
-    
-  
-
 }

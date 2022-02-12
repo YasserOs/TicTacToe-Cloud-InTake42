@@ -8,7 +8,7 @@ package models;
 public class Board {
     String[] board = new String[9];
     void move(int position , String pick){
-        if(board[position]!=""){
+        if(board[position]==""){
             board[position]=pick;
         }
     }

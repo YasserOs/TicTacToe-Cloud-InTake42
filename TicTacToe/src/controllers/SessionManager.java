@@ -11,5 +11,8 @@ import models.Session;
  * @author YasserOsama
  */
 public class SessionManager {
+    static Vector<Person> reeayQueue;
     Vector<Session> sessions;
+    static int PORT = 10000;
+    session(PORT);
 }

@@ -4,10 +4,19 @@
  * and open the template in the editor.
  */
 package views.MainRoom;
-
+import models.*;
+import controllers.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +36,16 @@ import javafx.stage.Stage;
  */
 public class MainRoomController implements Initializable {
     
+    Thread updatePlayersListThread;
+    Thread playerSocketThread;
+    Socket playerSocket ;
+    InputStream inputStream;
+    OutputStream outputStream ;
+    ObjectOutputStream objectOutputStream ;
+    ObjectInputStream objectInputStream;
+    
+    Person loggedPlayer;
+    
     @FXML
     private TextArea playersList; 
     @FXML
@@ -43,8 +62,7 @@ public class MainRoomController implements Initializable {
     @FXML
     private Button showBTN;
     
-    // all functions implementation is just for test, feel free to put ur back end implementation 
-   
+    // all functions implementation is just for test, feel free to put ur back end implementation   
     @FXML
     private void SendingMSG(ActionEvent event) {    // assigned to button send (bottom right on GUI)
       
@@ -98,13 +116,88 @@ public class MainRoomController implements Initializable {
         window.show();
     
     }
-    
-    
-    
-    
+    public void logPlayer(Person p){
+        loggedPlayer=p;
+    }
+    public void updatePlayersList(Vector <Person> players){
+        
+    }
+    public void createSocket(){
+       try {
+            playerSocket = new Socket("127.0.0.1",9000);
+            outputStream = playerSocket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            inputStream = playerSocket.getInputStream();
+            objectInputStream= new ObjectInputStream(inputStream);
+            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
+            objectOutputStream.writeObject(msg);
+        }catch (IOException ex){
+            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
+    public void createPlayerSocketThread(){
+        playerSocketThread = new Thread( new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Message msg = (Message)objectInputStream.readObject();
+                        processMessage(msg);
+                    } catch (IOException ex) {
+                        System.out.println("IO");
+                    } catch (ClassNotFoundException ex) {
+                        System.out.println("");;
+                    }
+                } 
+            }
+        });
+    }
+    public void createPlayerListUpdateThread(){
+        updatePlayersListThread= new Thread( new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    // run function every 1 minute
+                    updatePlayersList(Server.getPlayers());
+
+                } 
+            }
+        });
+    }
+    public void processMessage(Message msg){
+        String Action =msg.getAction(); 
+        switch(Action){
+            case "Chat":
+                globalchat.appendText(msg.getContent());
+                break;
+            case "Invite":
+                openInvitationScreen();
+
+        }
+    }
+    public void processInvitation(String decision){
+        switch(decision){
+            case "Accept":
+                // move to game scene function
+                break;
+            case "Refuse":
+                openInvitationRefusalScreen();
+        }
+    }
+    public void openInvitationScreen(){
+        // open small log with sender name and 2 buttons to accept or refuse the invitation
+        // then send a messag object with the content= accept or refuse back to the server handler
+        
+        
+    }
+    public void openInvitationRefusalScreen(){
+        //open small log with with refuse statement
+    }
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+    public void initialize(URL url, ResourceBundle rb){       
+        createSocket();
+        createPlayerSocketThread();
+        updatePlayersList(Server.getPlayers());
     }    
     
 }
