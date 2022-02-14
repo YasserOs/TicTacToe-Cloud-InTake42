@@ -20,11 +20,15 @@ public class Server {
     static Database db ;
     ChatHandler ch;
     ServerSocket myServerSocket;
-    static Vector<Person> players;
+    static Vector<Person> players ;
+    static Vector<Person> onlinePlayers = new Vector<Person>();
+    
     public Server() throws SQLException{
+     
         try {
             myServerSocket = new ServerSocket(9000);
             db = new Database();
+            players = new Vector<Person>();
             players=db.getPlayers();
             while(true){
                 Socket s = myServerSocket.accept();
@@ -39,10 +43,15 @@ public class Server {
     static public Vector<Person> getPlayers(){
         return players;
     }
-    static public void updatePlayersVector(Person p) throws SQLException{
-        players.add(p);
+    static public void updateOnlinePlayersVector(Person p) throws SQLException{
+         System.out.println("from Server"+p.getUsername());
+         onlinePlayers.add(p);
+       
     }
     
+      static public void updateAllPlayersVector(Person p) throws SQLException{
+        players.add(p);
+    }
     
     public static void main(String[] args) throws SQLException {
         Server serverMulti = new Server();

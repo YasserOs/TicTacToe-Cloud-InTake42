@@ -29,6 +29,7 @@ import controllers.Database;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import views.MainRoom.MainRoomController;
 
 /**
  * FXML Controller class
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
  */
 public class SingUpController  {
     Database db;
+    Person p;
     @FXML
     private Button loginbtn;
     @FXML
@@ -85,24 +87,27 @@ public class SingUpController  {
         } else {
        if(db.checkRegister(userName, email)){
           db.signUp(userName, password, email) ;
-          FinshSignUp(event);
+          db.getPlayer(userName);
+          Server.updateAllPlayersVector(p);
+          Server.updateOnlinePlayersVector(p);
+          finshSignUp(event);
        }
 }
       // signed user
-      Person p = new Person(userName,email);
-      Server.updatePlayersVector(p);
+      
 
 }
-    public void FinshSignUp(ActionEvent event) throws IOException
-    {
-         Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        Scene signUpViewScene = new Scene(signUpView);
-        
-        //This line gets the Stage information
+    public void finshSignUp(ActionEvent event) throws IOException{
+         
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
-        window.setScene(signUpViewScene);
+        window.setScene(ViewScene);
         window.show();
+        MainRoomController controller = loader.getController();
+        controller.logPlayer(p);
     }
     
  public void SwitchtoSignN(ActionEvent event) throws IOException

@@ -118,6 +118,7 @@ public class MainRoomController implements Initializable {
     }
     public void logPlayer(Person p){
         loggedPlayer=p;
+        System.out.println(p.getUsername()+"\n"+p.getEmail());
     }
     public void updatePlayersList(Vector <Person> players){
         
@@ -129,8 +130,11 @@ public class MainRoomController implements Initializable {
             objectOutputStream = new ObjectOutputStream(outputStream);
             inputStream = playerSocket.getInputStream();
             objectInputStream= new ObjectInputStream(inputStream);
-            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
-            objectOutputStream.writeObject(msg);
+            
+             System.out.println("From Socket Function"+loggedPlayer);
+             
+//            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
+//          objectOutputStream.writeObject(msg);
         }catch (IOException ex){
             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
         } 

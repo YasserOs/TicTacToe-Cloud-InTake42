@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import controllers.*;
 
 public class Database {
 
@@ -51,10 +52,24 @@ public class Database {
         return players;
     }
 
+   public Person getPlayer(String username) throws SQLException {
+       
+        conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement();
+        String queryString = new String("select * from players where username ='"+username+"' ");
+        
+        rs = stmt.executeQuery(queryString);
+        rs.next();
+            Person p = createPerson(rs);
+        return p ;
+    }
+   
     public Person createPerson(ResultSet rs) throws SQLException {
 
         Person p = new Person(rs.getString(1), rs.getString(4), rs.getInt(3), rs.getString(5), rs.getDate(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11));
+        Person p2 = new Person();
         return p;
+        
     }
 
     // Person p = new Person();
@@ -108,7 +123,7 @@ public class Database {
             stmt.setString(1, username);
             stmt.setString(2, passwordEnc(pswd));
             stmt.setString(3, email);
-            stmt.setString(4,"offline");
+            stmt.setString(4,"online");
             stmt.setInt(5,  0);
             stmt.setInt(6, 0);
             stmt.setInt(7, 0);

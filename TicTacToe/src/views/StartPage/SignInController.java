@@ -29,6 +29,8 @@ import controllers.Database;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import views.MainRoom.MainRoom;
+import views.MainRoom.MainRoomController;
 
 /**
  *
@@ -36,6 +38,7 @@ import java.util.logging.Logger;
  */
 public class SignInController   {
     Database db;
+    Person p;
     @FXML
     private Button loginbtn;
     @FXML
@@ -85,20 +88,24 @@ public class SignInController   {
             } else {
            
            if(db.logIn(userName, password)){ 
+               p = db.getPlayer(userName);
+               Server.updateOnlinePlayersVector(p);
                finshSignIn(event);
           }
-        
-       }
-        
-    Person p = new Person(userName);
-      Server.updatePlayersVector(p);
+       }  
+      
     }
     public void finshSignIn(ActionEvent event) throws IOException{
-         Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        Scene signUpViewScene = new Scene(signUpView);
+         
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(signUpViewScene);
+        window.setScene(ViewScene);
         window.show();
+        MainRoomController controller = loader.getController();
+        controller.logPlayer(p);
     }
     public void SwitchtoSignUp(ActionEvent event) throws IOException
     {
