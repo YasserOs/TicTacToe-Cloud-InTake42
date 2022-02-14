@@ -55,7 +55,7 @@ public class SignInController   {
     
     @FXML
     private void SignNHandle(ActionEvent event) throws SQLException, IOException{
-          db = new Database();
+        db = Server.getDatabase();
           
        System.out.println("You clikced on signin ");
          String regex = "^[a-zA-Z0-9]+$";
@@ -100,12 +100,13 @@ public class SignInController   {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Parent View = loader.load();
+        
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
-        window.show();
         MainRoomController controller = loader.getController();
         controller.logPlayer(p);
+        window.show();
     }
     public void SwitchtoSignUp(ActionEvent event) throws IOException
     {

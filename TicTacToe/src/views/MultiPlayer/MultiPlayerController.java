@@ -45,8 +45,8 @@ public class MultiPlayerController implements Initializable {
     @FXML TextField chatmsg;
     @FXML Label labelLeft; //player1
     @FXML Label labelRight; // player2
-   
-   
+    Person player1; // loggedPlayer
+    boolean turn 
     
     @FXML
     private void PlayerMove(ActionEvent event) {

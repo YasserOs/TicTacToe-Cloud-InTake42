@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package views.StartPage;
-import controllers.Server;
+import controllers.*;
 import views.*;
 import models.*;
 import java.io.IOException;
@@ -58,8 +58,7 @@ public class SingUpController  {
     @FXML
     private void SignUPhandle(ActionEvent event) throws SQLException, IOException {
         //check for a vaild mail
-        db = new Database();
-        
+        db = Server.getDatabase();
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(txtemail.getText());
@@ -67,7 +66,7 @@ public class SingUpController  {
         String email    = txtemail.getText().trim();
         String password = txtpassword.getText().trim();
         String cpassword = txtpassword1.getText().trim();
-        System.out.print((userName+" "+ " "+ email+" "+password+" "+cpassword));
+        //System.out.print((userName+" "+ " "+ email+" "+password+" "+cpassword));
 
         if (userName.isEmpty() || email.isEmpty()
                 || password.isEmpty()) {
@@ -85,14 +84,14 @@ public class SingUpController  {
                   txtalert.setText("Please check your password");
                 }); 
         } else {
-       if(db.checkRegister(userName, email)){
-          db.signUp(userName, password, email) ;
-          db.getPlayer(userName);
-          Server.updateAllPlayersVector(p);
-          Server.updateOnlinePlayersVector(p);
-          finshSignUp(event);
-       }
-}
+                if(db.checkRegister(userName, email)){
+                   db.signUp(userName, password, email) ;
+                   p = db.getPlayer(userName);
+                   Server.updateAllPlayersVector(p);
+                   Server.updateOnlinePlayersVector(p);
+                   finshSignUp(event);
+                }
+         }
       // signed user
       
 
@@ -101,13 +100,16 @@ public class SingUpController  {
          
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        MainRoomController controller = loader.getController();
+        controller.logPlayer(p);
         Parent View = loader.load();
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
+        
         window.show();
-        MainRoomController controller = loader.getController();
-        controller.logPlayer(p);
+        
+        
     }
     
  public void SwitchtoSignN(ActionEvent event) throws IOException

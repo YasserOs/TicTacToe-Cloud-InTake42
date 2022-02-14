@@ -20,14 +20,17 @@ public class Database {
 
     ResultSet rs;
     Connection conn;
-    private String url = "jdbc:postgresql://localhost:5432/tic-tac-toe";
+    private String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private String user = "postgres";
-    private String password = "123456";
+    private String password = "root";
 
     public Database() throws SQLException {
         connect();
     }
 
+    public void printUrl(){
+        System.out.println(url);
+    }
     public void connect() throws SQLException {
         try {
             conn = DriverManager.getConnection(url, user, password);

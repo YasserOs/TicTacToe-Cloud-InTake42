@@ -5,15 +5,24 @@
  */
 package controllers;
 import java.util.Vector;
-import models.Person;
-import models.Session;
+import models.*;
 /**
  *
  * @author YasserOsama
  */
 public class SessionManager {
-    static Vector<Person> reeayQueue;
-    Vector<Session> sessions;
-    static int PORT = 10000;
-  //  session(PORT);
+    static Vector<Session> sessions ;
+    Person loggedPlayer;
+    public SessionManager(Socket player){
+        
+    }
+    public static Session createSinglePlayerSession(Player p1){
+        return new Session(p1);
+    }
+    public static Session createMultiPlayerSession(Player p1 , Player p2) {
+        return new Session(p1,p2);
+    }
+    public static void saveSession(Session session){
+        
+    }
 }

@@ -76,25 +76,9 @@ public class MainRoomController implements Initializable {
         playersList.appendText("Players TEST" + "\n");
         
     }
-    
-    @FXML
-    private void PlaySingle(ActionEvent event) { // assigned to button PLAY VS COMPUTER (top center on GUI)
-        
-        System.out.print("Single test");
-        
-        // match room scene switch code will be implemented here 
-        
-    }
-    @FXML
-    private void PlayMulti(ActionEvent event) {// assigned to button Play with a friend (mid center on GUI)
-        
-        System.out.print(" Multi test");
-        
-        // after sending invite and the other player agrees match room scene switch code will be implemented here
-        
-    }
    
     public void PlayVsAI(ActionEvent event) throws IOException{
+        Session session = SessionManager.createSinglePlayerSession(loggedPlayer);
      Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
         Scene ViewScene = new Scene(View);
         
@@ -117,6 +101,7 @@ public class MainRoomController implements Initializable {
     
     }
     public void logPlayer(Person p){
+        System.out.println("Printing from main room controller");
         loggedPlayer=p;
         System.out.println(p.getUsername()+"\n"+p.getEmail());
     }
@@ -130,8 +115,7 @@ public class MainRoomController implements Initializable {
             objectOutputStream = new ObjectOutputStream(outputStream);
             inputStream = playerSocket.getInputStream();
             objectInputStream= new ObjectInputStream(inputStream);
-            
-             System.out.println("From Socket Function"+loggedPlayer);
+        
              
 //            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
 //          objectOutputStream.writeObject(msg);

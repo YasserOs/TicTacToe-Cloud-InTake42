@@ -5,6 +5,7 @@
  */
 package views.SinglePlayer;
 
+import models.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -37,11 +38,11 @@ public class SinglePlayerController implements Initializable {
     @FXML Button btn7;
     @FXML Button btn8;
     @FXML Button btn9;
-   
-    
+    Session currentSession;
+    String pick ; 
     @FXML
     private void PlayerMove(ActionEvent event) {
-        
+        currentSession
     }
     
     public void back2MainRoom(ActionEvent event) throws IOException{
