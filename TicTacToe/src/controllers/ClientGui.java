@@ -40,9 +40,9 @@ public class ClientGui extends Application {
             primaryStage.setY(event.getScreenY() - yOffset);
         });
         primaryStage.setTitle("Home");
-        primaryStage.setMaxWidth(1000);
+        primaryStage.setMaxWidth(1200);
         primaryStage.setMinHeight(650);
-         //MainController.enableWatchGameButton(true);
+       
 
         Scene scene = new Scene(root);
         //set transparent

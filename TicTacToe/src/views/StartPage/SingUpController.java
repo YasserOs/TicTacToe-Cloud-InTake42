@@ -25,6 +25,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import controllers.Database;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * FXML Controller class
@@ -32,7 +36,7 @@ import javafx.stage.Stage;
  * @author Hossam
  */
 public class SingUpController  {
-
+    Database db;
     @FXML
     private Button loginbtn;
     @FXML
@@ -47,12 +51,13 @@ public class SingUpController  {
      private TextField txtpassword1;
     @FXML
     private Label txtalert ;
-    @FXML
-    
-    
-    private void SignUPhandle(ActionEvent event) throws SQLException {
 
+   
+    @FXML
+    private void SignUPhandle(ActionEvent event) throws SQLException, IOException {
         //check for a vaild mail
+        db = new Database();
+        
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(txtemail.getText());
@@ -60,6 +65,7 @@ public class SingUpController  {
         String email    = txtemail.getText().trim();
         String password = txtpassword.getText().trim();
         String cpassword = txtpassword1.getText().trim();
+        System.out.print((userName+" "+ " "+ email+" "+password+" "+cpassword));
 
         if (userName.isEmpty() || email.isEmpty()
                 || password.isEmpty()) {
@@ -76,11 +82,27 @@ public class SingUpController  {
                 Platform.runLater(()->{
                   txtalert.setText("Please check your password");
                 }); 
-        }
-        // signed user
-        Person p ;
-        Server.updatePlayersVector(p);
- 
+        } else {
+       if(db.checkRegister(userName, email)){
+          db.signUp(userName, password, email) ;
+          FinshSignUp(event);
+       }
+}
+      // signed user
+      Person p = new Person(userName,email);
+      Server.updatePlayersVector(p);
+
+}
+    public void FinshSignUp(ActionEvent event) throws IOException
+    {
+         Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Scene signUpViewScene = new Scene(signUpView);
+        
+        //This line gets the Stage information
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        
+        window.setScene(signUpViewScene);
+        window.show();
     }
     
  public void SwitchtoSignN(ActionEvent event) throws IOException

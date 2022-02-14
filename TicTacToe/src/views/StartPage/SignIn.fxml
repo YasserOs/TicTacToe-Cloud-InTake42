@@ -24,11 +24,20 @@
                   <Font name="System Bold" size="32.0" />
                </font>
             </Label>
-            <PasswordField id="field" fx:id="password" layoutX="41.0" layoutY="185.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Password" />
-            <TextField id="field" fx:id="username" layoutX="41.0" layoutY="130.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
+            <PasswordField id="field" fx:id="txtpassword" layoutX="41.0" layoutY="185.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Password" />
+            <TextField id="field" fx:id="txtusername" layoutX="41.0" layoutY="130.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
             <Button fx:id="loginbtn" layoutX="41.0" layoutY="237.0" mnemonicParsing="false" onAction="#SignNHandle" prefHeight="31.0" prefWidth="317.0" text="Sign IN" />
          </children>
       </AnchorPane>
-      <Button fx:id="singupbtn" layoutX="359.0" layoutY="501.0" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
+      <Button fx:id="singupbtn" layoutX="379.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
+      <AnchorPane layoutX="378.0" layoutY="427.0" prefHeight="109.0" prefWidth="318.0">
+         <children>
+            <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="31.0" layoutY="18.0" prefHeight="58.0" prefWidth="264.0" textFill="#f70000">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

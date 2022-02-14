@@ -5,6 +5,7 @@
  */
 package controllers;
 import java.util.Vector;
+import models.Person;
 import models.Session;
 /**
  *
@@ -14,5 +15,5 @@ public class SessionManager {
     static Vector<Person> reeayQueue;
     Vector<Session> sessions;
     static int PORT = 10000;
-    session(PORT);
+  //  session(PORT);
 }

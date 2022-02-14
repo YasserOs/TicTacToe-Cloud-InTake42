@@ -127,6 +127,68 @@ public class Database {
 
         return true;
     }
+    
+    //Check Register 
+    public boolean checkRegister(String username, String email) throws SQLException 
+    {
+        ResultSet rs ;
+        PreparedStatement ps;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            ps = conn.prepareStatement("select * from players where username = ? and email = ? ");
+            ps.setString(1, username);
+            ps.setString(2, email);
+            rs =  ps.executeQuery();
+            while(rs.next())
+            {
+                System.out.println("Already Signed Up");
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            return false;
+        }
+        conn.close();
+        return true;
+    }
+    
+    //get UserName By Email
+    public String getUsername(String email){
+        ResultSet rs ; 
+        String username;
+        PreparedStatement ps;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            ps = conn.prepareStatement("select * from players where email = ?");
+            ps.setString(1,email);
+            rs = ps.executeQuery();
+            rs.next();
+            username = rs.getString(1);
+            return username;
+        }catch(SQLException ex){
+            System.out.print("Invaild Email");
+        }
+        return null;
+    }
+    
+    //get Email By Username
+    public String getEmail(String username){
+        ResultSet rs ; 
+        String email;
+        PreparedStatement ps;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            ps = conn.prepareStatement("select * from players where username = ?");
+            ps.setString(1,username);
+            rs = ps.executeQuery();
+            rs.next();
+            email = rs.getString(3);
+            return email;
+        }catch(SQLException ex){
+            System.out.print("Invaild Email");
+        }
+        return null;
+    }
+    
     // login With username
     public boolean logIn(String username, String pswd) throws SQLException {
             String passwordEncrypted = passwordEnc(pswd);
@@ -137,7 +199,7 @@ public class Database {
             ResultSet rs = selectStatement.executeQuery(query);
             rs.next();
             String retrievedPassword=rs.getString("password");
-            if(retrievedPassword.equals(passwordEncrypted ) ){
+            if(retrievedPassword.equals(passwordEncrypted) ){
                 System.out.println("Logged in successfully");
                 String updatingStatus=rs.getString("status");
                 updatingStatus = "Online";
