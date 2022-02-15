@@ -5,27 +5,37 @@
  */
 package models;
 
-public class Board {
-    String[] board = new String[9];
-    boolean move(int position , String pick){
-        if(board[position]==""){
+import java.util.ArrayList;
+import javafx.scene.control.Button;
+
+public class Board 
+{
+    public ArrayList<Button> board = new ArrayList<Button>();
+ 
+    /*boolean move(int position , String pick){
+        
+        if(board[position]=="")
+        {
             board[position]=pick;
+            return true;
         }
-    }
-    
-    boolean checkWin(String pick){
+        
+        return false;
+    }*/
+   
+  public boolean checkWin(String pick){
         return ( checkRows(pick) || checkColumns(pick) || checkDiagonal(pick));        
     }
     
     boolean checkRows(String pick){
-        if(board[0].equals(pick) && board[1].equals(pick) && board[2].equals(pick)){
+        if(board.get(0).getText().equals(pick) && board.get(1).getText().equals(pick) && board.get(2).getText().equals(pick)){
             return true;
         }
-        if(board[3].equals(pick) && board[4].equals(pick) && board[5].equals(pick)){
+         if(board.get(3).getText().equals(pick) && board.get(4).getText().equals(pick) && board.get(5).getText().equals(pick)){
             return true;
         }
         
-        if(board[6].equals(pick) && board[7].equals(pick) && board[8].equals(pick)){
+         if(board.get(6).getText().equals(pick) && board.get(7).getText().equals(pick) && board.get(8).getText().equals(pick)){
             return true;
         }
         else{
@@ -33,14 +43,15 @@ public class Board {
         }
     }
     boolean checkColumns(String pick){
-        if(board[0].equals(pick) && board[3].equals(pick) && board[6].equals(pick)){
+        if(board.get(0).getText().equals(pick) && board.get(3).getText().equals(pick) && board.get(6).getText().equals(pick))
+        {
             return true;
         }
-        if(board[1].equals(pick) && board[4].equals(pick) && board[7].equals(pick)){
+         if(board.get(1).getText().equals(pick) && board.get(4).getText().equals(pick) && board.get(7).getText().equals(pick)){
             return true;
         }
         
-        if(board[2].equals(pick) && board[5].equals(pick) && board[8].equals(pick)){
+      if(board.get(2).getText().equals(pick) && board.get(5).getText().equals(pick) && board.get(8).getText().equals(pick)){
             return true;
         }
         else{
@@ -48,10 +59,10 @@ public class Board {
         }
     }
     boolean checkDiagonal(String pick){
-        if(board[0].equals(pick) && board[4].equals(pick) && board[8].equals(pick)){
+      if(board.get(0).getText().equals(pick) && board.get(4).getText().equals(pick) && board.get(8).getText().equals(pick)){
             return true;
         }
-        if(board[2].equals(pick) && board[4].equals(pick) && board[6].equals(pick)){
+      if(board.get(2).getText().equals(pick) && board.get(4).getText().equals(pick) && board.get(6).getText().equals(pick)){
             return true;
         }
         else{

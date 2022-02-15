@@ -15,8 +15,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Person;
-public class Server {
-    
+public class Server 
+{
     
     ChatHandler ch;
     ServerSocket myServerSocket;

@@ -16,8 +16,11 @@ public class Message implements Serializable{
     private String sender;
     private String receiver;
     private  String content;
+    
     public Message(){}
-    public Message(String action , String sender , String receiver, String content) {
+    public Message(String action , String sender , String receiver, String content)
+    {
+
         this.action = action;
         this.sender = sender;
         this.receiver = receiver;

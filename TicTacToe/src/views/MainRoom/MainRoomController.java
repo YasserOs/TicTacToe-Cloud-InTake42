@@ -29,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import views.SinglePlayer.SinglePlayerController;
 
 /**
  *
@@ -38,7 +39,7 @@ public class MainRoomController implements Initializable {
     
     Thread updatePlayersListThread;
     Thread playerSocketThread;
-    Socket playerSocket ;
+    Socket playerSocket;
     InputStream inputStream;
     OutputStream outputStream ;
     ObjectOutputStream objectOutputStream ;
@@ -78,14 +79,18 @@ public class MainRoomController implements Initializable {
     }
    
     public void PlayVsAI(ActionEvent event) throws IOException{
+      
+        
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
+        Parent View = loader.load();
         Session session = SessionManager.createSinglePlayerSession(loggedPlayer);
-     Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
         Scene ViewScene = new Scene(View);
-        
-       
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
         window.setScene(ViewScene);
+        SinglePlayerController controller = loader.getController();
+        
+        controller.getsession(session);
         window.show();
     
     }
@@ -105,7 +110,9 @@ public class MainRoomController implements Initializable {
         loggedPlayer=p;
         System.out.println(p.getUsername()+"\n"+p.getEmail());
     }
-    public void updatePlayersList(Vector <Person> players){
+    
+    public void updatePlayersList(Vector <Person> players)
+    {
         
     }
     public void createSocket(){

@@ -11,6 +11,19 @@ package models;
  *
  * @author Mostafa
  */
-public class Pc extends Player{
+public class Pc extends Player
+{
     
+    
+    static public int randomMove (int max)
+    {
+        
+    int random_int = (int)Math.floor(Math.random()*(max-1));     
+ 
+    return random_int;
+            
+    }
+    
+
+
 }

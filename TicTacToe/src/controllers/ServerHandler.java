@@ -18,17 +18,24 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ServerHandler extends Thread{
+public class ServerHandler extends Thread
+
+{
  
     InputStream inputStream;
     OutputStream outputStream ;
     ObjectOutputStream objectOutputStream ;
     ObjectInputStream objectInputStream;
-    String loggedPlayer;
+    Person loggedPlayer;
+    Player playertwo;
+    Session s;
     static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
     static Vector<Person> allPlayers = new Vector<Person>();
     static Vector<Person> onlinePlayers = new Vector<Person>();
-    public ServerHandler(Socket clientSocket) throws IOException{
+    static Vector<Session> allsession = new Vector<Session>();
+    
+    public ServerHandler(Socket clientSocket) throws IOException
+    {
         allPlayers = Server.players;
         inputStream = clientSocket.getInputStream();
         outputStream = clientSocket.getOutputStream();
@@ -36,8 +43,11 @@ public class ServerHandler extends Thread{
         objectInputStream = new ObjectInputStream(inputStream);
         handlers.add(this);
         start();
+        
     }
-    public void run(){
+    
+    public void run()
+    {
         while(true){
                     try {
                         Message msg = (Message)objectInputStream.readObject();
@@ -49,23 +59,32 @@ public class ServerHandler extends Thread{
                     }
                 } 
     }
-    public void processMessage(Message msg){
+    public void processMessage(Message msg)
+    {
         String Action =msg.getAction(); 
         switch(Action){
             case "LoggedIn":
                 loginPlayer(msg.getSender());
-            case "Chat":
+            case"Chat":
                 sendMsgToAll(msg);
                 break;
-            case "Invite":
+            case"Invite":
                 handleInvitation(msg);
+                break;
+            case"play": 
+               s=new Session(loggedPlayer,playertwo);
+                break;
+            case"move":                
+                break;
+                  
 
         }
     }
     
     // send to receiver
     // send response back to sender
-    public void handleInvitation(Message msg){
+    public void handleInvitation(Message msg)
+    {
         String content = msg.getContent();
         for(ServerHandler sh : handlers){
             try {
@@ -83,16 +102,24 @@ public class ServerHandler extends Thread{
             }
         }
     }
-    public void loginPlayer(String userName){
-        loggedPlayer = userName;
-        for(Person p : allPlayers){
-            if(p.getUsername().equals(loggedPlayer)){
+        
+    public void loginPlayer(String userName)
+    { 
+      for(Person p : allPlayers)
+      {
+            if(p.getUsername().equals(userName))
+            {
                 p.setStatus("Online");
                 onlinePlayers.add(p);
+                loggedPlayer=p;
+                break;
             }
-        }
+       }
         
     }
+    
+    
+    
     void sendMsgToAll(Message msg){
         for(ServerHandler sh : handlers){
             try {                  
@@ -103,4 +130,19 @@ public class ServerHandler extends Thread{
         }
     }
     
+
+    public void SessionManager(Socket player){
+        
+    }
+    public static Session createSinglePlayerSession(Person p1){
+        return new Session(p1);
+    }
+    public static Session createMultiPlayerSession(Person p1 , Player p2) {
+        return new Session(p1,p2);
+    }
+    public static void saveSession(Session session){
+        
+    }
+
+
 }

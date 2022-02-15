@@ -6,6 +6,7 @@
 package models;
 
 import java.util.Date;
+import java.util.Vector;
 
 
 
@@ -27,6 +28,8 @@ public class Person extends Player{
     private int games_won;
     private int games_lost;
     private int draws;
+    static Vector<Session> pause_session = new Vector<Session>();
+    
 //Constructor
     public Person(){
         this.username = "";

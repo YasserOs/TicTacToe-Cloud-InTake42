@@ -25,7 +25,8 @@ public class ClientGui extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException
+    {
          Parent root = FXMLLoader.load(getClass().getResource("/views/StartPage/SignIn.fxml"));
        
         //grab your root here

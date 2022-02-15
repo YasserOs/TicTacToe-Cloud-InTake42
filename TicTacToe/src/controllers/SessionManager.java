@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package controllers;
+import java.net.Socket;
 import java.util.Vector;
 import models.*;
 /**
@@ -16,10 +17,12 @@ public class SessionManager {
     public SessionManager(Socket player){
         
     }
-    public static Session createSinglePlayerSession(Player p1){
+    public static Session createSinglePlayerSession(Person p1)
+    {
         return new Session(p1);
     }
-    public static Session createMultiPlayerSession(Player p1 , Player p2) {
+    public static Session createMultiPlayerSession(Person p1 , Player p2) 
+    {
         return new Session(p1,p2);
     }
     public static void saveSession(Session session){

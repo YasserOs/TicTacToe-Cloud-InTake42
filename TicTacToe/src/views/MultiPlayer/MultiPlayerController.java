@@ -22,6 +22,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import models.Person;
 
 /**
  *
@@ -46,10 +47,11 @@ public class MultiPlayerController implements Initializable {
     @FXML Label labelLeft; //player1
     @FXML Label labelRight; // player2
     Person player1; // loggedPlayer
-    boolean turn 
+    boolean turn; 
     
     @FXML
-    private void PlayerMove(ActionEvent event) {
+    private void PlayerMove(ActionEvent event) 
+    {
         
     }
     

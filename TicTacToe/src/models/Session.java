@@ -22,24 +22,26 @@ public class Session {
     ObjectOutputStream p2OutPutStream;
     
     
-    Player p1 ,p2 ;
+    public Player p2 ;
+    public Person p1;
     String p1Pick,p2Pick;
     int turn ;
     boolean status; // 0 for paused session 1 for running
-    Board board;
+    public Board board;
     
     
-    public Session(Player p1){
+    public Session(Person p1){
         this.p1=p1;
         p2 = new Pc();
     }
-    public Session(Player p1 , Player p2){
+    public Session(Person p1 , Player p2){
         this.p1=p1;
         this.p2=p2;
     }
     public boolean play(int position , String pick){
         while(true){
-            if(turn == 1){
+            if(turn == 1)
+            {
                 //listen from player 1 stream
                 //board.move(poistion , pick)
             }else if(turn==2){

@@ -100,17 +100,25 @@ public class SingUpController  {
          
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        MainRoomController controller = loader.getController();
-        controller.logPlayer(p);
         Parent View = loader.load();
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
+        MainRoomController controller = loader.getController();
+        controller.logPlayer(p);
         
         window.show();
         
         
     }
+    
+//      public void logPlayer(Person p)
+//      {
+//        System.out.println("Printing from main room controller");
+//        loggedPlayer=p;
+//        System.out.println(p.getUsername()+"\n"+p.getEmail());
+//    }
+    
     
  public void SwitchtoSignN(ActionEvent event) throws IOException
     {
