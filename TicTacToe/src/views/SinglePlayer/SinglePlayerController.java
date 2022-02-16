@@ -50,8 +50,7 @@ public class SinglePlayerController implements Initializable {
     @FXML Button btn9;
     
     Board current_board= new Board();
-    int counter=0;
-    Session currentSession;
+    int numberOfPlays=0;
     Boolean playerTurn=true;
     String pick ; 
     Person loggedPlayer;
@@ -77,8 +76,8 @@ public class SinglePlayerController implements Initializable {
               {
                   btn.setText("X");
                   availablePositions.remove(btn);
-                  counter++;
-                  if(counter>=5)
+                  numberOfPlays++;
+                  if(numberOfPlays>=5)
                   {
                       if(current_board.checkWin("X"))
                       { 
@@ -127,8 +126,8 @@ public class SinglePlayerController implements Initializable {
             int pos=Pc.randomMove(availablePositions.size());
             availablePositions.get(pos).setText("O");
             availablePositions.remove(availablePositions.get(pos));
-            counter++;
-            if(counter>=6)
+            numberOfPlays++;
+            if(numberOfPlays>=6)
                {
                    if(current_board.checkWin("O"))
                    { 
@@ -156,11 +155,7 @@ public class SinglePlayerController implements Initializable {
         window.show();
     
     }  
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb)
-    {
-        resetGrid();    
+    public void createPc(){
         pc = new Thread(new Runnable(){
             @Override
             public void run() {
@@ -192,7 +187,13 @@ public class SinglePlayerController implements Initializable {
             }
             
         });
-        pc.start();        
+        pc.start();
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle rb)
+    {
+        resetGrid();    
+        createPc();        
     }    
     
 }

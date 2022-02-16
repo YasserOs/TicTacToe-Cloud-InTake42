@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 public class Board 
 {
     public ArrayList<Button> board = new ArrayList<Button>();
- 
+    
     /*boolean move(int position , String pick){
         
         if(board[position]=="")
