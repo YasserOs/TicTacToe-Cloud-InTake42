@@ -71,9 +71,7 @@ public class SinglePlayerController implements Initializable {
     public void PlayerMove(ActionEvent event) throws InterruptedException 
     {
         Button btn = (Button) event.getSource(); 
-        if(!availablePositions.isEmpty() && playerTurn){
-              if(isEmpty(btn))
-              {
+        if(isEmpty(btn) && playerTurn){
                   btn.setText("X");
                   availablePositions.remove(btn);
                   numberOfPlays++;
@@ -87,9 +85,6 @@ public class SinglePlayerController implements Initializable {
                       }
                   }
                   playerTurn=false;
-              }
-              else
-                  System.out.println("used");
         }
      }
     
@@ -141,9 +136,7 @@ public class SinglePlayerController implements Initializable {
         }
         
     }
-    
-    
-    
+
     public void back2MainRoom(ActionEvent event) throws IOException
     
     {
@@ -195,5 +188,5 @@ public class SinglePlayerController implements Initializable {
         resetGrid();    
         createPc();        
     }    
-    
+ 
 }

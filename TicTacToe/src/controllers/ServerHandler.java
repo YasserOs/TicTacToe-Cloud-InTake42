@@ -26,7 +26,6 @@ public class ServerHandler extends Thread {
     ObjectInputStream objectInputStream;
     Person loggedPlayer;
     Player playertwo;
-    Session s;
     static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
     static Vector<Person> allPlayers = new Vector<Person>();
     static Vector<Person> onlinePlayers = new Vector<Person>();
@@ -81,12 +80,6 @@ public class ServerHandler extends Thread {
             case "Invite":
                 handleInvitation(msg);
                 break;
-            case "play":
-                s = new Session(loggedPlayer, playertwo);
-                break;
-            case "move":
-                break;
-
         }
     }
 
@@ -94,17 +87,12 @@ public class ServerHandler extends Thread {
     // send response back to sender
     public void handleInvitation(Message msg) {
         String content = msg.getContent();
+        // find the receiver server handler
         for (ServerHandler sh : handlers) {
             try {
-                switch (content) {
-                    case "Pending":
-                        if (msg.getReceiver().equals(sh.loggedPlayer)) {
+                if (msg.getReceiver().equals(sh.loggedPlayer)) {
                             sh.objectOutputStream.writeObject(msg);
-                        }
-                        break;
-
-                }
-
+                    }
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -131,18 +119,6 @@ public class ServerHandler extends Thread {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    public void SessionManager(Socket player) {
-
-    }
-
-    public static Session createSinglePlayerSession(Person p1) {
-        return new Session(p1);
-    }
-
-    public static Session createMultiPlayerSession(Person p1, Player p2) {
-        return new Session(p1, p2);
     }
 
     public static void saveSession(Session session) {

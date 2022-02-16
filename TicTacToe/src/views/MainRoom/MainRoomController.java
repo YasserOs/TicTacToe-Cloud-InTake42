@@ -30,6 +30,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
 
 /**
@@ -47,6 +48,7 @@ public class MainRoomController implements Initializable {
     ObjectInputStream objectInputStream;
     
     Person loggedPlayer;
+    String chosenOpponent;
     @FXML BorderPane bp;
     @FXML
     private TextArea playersList; 
@@ -65,6 +67,7 @@ public class MainRoomController implements Initializable {
     private Button showBTN;
      @FXML
     private BorderPane plist;
+    private ActionEvent e;
     @FXML Label labelName; // labelName.setText(person.getName());
     @FXML Label labelScore; // labelScore.setText(person.getScore());
     @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
@@ -79,11 +82,9 @@ public class MainRoomController implements Initializable {
     }
     
      @FXML
-    private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)
-        
-        playersList.appendText("Players TEST" + "\n");
-        plist.setVisible(true);
-        
+    private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)  
+        playersList.appendText(loggedPlayer.getUsername() + "\n");
+        plist.setVisible(true);    
     }
    @FXML
    private void refresh(ActionEvent event){}
@@ -101,15 +102,21 @@ public class MainRoomController implements Initializable {
     
     }
     public void PlayVsFriend(ActionEvent event) throws IOException{
-     Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
+        e = event;
+        Message msg = new Message ("Invite",loggedPlayer.getUsername(),chosenOpponent,"Pending");
+        objectOutputStream.writeObject(msg);  
+    }
+    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, ClassNotFoundException{
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
+        Parent View = loader.load();
+        
         Scene ViewScene = new Scene(View);
-        
-       
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
         window.setScene(ViewScene);
+        MultiPlayerController controller = loader.getController();
+        controller.initSession(objectOutputStream,objectInputStream,loggedPlayer,opponent,isInvited);
         window.show();
-    
     }
     public void logPlayer(Person p){
         loggedPlayer=p;
@@ -148,6 +155,7 @@ public class MainRoomController implements Initializable {
                 } 
             }
         });
+        playerSocketThread.start();
     }
     public void createPlayerListUpdateThread(){
         updatePlayersListThread= new Thread( new Runnable(){
@@ -161,31 +169,35 @@ public class MainRoomController implements Initializable {
             }
         });
     }
-    public void processMessage(Message msg){
+    public void processMessage(Message msg) throws IOException, ClassNotFoundException{
         String Action =msg.getAction(); 
         switch(Action){
             case "Chat":
                 globalchat.appendText(msg.getContent());
                 break;
             case "Invite":
-                openInvitationScreen();
+                processInvitation(msg);
 
         }
     }
-    public void processInvitation(String decision){
-        switch(decision){
+    public void processInvitation(Message msg) throws IOException, ClassNotFoundException{
+        String content = msg.getContent();
+        switch(content){
             case "Accept":
-                // move to game scene function
+                startMultiPlayerMatch(e , msg.getSender() , false);
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
+            case "Pending":
+                openInvitationScreen(msg);
         }
     }
-    public void openInvitationScreen(){
+    public void openInvitationScreen(Message msg) throws IOException{
+        String decision ="" ;
         // open small log with sender name and 2 buttons to accept or refuse the invitation
         // then send a messag object with the content= accept or refuse back to the server handler
-        
-        
+        Message response = new Message("Invite",loggedPlayer.getUsername(),msg.getSender(),decision);
+        objectOutputStream.writeObject(response);
     }
     public void openInvitationRefusalScreen(){
         //open small log with with refuse statement

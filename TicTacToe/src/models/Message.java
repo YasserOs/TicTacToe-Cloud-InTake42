@@ -6,16 +6,18 @@
 package models;
 
 import java.io.Serializable;
+import javafx.scene.control.Button;
 
 /**
  *
  * @author YasserOsama
  */
 public class Message implements Serializable{
-    private  String action;
+    private String action;
     private String sender;
     private String receiver;
-    private  String content;
+    private String content;
+    private int position;
     
     public Message(){}
     public Message(String action , String sender , String receiver, String content)
@@ -25,6 +27,17 @@ public class Message implements Serializable{
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
+    }
+    public Message(String action , String sender , String receiver, int position)
+    {
+
+        this.action = action;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.position = position;
+    }
+    public int getPosition(){
+        return position;
     }
     public void setSender(String sender){
         this.sender = sender;
