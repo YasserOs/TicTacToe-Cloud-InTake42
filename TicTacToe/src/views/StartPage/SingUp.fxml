@@ -9,45 +9,40 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="
-http://javafx.com/javafx/17
-" xmlns:fx="
-http://javafx.com/fxml/1
-" fx:controller="views.StartPage.SingUpController">
+<AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SingUpController">
    <children>
-      <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1200.0" stylesheets="@newCascadeStyleSheet.css">
+      <AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0">
           <children>
-            <AnchorPane prefHeight="700.0" prefWidth="1200.0" />
-            <ImageView fitHeight="781.0" fitWidth="1283.0" styleClass="form_box">
+            <ImageView fitHeight="611.0" fitWidth="802.0" styleClass="form_box">
                <image>
                   <Image url="@images/tictactoe.jpg" />
                </image>
             </ImageView>
-            <AnchorPane id="anchorPane" layoutX="346.0" layoutY="53.0" prefHeight="267.0" prefWidth="360.0">
+            <AnchorPane id="anchorPane" layoutX="169.0" layoutY="36.0" prefHeight="436.0" prefWidth="464.0">
                <children>
-                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="83.0" layoutY="27.0" prefHeight="58.0" prefWidth="233.0" stylesheets="@newCascadeStyleSheet.css" text="SignUp Form" textFill="WHITE">
+                  <Button fx:id="loginbtn" layoutX="81.0" layoutY="359.0" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="31.0" prefWidth="311.0" text="Sign in">
                      <font>
-                        <Font name="System Bold" size="32.0" />
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="161.0" layoutY="27.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Sign Up" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold Italic" size="32.0" />
                      </font>
                   </Label>
-                  <PasswordField id="field" fx:id="txtpassword" layoutX="41.0" layoutY="185.0" prefHeight="31.0" prefWidth="318.0" promptText="Your Password" />
-                  <TextField id="field" fx:id="txtemail" layoutX="41.0" layoutY="96.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Email Address" />
-                  <TextField id="field" fx:id="txtusername" layoutX="41.0" layoutY="140.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
-                  <PasswordField id="field" fx:id="txtpassword1" layoutX="41.0" layoutY="235.0" prefHeight="31.0" prefWidth="318.0" promptText="Please Confirm Password" />
-               </children>
-            </AnchorPane>
-            <Button fx:id="loginbtn" layoutX="388.0" layoutY="398.0" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="31.0" prefWidth="317.0" text="Sign in" />
-            <AnchorPane layoutX="388.0" layoutY="430.0" prefHeight="96.0" prefWidth="318.0">
-               <children>
-                  <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="31.0" layoutY="18.0" prefHeight="58.0" prefWidth="264.0" textFill="#f70000">
+                  <PasswordField id="field" fx:id="txtpassword" alignment="CENTER" layoutX="80.0" layoutY="189.0" prefHeight="37.0" prefWidth="311.0" promptText="Password" />
+                  <TextField id="field" fx:id="txtemail" alignment="CENTER" layoutX="81.0" layoutY="96.0" prefHeight="37.0" prefWidth="311.0" promptText="Email Address" />
+                  <TextField id="field" fx:id="txtusername" alignment="CENTER" layoutX="79.0" layoutY="142.0" prefHeight="37.0" prefWidth="311.0" promptText="Username" />
+                  <PasswordField id="field" fx:id="txtpassword1" alignment="CENTER" layoutX="79.0" layoutY="239.0" prefHeight="37.0" prefWidth="311.0" promptText="Confirm Password" />
+                  <Button fx:id="singupbtn" layoutX="81.0" layoutY="296.0" mnemonicParsing="false" onAction="#SignUPhandle" prefHeight="31.0" prefWidth="311.0" text="Sign up" />
+                  <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="78.0" layoutY="426.0" prefHeight="58.0" prefWidth="317.0" textFill="#f70000">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
                </children>
             </AnchorPane>
-            <Button fx:id="singupbtn" layoutX="388.0" layoutY="350.0" mnemonicParsing="false" onAction="#SignUPhandle" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
           </children>
       </AnchorPane>
    </children>
-</AnchorPane> 
+</AnchorPane>

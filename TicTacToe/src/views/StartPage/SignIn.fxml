@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -9,30 +10,31 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="1200.0" stylesheets="@newCascadeStyleSheet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignInController">
+<AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignInController">
     <children>
-      <AnchorPane prefHeight="700.0" prefWidth="1200.0" />
-      <ImageView fitHeight="781.0" fitWidth="1283.0" styleClass="form_box">
+      <ImageView fitHeight="558.0" fitWidth="802.0" styleClass="form_box">
          <image>
             <Image url="@images/tictactoe.jpg" />
          </image>
       </ImageView>
-      <AnchorPane id="anchorPane" layoutX="338.0" layoutY="76.0">
+      <AnchorPane id="anchorPane" layoutX="190.0" layoutY="21.0" prefHeight="436.0" prefWidth="464.0">
          <children>
-            <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="71.0" layoutY="38.0" prefHeight="58.0" prefWidth="233.0" stylesheets="@newCascadeStyleSheet.css" text="Sign Form" textFill="WHITE">
+            <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="156.0" layoutY="48.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Login" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="32.0" />
+                  <Font name="System Bold Italic" size="32.0" />
                </font>
             </Label>
-            <PasswordField id="field" fx:id="txtpassword" layoutX="41.0" layoutY="185.0" prefHeight="31.0" prefWidth="317.0" promptText="Your Password" />
-            <TextField id="field" fx:id="txtusername" layoutX="41.0" layoutY="130.0" prefHeight="31.0" prefWidth="317.0" promptText="Username" />
-            <Button fx:id="loginbtn" layoutX="41.0" layoutY="237.0" mnemonicParsing="false" onAction="#SignNHandle" prefHeight="31.0" prefWidth="317.0" text="Sign IN" />
-         </children>
-      </AnchorPane>
-      <Button fx:id="singupbtn" layoutX="379.0" layoutY="375.0" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="31.0" prefWidth="317.0" text="Sign up" />
-      <AnchorPane layoutX="378.0" layoutY="427.0" prefHeight="109.0" prefWidth="318.0">
-         <children>
-            <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="31.0" layoutY="18.0" prefHeight="58.0" prefWidth="264.0" textFill="#f70000">
+            <PasswordField id="field" fx:id="txtpassword" alignment="CENTER" layoutX="73.0" layoutY="186.0" prefHeight="37.0" prefWidth="311.0" promptText="Password" />
+            <TextField id="field" fx:id="txtusername" alignment="CENTER" layoutX="72.0" layoutY="135.0" prefHeight="37.0" prefWidth="311.0" promptText="Username" />
+            <Button fx:id="loginbtn" layoutX="72.0" layoutY="240.0" mnemonicParsing="false" onAction="#SignNHandle" prefHeight="37.0" prefWidth="311.0" text="Sign in">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="singupbtn" layoutX="72.0" layoutY="297.0" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="37.0" prefWidth="311.0" text="Sign up">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="83.0" layoutY="379.0" prefHeight="58.0" prefWidth="290.0" textFill="#f70000">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -40,4 +42,8 @@
          </children>
       </AnchorPane>
     </children>
+   <stylesheets>
+      <URL value="@newCascadeStyleSheet.css" />
+      <URL value="@Style.css" />
+   </stylesheets>
 </AnchorPane>

@@ -28,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import views.SinglePlayer.SinglePlayerController;
 
@@ -46,7 +47,7 @@ public class MainRoomController implements Initializable {
     ObjectInputStream objectInputStream;
     
     Person loggedPlayer;
-    
+    @FXML BorderPane bp;
     @FXML
     private TextArea playersList; 
     @FXML
@@ -62,6 +63,12 @@ public class MainRoomController implements Initializable {
     private Button multiBTN;
     @FXML
     private Button showBTN;
+     @FXML
+    private BorderPane plist;
+    @FXML Label labelName; // labelName.setText(person.getName());
+    @FXML Label labelScore; // labelScore.setText(person.getScore());
+    @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
+    @FXML Button refresh;
     
     // all functions implementation is just for test, feel free to put ur back end implementation   
     @FXML
@@ -75,9 +82,11 @@ public class MainRoomController implements Initializable {
     private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)
         
         playersList.appendText("Players TEST" + "\n");
+        plist.setVisible(true);
         
     }
-   
+   @FXML
+   private void refresh(ActionEvent event){}
     public void PlayVsAI(ActionEvent event) throws IOException{
       
         
