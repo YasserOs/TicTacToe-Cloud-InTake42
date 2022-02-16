@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,7 +35,7 @@ public class SinglePlayerController implements Initializable {
     @FXML AnchorPane ap;
     @FXML GridPane grid;
     
-    ArrayList<Button> btns = new ArrayList<Button>();
+    ArrayList<Button> availablePositions = new ArrayList<Button>();
     
     @FXML Button backbtn;
     @FXML Button restartbtn;
@@ -49,9 +52,10 @@ public class SinglePlayerController implements Initializable {
     Board current_board= new Board();
     int counter=0;
     Session currentSession;
-    Boolean check=true;
+    Boolean playerTurn=true;
     String pick ; 
     Person loggedPlayer;
+    Thread pc;
     @FXML
     
     private boolean isEmpty(Button pos)
@@ -65,76 +69,71 @@ public class SinglePlayerController implements Initializable {
         else return false;
     
     }
-    public void PlayerMove(ActionEvent event) 
+    public void PlayerMove(ActionEvent event) throws InterruptedException 
     {
-       Button btn = (Button) event.getSource(); 
-  if(!btns.isEmpty()){
-        if(isEmpty(btn))
-        {
-            btn.setText("X");
-            btns.remove(btn);
-            counter++;
-            if(counter>=5)
-            {
-                if(current_board.checkWin("X"))
-                { 
-                    System.out.println("player one win");
-                     btns.clear();
-                 
-                }
-                
-            
-            }
-            psMove();
-           
+        Button btn = (Button) event.getSource(); 
+        if(!availablePositions.isEmpty() && playerTurn){
+              if(isEmpty(btn))
+              {
+                  btn.setText("X");
+                  availablePositions.remove(btn);
+                  counter++;
+                  if(counter>=5)
+                  {
+                      if(current_board.checkWin("X"))
+                      { 
+                          System.out.println("player one win");
+                           availablePositions.clear();
+
+                      }
+                  }
+                  playerTurn=false;
+              }
+              else
+                  System.out.println("used");
         }
-        else
-            System.out.println("used");
-  }
      }
     
     
     public void restart (ActionEvent event)
-    {
-
-        
-        btns.add(btn1);
-        btns.add(btn2);
-        btns.add(btn3);
-        btns.add(btn4);
-        btns.add(btn5);
-        btns.add(btn6);
-        btns.add(btn7);
-        btns.add(btn8);
-        btns.add(btn9);
-        
-        
-        for(Button b: btns)
+    {  
+        resetGrid(); 
+    }
+    public void resetGrid(){
+        availablePositions.add(btn1);
+        availablePositions.add(btn2);
+        availablePositions.add(btn3);
+        availablePositions.add(btn4);
+        availablePositions.add(btn5);
+        availablePositions.add(btn6);
+        availablePositions.add(btn7);
+        availablePositions.add(btn8);
+        availablePositions.add(btn9);
+        for(Button b: availablePositions)
         {
             b.setText("");
         
         }
-        
         current_board.board.clear();
-        current_board.board.addAll(btns);
-        
-        System.out.println(current_board.board.size());
+        current_board.board.addAll(availablePositions);
+        playerTurn=true;
+
+      }
     
-    }
-    public void psMove()
+    public void pcMove() throws InterruptedException
     {
-        if(!btns.isEmpty())
+        if(!availablePositions.isEmpty())
         {
-            int pos=Pc.randomMove(btns.size());
-            btns.get(pos).setText("O");
-            btns.remove(btns.get(pos));
+            int pos=Pc.randomMove(availablePositions.size());
+            availablePositions.get(pos).setText("O");
+            availablePositions.remove(availablePositions.get(pos));
             counter++;
             if(counter>=6)
                {
                    if(current_board.checkWin("O"))
                    { 
                        System.out.println("pc win");
-                       btns.clear();
+                       availablePositions.clear();
 
                    }
 
@@ -149,41 +148,51 @@ public class SinglePlayerController implements Initializable {
     public void back2MainRoom(ActionEvent event) throws IOException
     
     {
+        pc.stop();
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Scene ViewScene = new Scene(View);       
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
         window.show();
     
-    }
-    
-      public void getsession(Session p)
-      {
-        System.out.println("Printing from single player");
-        currentSession = p;
-          System.out.println(currentSession.p1.getUsername());
-    }
-    
+    }  
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        btns.add(btn1);
-        btns.add(btn2);
-        btns.add(btn3);
-        btns.add(btn4);
-        btns.add(btn5);
-        btns.add(btn6);
-        btns.add(btn7);
-        btns.add(btn8);
-        btns.add(btn9);
-        
-        current_board.board.addAll(btns);
-        
-        System.out.println(current_board.board.size());
-        
-        
-        
+        resetGrid();    
+        pc = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    
+                    if(!playerTurn){
+                        System.out.println("Pc turn");
+                        try {
+                            Thread.sleep(2000);
+                            
+                            Platform.runLater(new Runnable(){
+                                @Override
+                                public void run() {
+                                    try {
+                                        pcMove();
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(SinglePlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            });
+                            playerTurn=true;
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(SinglePlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }else{
+                        System.out.println("Player's turn");
+                    }
+                }
+            }
+            
+        });
+        pc.start();        
     }    
     
 }

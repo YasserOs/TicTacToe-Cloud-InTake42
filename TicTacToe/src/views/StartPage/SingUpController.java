@@ -106,7 +106,7 @@ public class SingUpController  {
         window.setScene(ViewScene);
         MainRoomController controller = loader.getController();
         controller.logPlayer(p);
-        
+        controller.initSockets();
         window.show();
         
         

@@ -84,13 +84,10 @@ public class MainRoomController implements Initializable {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
         Parent View = loader.load();
-        Session session = SessionManager.createSinglePlayerSession(loggedPlayer);
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
         SinglePlayerController controller = loader.getController();
-        
-        controller.getsession(session);
         window.show();
     
     }
@@ -106,9 +103,7 @@ public class MainRoomController implements Initializable {
     
     }
     public void logPlayer(Person p){
-        System.out.println("Printing from main room controller");
         loggedPlayer=p;
-        System.out.println(p.getUsername()+"\n"+p.getEmail());
     }
     
     public void updatePlayersList(Vector <Person> players)
@@ -122,10 +117,8 @@ public class MainRoomController implements Initializable {
             objectOutputStream = new ObjectOutputStream(outputStream);
             inputStream = playerSocket.getInputStream();
             objectInputStream= new ObjectInputStream(inputStream);
-        
-             
-//            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
-//          objectOutputStream.writeObject(msg);
+            Message msg = new Message("LoggedIn",loggedPlayer.getUsername(),"","");
+            objectOutputStream.writeObject(msg);
         }catch (IOException ex){
             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
         } 
@@ -189,10 +182,13 @@ public class MainRoomController implements Initializable {
         //open small log with with refuse statement
     }
     @Override
-    public void initialize(URL url, ResourceBundle rb){       
+    public void initialize(URL url, ResourceBundle rb){  
+        
+    }
+    public void initSockets(){
         createSocket();
         createPlayerSocketThread();
         updatePlayersList(Server.getPlayers());
-    }    
+    }
     
 }

@@ -57,8 +57,7 @@ public class SignInController   {
     private void SignNHandle(ActionEvent event) throws SQLException, IOException{
         db = Server.getDatabase();
           
-       System.out.println("You clikced on signin ");
-         String regex = "^[a-zA-Z0-9]+$";
+        String regex = "^[a-zA-Z0-9]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(txtusername.getText());
         String userName = txtusername.getText().trim();
@@ -106,6 +105,7 @@ public class SignInController   {
         window.setScene(ViewScene);
         MainRoomController controller = loader.getController();
         controller.logPlayer(p);
+        controller.initSockets();
         window.show();
     }
     public void SwitchtoSignUp(ActionEvent event) throws IOException

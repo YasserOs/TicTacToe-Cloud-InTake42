@@ -20,9 +20,9 @@ public class Database {
 
     ResultSet rs;
     Connection conn;
-    private String url = "jdbc:postgresql://localhost/postgresdb";
-    private String user = "gehad";
-    private String password = "1111";
+    private String url = "jdbc:postgresql://localhost/tic-tac-toe";
+    private String user = "postgres";
+    private String password = "root";
 
     public Database() throws SQLException {
         connect();

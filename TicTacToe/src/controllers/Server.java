@@ -18,7 +18,6 @@ import models.Person;
 public class Server 
 {
     
-    ChatHandler ch;
     ServerSocket myServerSocket;
     public static Database db ;
     public static Vector<Person> players ;
@@ -29,6 +28,7 @@ public class Server
             players = new Vector<Person>();
             onlinePlayers = new Vector<Person>();
             db = new Database();
+            players = db.getPlayers();
         } catch (SQLException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -40,7 +40,6 @@ public class Server
             while(true){
                 Socket s = myServerSocket.accept();
                 new ServerHandler(s);
-                new ChatHandler(s);                
             }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
