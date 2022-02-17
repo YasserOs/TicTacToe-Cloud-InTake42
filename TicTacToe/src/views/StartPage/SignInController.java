@@ -87,6 +87,7 @@ public class SignInController   {
             } else {
            
            if(db.logIn(userName, password)){ 
+               Server.db.updatePlayerStatus(userName, "online");
                p = db.getPlayer(userName);
                Server.updateOnlinePlayersVector(p);
                finshSignIn(event);

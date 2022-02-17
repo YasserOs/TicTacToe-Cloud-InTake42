@@ -61,6 +61,7 @@ public class ServerHandler extends Thread {
 
     public void closeConnection() throws IOException {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
+        Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
         Server.onlinePlayers.remove(loggedPlayer);
         onlinePlayers.remove(loggedPlayer);
         handlers.remove(this);
@@ -78,6 +79,7 @@ public class ServerHandler extends Thread {
                 sendMsgToAll(msg);
                 break;
             case "Invite":
+                System.out.println(msg.getSender() + "\t" +msg.getReceiver() + "\t" + msg.getAction() + "\t" +msg.getContent());
                 handleInvitation(msg);
                 break;
         }

@@ -86,6 +86,7 @@ public class SingUpController  {
         } else {
                 if(db.checkRegister(userName, email)){
                    db.signUp(userName, password, email) ;
+                   Server.db.updatePlayerStatus(userName, "online");
                    p = db.getPlayer(userName);
                    Server.updateAllPlayersVector(p);
                    Server.updateOnlinePlayersVector(p);

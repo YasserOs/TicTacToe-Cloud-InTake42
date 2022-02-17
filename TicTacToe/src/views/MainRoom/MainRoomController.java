@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,8 +27,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import views.MultiPlayer.MultiPlayerController;
@@ -72,7 +76,24 @@ public class MainRoomController implements Initializable {
     @FXML Label labelScore; // labelScore.setText(person.getScore());
     @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
     @FXML Button refresh;
-    
+    @FXML private TableView<DisplayPlayers> tableView;
+    @FXML private TableColumn<DisplayPlayers, String> name;
+    @FXML private TableColumn<DisplayPlayers, String> status; 
+    @FXML private Button info;
+    @FXML private Label pN;
+    @FXML private Label pS;
+    @FXML private Label pW;
+    @FXML private void showinfo(ActionEvent event){
+        pN.setVisible(true);
+        pS.setVisible(true);
+        pW.setVisible(true);
+        labelName.setVisible(true);
+        labelScore.setVisible(true);
+        labelWins.setVisible(true);
+        labelName.setText(loggedPlayer.getUsername());
+        labelWins.setText(String.valueOf(loggedPlayer.getGames_won()));
+        labelScore.setText(String.valueOf(loggedPlayer.getTotal_score()));
+    }
     // all functions implementation is just for test, feel free to put ur back end implementation   
     @FXML
     private void SendingMSG(ActionEvent event) {    // assigned to button send (bottom right on GUI)
@@ -83,11 +104,20 @@ public class MainRoomController implements Initializable {
     
      @FXML
     private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)  
-        playersList.appendText(loggedPlayer.getUsername() + "\n");
-        plist.setVisible(true);    
+        fillList();
+        if(plist.isVisible()){
+            plist.setVisible(false); 
+            multiBTN.setDisable(true);
+        }else{
+            plist.setVisible(true);
+           multiBTN.setDisable(false);
+        }   
     }
    @FXML
-   private void refresh(ActionEvent event){}
+   private void refresh(ActionEvent event){
+   
+       fillList();
+   }
     public void PlayVsAI(ActionEvent event) throws IOException{
       
         
@@ -102,9 +132,22 @@ public class MainRoomController implements Initializable {
     
     }
     public void PlayVsFriend(ActionEvent event) throws IOException{
+        fillList();
         e = event;
-        Message msg = new Message ("Invite",loggedPlayer.getUsername(),chosenOpponent,"Pending");
-        objectOutputStream.writeObject(msg);  
+        DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
+        if(plist.isVisible()){
+            if(chosen != null){
+                if( chosen.getStatus().equals("online")){
+
+                    ObservableList<DisplayPlayers> SelectedRow = tableView.getSelectionModel().getSelectedItems();
+                    chosenOpponent = SelectedRow.get(0).getName();
+                    System.out.println(chosenOpponent);
+                    Message msg = new Message("Invite", loggedPlayer.getUsername(), chosenOpponent, "Pending");
+                    objectOutputStream.writeObject(msg);
+
+                }
+            }
+        }
     }
     public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, ClassNotFoundException{
         FXMLLoader loader = new FXMLLoader();
@@ -204,7 +247,13 @@ public class MainRoomController implements Initializable {
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  
+        name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
+        status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         
+    }
+    
+    public void fillList(){
+        tableView.setItems(Server.db.displayPlayers( loggedPlayer.getUsername()));
     }
     public void initSockets(){
         createSocket();
