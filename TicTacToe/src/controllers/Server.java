@@ -53,6 +53,7 @@ public class Server
 
         return db;
     }
+    
     public static void updateOnlinePlayersVector(Person p) throws SQLException{
          onlinePlayers.add(p);
        

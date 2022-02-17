@@ -86,12 +86,18 @@ public class SignInController   {
             });
             } else {
            
-           if(db.logIn(userName, password)){ 
-               Server.db.updatePlayerStatus(userName, "online");
+           if(!Server.db.logIn(userName, password)){
+               txtalert.setText("This user is alread Logged");
+              
+           } else{
+                  
+               
                p = db.getPlayer(userName);
+               Server.db.updatePlayerStatus(userName, "online");
                Server.updateOnlinePlayersVector(p);
                finshSignIn(event);
-          }
+               }
+            
        }  
       
     }

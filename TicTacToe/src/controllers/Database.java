@@ -163,14 +163,14 @@ public class Database {
             ps.setString(1, username);
             ps.setString(2, email);
             rs =  ps.executeQuery();
-            while(rs.next())
-            {
-                System.out.println("Already Signed Up");
-            }
+            rs.next();
+            System.out.println("Already Signed Up");
+            
         }catch(SQLException ex){
             ex.printStackTrace();
             return false;
         }
+        ps.close();
         conn.close();
         return true;
     }
@@ -225,9 +225,11 @@ public class Database {
             String retrievedPassword=rs.getString("password");
             if(retrievedPassword.equals(passwordEncrypted) ){
                 System.out.println("Logged in successfully");
-                String updatingStatus=rs.getString("status");
-                updatingStatus = "Online";
-                rs.updateString("status", updatingStatus);
+                String Status=rs.getString("status");
+                if(Status.equals("online")){
+                    return false;
+                }
+                
                 selectStatement.close();
                 conn.close();
             }else{
