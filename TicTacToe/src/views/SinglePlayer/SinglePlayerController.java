@@ -5,6 +5,7 @@
  */
 package views.SinglePlayer;
 
+import controllers.ClientGui;
 import models.*;
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class SinglePlayerController implements Initializable {
     int numberOfPlays=0;
     Boolean playerTurn=true;
     String pick ; 
-    Person loggedPlayer;
+    Person loggedPlayer = ClientGui.loggedPlayer;
     Thread pc;
     @FXML
     
@@ -61,11 +62,7 @@ public class SinglePlayerController implements Initializable {
     {
 //        Button btn =(Button) grid.getChildren().get(pos);
   
-        if(pos.getText().isEmpty())
-        {
-            return true;
-        }
-        else return false;
+        return pos.getText().isEmpty();
     
     }
     public void PlayerMove(ActionEvent event) throws InterruptedException 

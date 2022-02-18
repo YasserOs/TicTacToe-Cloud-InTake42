@@ -5,6 +5,7 @@
  */
 package views.MultiPlayer;
 
+import controllers.ClientGui;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -60,17 +61,14 @@ public class MultiPlayerController implements Initializable {
     String currentPlayerPick;
     String opponentPick ;
     Session currentSession;
-    ObjectOutputStream objectOutputStream ;
-    ObjectInputStream objectInputStream;
+
     Thread playerSocketThread;
     boolean playerTurn; 
     boolean invited =false;
     int numberOfPlays = 0 ;
     
-    public void initSession(ObjectOutputStream oos , ObjectInputStream ois , Person p1 , String p2 , boolean isInvited ) throws IOException, ClassNotFoundException{
-        objectInputStream = ois;
-        objectOutputStream = oos;
-        player1=p1;
+    public void initSession(String p2 , boolean isInvited ) throws IOException, ClassNotFoundException{
+        player1=ClientGui.loggedPlayer;
         player2=p2;
         invited = isInvited;
         createPlayerSocketThread();
@@ -78,15 +76,15 @@ public class MultiPlayerController implements Initializable {
             //random boolean to decide which player to start , but only the player who sent the invite is gonna run it
             playerTurn = randomStart();
             Message msg = new Message("BeginMatch",player1.getUsername(),player2,Boolean.toString(!playerTurn));
-            objectOutputStream.writeObject(msg);
+            ClientGui.objectOutputStream.writeObject(msg);
             if(playerTurn){
                 //show pick dialog , and set the other option for opponent
                 msg = new Message("Pick",player1.getUsername(),player2,currentPlayerPick);
-                objectOutputStream.writeObject(msg);
+                ClientGui.objectOutputStream.writeObject(msg);
             }
         }
         
-        currentSession = new Session(p1.getUsername(),p2);
+        currentSession = new Session(player1.getUsername(),p2);
     }
 
     
@@ -100,7 +98,7 @@ public class MultiPlayerController implements Initializable {
            public void run() {
                while(true){
                    try {
-                       Message msg = (Message)objectInputStream.readObject();
+                       Message msg = (Message)ClientGui.objectInputStream.readObject();
                        processMessage(msg);
                    } catch (IOException ex) {
                        System.out.println("IO");
@@ -153,7 +151,7 @@ public class MultiPlayerController implements Initializable {
                   int buttPosition = currentSession.board.getBoard().indexOf(position);
                   availablePositions.remove(position);
                   Message msg = new Message("Move",player1.getUsername(),player2,buttPosition);
-                  objectOutputStream.writeObject(msg);
+                  ClientGui.objectOutputStream.writeObject(msg);
                   numberOfPlays++;
                   if(numberOfPlays>=5)
                   {
@@ -203,7 +201,7 @@ public class MultiPlayerController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        ClientGui.mpc = this;
         resetGrid();
     }    
     

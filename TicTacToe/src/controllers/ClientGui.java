@@ -6,6 +6,11 @@
 package controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +21,10 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import models.Message;
+import models.Person;
+import views.MainRoom.MainRoomController;
+import views.MultiPlayer.MultiPlayerController;
 
 /**
  *
@@ -24,6 +33,14 @@ import javafx.stage.Stage;
 public class ClientGui extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
+    
+    public static Person loggedPlayer;
+    public static Thread playerSocketThread = null;
+    public static Socket playerSocket;
+    public static ObjectOutputStream objectOutputStream ;
+    public static ObjectInputStream objectInputStream;
+    public static MainRoomController mrc;
+    public static MultiPlayerController mpc;
     @Override
     public void start(Stage primaryStage) throws IOException
     {
@@ -54,6 +71,29 @@ public class ClientGui extends Application {
             System.exit(1);
         });       
         
+    }
+
+    public static void createPlayerSocketThread(){
+        if(playerSocketThread!=null){
+            playerSocketThread.stop();
+        } 
+        playerSocketThread = new Thread( new Runnable(){
+            @Override
+            public void run() {
+                while(true){
+                    try {
+                        Message msg = (Message)ClientGui.objectInputStream.readObject();
+                        mrc.processMessage(msg);
+                        mpc.processMessage(msg);
+                    } catch (IOException ex) {
+                        System.out.println("IO");
+                    } catch (ClassNotFoundException ex) {
+                        System.out.println("");;
+                    }
+                } 
+            }
+        });
+        playerSocketThread.start();
     }
     public static void main(String[] args) {
         launch(args);
