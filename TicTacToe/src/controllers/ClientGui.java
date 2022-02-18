@@ -83,8 +83,17 @@ public class ClientGui extends Application {
                 while(true){
                     try {
                         Message msg = (Message)ClientGui.objectInputStream.readObject();
-                        mrc.processMessage(msg);
-                        mpc.processMessage(msg);
+                        if(msg!=null)
+                        {
+                        if(mrc!=null)
+                        {
+                            mrc.processMessage(msg);
+                        }
+                        if(mpc!=null)
+                        {
+                            mpc.processMessage(msg);
+                        }
+                        }
                     } catch (IOException ex) {
                         System.out.println("IO");
                     } catch (ClassNotFoundException ex) {

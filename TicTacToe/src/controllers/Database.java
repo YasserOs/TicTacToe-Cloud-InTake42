@@ -138,7 +138,6 @@ public class Database {
             stmt.setInt(7, 0);
             stmt.setInt(8, 0);
             stmt.setInt(9, 0);
-
             stmt.executeUpdate();
             System.out.println("Record successfully Inserted. ");
         } catch (SQLException ex) {

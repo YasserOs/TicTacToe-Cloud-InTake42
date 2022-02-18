@@ -71,7 +71,6 @@ public class MultiPlayerController implements Initializable {
         player1=ClientGui.loggedPlayer;
         player2=p2;
         invited = isInvited;
-        createPlayerSocketThread();
         if(!invited){
             //random boolean to decide which player to start , but only the player who sent the invite is gonna run it
             playerTurn = randomStart();
@@ -88,28 +87,12 @@ public class MultiPlayerController implements Initializable {
     }
 
     
-    public boolean randomStart(){
+    public boolean randomStart()
+    {
         Random rand = new Random();
         return rand.nextBoolean();
     }
-    public void createPlayerSocketThread(){
-       playerSocketThread = new Thread( new Runnable(){
-           @Override
-           public void run() {
-               while(true){
-                   try {
-                       Message msg = (Message)ClientGui.objectInputStream.readObject();
-                       processMessage(msg);
-                   } catch (IOException ex) {
-                       System.out.println("IO");
-                   } catch (ClassNotFoundException ex) {
-                       System.out.println("");;
-                   }
-               } 
-           }
-       });
-       playerSocketThread.start();
-    }
+    
     public void processMessage(Message msg) throws IOException{
        String Action =msg.getAction(); 
        switch(Action){
@@ -133,8 +116,9 @@ public class MultiPlayerController implements Initializable {
             currentPlayerPick = "X";
         }
     }
-    public void updateBoard(int position){
-        currentSession.play(position, opponentPick);
+    public void updateBoard(int position)
+    {
+        currentSession.play(position, opponentPick);        
         playerTurn=true;
     }
     private boolean isEmpty(Button pos)
@@ -167,7 +151,8 @@ public class MultiPlayerController implements Initializable {
     }
     
     
-    public void resetGrid(){
+    public void resetGrid()
+    {
         availablePositions.add(btn1);
         availablePositions.add(btn2);
         availablePositions.add(btn3);

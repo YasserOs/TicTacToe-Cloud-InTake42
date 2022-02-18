@@ -114,6 +114,7 @@ public class MainRoomController implements Initializable {
         fillList();
         e = event;
         DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
+        System.out.println(chosen);
         if(plist.isVisible()){
             if(chosen != null){
                 if( chosen.getStatus().equals("online")){
