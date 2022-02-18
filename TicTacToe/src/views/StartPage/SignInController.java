@@ -87,19 +87,24 @@ public class SignInController   {
             });
             } else {
            
-           if(db.logIn(userName, password)){ 
-               Server.db.updatePlayerStatus(userName, "online");
+           if(!Server.db.logIn(userName, password)){
+               txtalert.setText("This user is alread Logged");
+              
+           } else{
+                  
+               
                p = db.getPlayer(userName);
+               Server.db.updatePlayerStatus(userName, "online");
                Server.updateOnlinePlayersVector(p);
                ClientGui.loggedPlayer=p;
                finshSignIn(event);
-          }
+               }
+            
        }  
       
     }
     public void finshSignIn(ActionEvent event) throws IOException{
          
-        
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Parent View = loader.load();
@@ -107,6 +112,7 @@ public class SignInController   {
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
+       
         window.show();
     }
     public void SwitchtoSignUp(ActionEvent event) throws IOException

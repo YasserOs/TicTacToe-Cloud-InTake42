@@ -85,14 +85,16 @@ public class SingUpController  {
                 }); 
         } else {
                 if(db.checkRegister(userName, email)){
-                   db.signUp(userName, password, email) ;
-                   Server.db.updatePlayerStatus(userName, "online");
-                   p = db.getPlayer(userName);
-                   Server.updateAllPlayersVector(p);
-                   Server.updateOnlinePlayersVector(p);
-                   ClientGui.loggedPlayer=p;
-                   finshSignUp(event);
-                }
+                    txtalert.setText("This player already exists");
+                } else {
+                    db.signUp(userName, password, email) ;
+                    Server.db.updatePlayerStatus(userName, "online");
+                    p = db.getPlayer(userName);
+                    Server.updateAllPlayersVector(p);
+                    Server.updateOnlinePlayersVector(p);
+                    ClientGui.loggedPlayer=p;
+                    finshSignUp(event);
+            }
          }
       // signed user
       
@@ -106,11 +108,18 @@ public class SingUpController  {
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
-
         window.show();
         
         
     }
+    
+//      public void logPlayer(Person p)
+//      {
+//        System.out.println("Printing from main room controller");
+//        loggedPlayer=p;
+//        System.out.println(p.getUsername()+"\n"+p.getEmail());
+//    }
+    
     
  public void SwitchtoSignN(ActionEvent event) throws IOException
     {

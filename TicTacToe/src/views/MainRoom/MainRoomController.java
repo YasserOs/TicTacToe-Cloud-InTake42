@@ -61,6 +61,7 @@ public class MainRoomController implements Initializable {
     @FXML private Label pN;
     @FXML private Label pS;
     @FXML private Label pW;
+    
     @FXML private void showinfo(ActionEvent event){
         pN.setVisible(true);
         pS.setVisible(true);
@@ -113,8 +114,10 @@ public class MainRoomController implements Initializable {
     public void PlayVsFriend(ActionEvent event) throws IOException{
         fillList();
         e = event;
+
         DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
         System.out.println(chosen);
+
         if(plist.isVisible()){
             if(chosen != null){
                 if( chosen.getStatus().equals("online")){
@@ -147,7 +150,9 @@ public class MainRoomController implements Initializable {
     {
         
     }
-    public void createSocket(){
+    
+    public void createSocket()
+    {
        try {
             Socket playerSocket = new Socket("127.0.0.1",9000);
             ClientGui.playerSocket=playerSocket;
@@ -209,7 +214,8 @@ public class MainRoomController implements Initializable {
         ClientGui.createPlayerSocketThread();
     }
     
-    public void fillList(){
+    public void fillList()
+    {
         tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
     }
 
