@@ -11,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,7 +38,7 @@ public class ClientGui extends Application {
     
     public static Person loggedPlayer;
     public static Thread playerSocketThread = null;
-    public static Socket playerSocket;
+    public static Socket playerSocket =null;
     public static ObjectOutputStream objectOutputStream ;
     public static ObjectInputStream objectInputStream;
     public static MainRoomController mrc;
@@ -72,6 +74,23 @@ public class ClientGui extends Application {
         });       
         
     }
+    public static void createSocket()
+    {
+          try {
+            Socket playerSocket = new Socket("127.0.0.1",9000);
+            ClientGui.playerSocket=playerSocket;
+            OutputStream outputStream = playerSocket.getOutputStream();
+            ClientGui.objectOutputStream = new ObjectOutputStream(outputStream);
+            InputStream inputStream = playerSocket.getInputStream();
+            ClientGui.objectInputStream= new ObjectInputStream(inputStream);
+            Message msg = new Message("LoggedIn",ClientGui.loggedPlayer.getUsername(),"","");
+            ClientGui.objectOutputStream.writeObject(msg);
+        }catch (IOException ex){
+            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+       
+       
+    }
 
     public static void createPlayerSocketThread(){
         if(playerSocketThread!=null){
@@ -103,6 +122,12 @@ public class ClientGui extends Application {
             }
         });
         playerSocketThread.start();
+    }
+    
+    public static void startClient(Person p){
+        loggedPlayer=p;
+        createSocket();
+        createPlayerSocketThread();
     }
     public static void main(String[] args) {
         launch(args);

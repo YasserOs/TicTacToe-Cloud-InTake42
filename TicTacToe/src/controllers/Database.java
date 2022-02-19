@@ -26,9 +26,9 @@ public class Database {
 
     ResultSet rs;
     Connection conn;
-    private String url = "jdbc:postgresql://localhost/postgresdb";
-    private String user = "gehad";
-    private String password = "1111";
+    private String url = "jdbc:postgresql://localhost/tic-tac-toe";
+    private String user = "postgres";
+    private String password = "root";
 
     public Database() throws SQLException {
         connect();
@@ -158,11 +158,13 @@ public class Database {
         PreparedStatement ps;
         try{
             conn = DriverManager.getConnection(url,user,password);
-            ps = conn.prepareStatement("select * from players where username = ? and email = ? ");
+            ps = conn.prepareStatement("select * from players where username = ? or email = ?");
             ps.setString(1, username);
             ps.setString(2, email);
             rs =  ps.executeQuery();
-            rs.next();
+            if(!rs.next()){
+                return false;
+            }
             System.out.println("Already Signed Up");
             
         }catch(SQLException ex){

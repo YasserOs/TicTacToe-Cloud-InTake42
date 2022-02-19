@@ -109,14 +109,10 @@ public class MainRoomController implements Initializable {
         window.setScene(ViewScene);
         SinglePlayerController controller = loader.getController();
         window.show();
-    
     }
     public void PlayVsFriend(ActionEvent event) throws IOException{
-        fillList();
         e = event;
-
         DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
-        System.out.println(chosen);
 
         if(plist.isVisible()){
             if(chosen != null){
@@ -144,30 +140,6 @@ public class MainRoomController implements Initializable {
         controller.initSession(opponent,isInvited);
         window.show();
     }
-
-    
-    public void updatePlayersList(Vector <Person> players)
-    {
-        
-    }
-    
-    public void createSocket()
-    {
-       try {
-            Socket playerSocket = new Socket("127.0.0.1",9000);
-            ClientGui.playerSocket=playerSocket;
-            OutputStream outputStream = playerSocket.getOutputStream();
-            ClientGui.objectOutputStream = new ObjectOutputStream(outputStream);
-            InputStream inputStream = playerSocket.getInputStream();
-            ClientGui.objectInputStream= new ObjectInputStream(inputStream);
-            Message msg = new Message("LoggedIn",ClientGui.loggedPlayer.getUsername(),"","");
-            ClientGui.objectOutputStream.writeObject(msg);
-        }catch (IOException ex){
-            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }
-    
-
     public void processMessage(Message msg) throws IOException, ClassNotFoundException{
         String Action =msg.getAction(); 
         switch(Action){
@@ -176,6 +148,13 @@ public class MainRoomController implements Initializable {
                 break;
             case "Invite":
                 processInvitation(msg);
+                break;
+            case "LoggedIn":
+                fillList();
+                break;
+            case "LogOut":
+                fillList();
+                break;
 
         }
     }
@@ -204,24 +183,16 @@ public class MainRoomController implements Initializable {
     {
         //open small log with with refuse statement
     }
-
     @Override
     public void initialize(URL url, ResourceBundle rb){  
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
-        initSockets();
         ClientGui.mrc=this;
-        ClientGui.createPlayerSocketThread();
     }
-    
     public void fillList()
     {
         tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
     }
-
-    public void initSockets(){
-        createSocket();
-        updatePlayersList(Server.getPlayers());
-    }
+   
     
 }

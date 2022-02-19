@@ -58,23 +58,27 @@ public class ServerHandler extends Thread {
             }
         }
     }
-
-    public void closeConnection() throws IOException {
+    
+    public void closeConnection() throws IOException   {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
         Server.onlinePlayers.remove(loggedPlayer);
         onlinePlayers.remove(loggedPlayer);
         handlers.remove(this);
+        Message msg = new Message("LogOut","","","");
+        sendMsgToAll(msg);
         this.objectInputStream.close();
         this.objectOutputStream.close();
         this.stop();
     }
-
-    public void processMessage(Message msg) {
+    
+    public void processMessage(Message msg) throws IOException {
         String Action = msg.getAction();
         switch (Action) {
             case "LoggedIn":
                 loginPlayer(msg.getSender());
+                sendMsgToAll(msg);
+                break;
             case "Chat":
                 sendMsgToAll(msg);
                 break;
@@ -101,7 +105,7 @@ public class ServerHandler extends Thread {
         }
     }
 
-    public void loginPlayer(String userName) {
+    public void loginPlayer(String userName) throws IOException {
         for (Person p : allPlayers) {
             if (p.getUsername().equals(userName)) {
                 p.setStatus("Online");

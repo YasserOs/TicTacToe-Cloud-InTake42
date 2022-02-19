@@ -92,7 +92,6 @@ public class SingUpController  {
                     p = db.getPlayer(userName);
                     Server.updateAllPlayersVector(p);
                     Server.updateOnlinePlayersVector(p);
-                    ClientGui.loggedPlayer=p;
                     finshSignUp(event);
             }
          }
@@ -105,12 +104,11 @@ public class SingUpController  {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Parent View = loader.load();
+        ClientGui.startClient(p);
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
         window.show();
-        
-        
     }
     
 //      public void logPlayer(Person p)

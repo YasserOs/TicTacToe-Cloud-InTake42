@@ -90,17 +90,13 @@ public class SignInController   {
            if(!Server.db.logIn(userName, password)){
                txtalert.setText("This user is alread Logged");
               
-           } else{
-                  
-               
-               p = db.getPlayer(userName);
-               Server.db.updatePlayerStatus(userName, "online");
-               Server.updateOnlinePlayersVector(p);
-               ClientGui.loggedPlayer=p;
-               finshSignIn(event);
-               }
-            
-       }  
+           } else{  
+                    Server.db.updatePlayerStatus(userName, "online");
+                    p = db.getPlayer(userName);
+                    Server.updateOnlinePlayersVector(p);
+                    finshSignIn(event);
+               }     
+            }  
       
     }
     public void finshSignIn(ActionEvent event) throws IOException{
@@ -108,11 +104,10 @@ public class SignInController   {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Parent View = loader.load();
-        
+        ClientGui.startClient(p);
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
-       
         window.show();
     }
     public void SwitchtoSignUp(ActionEvent event) throws IOException

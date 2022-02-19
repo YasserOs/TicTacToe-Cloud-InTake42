@@ -33,8 +33,7 @@ public class Server
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public Server() throws SQLException{
-        
+    public Server() throws SQLException{ 
         try {
             myServerSocket = new ServerSocket(9000);
             while(true){
