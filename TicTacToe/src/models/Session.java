@@ -22,6 +22,7 @@ public class Session {
     public Session(String p1 , String p2){
         this.p1=p1;
         this.p2=p2;
+        board = new Board();
     }
     public void play(int position , String pick){
         board.move(position, pick);

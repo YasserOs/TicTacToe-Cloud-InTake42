@@ -37,8 +37,8 @@ public class ClientGui extends Application {
     private double yOffset = 0;
     
     public static Person loggedPlayer;
-    public static Thread playerSocketThread = null;
-    public static Socket playerSocket =null;
+    public static Thread playerSocketThread;
+    public static Socket playerSocket ;
     public static ObjectOutputStream objectOutputStream ;
     public static ObjectInputStream objectInputStream;
     public static MainRoomController mrc;
@@ -76,12 +76,11 @@ public class ClientGui extends Application {
     }
     public static void createSocket()
     {
-          try {
-            Socket playerSocket = new Socket("127.0.0.1",9000);
-            ClientGui.playerSocket=playerSocket;
-            OutputStream outputStream = playerSocket.getOutputStream();
+          try { 
+            ClientGui.playerSocket=new Socket("127.0.0.1",9000);
+            OutputStream outputStream = ClientGui.playerSocket.getOutputStream();
             ClientGui.objectOutputStream = new ObjectOutputStream(outputStream);
-            InputStream inputStream = playerSocket.getInputStream();
+            InputStream inputStream = ClientGui.playerSocket.getInputStream();
             ClientGui.objectInputStream= new ObjectInputStream(inputStream);
             Message msg = new Message("LoggedIn",ClientGui.loggedPlayer.getUsername(),"","");
             ClientGui.objectOutputStream.writeObject(msg);
@@ -93,9 +92,6 @@ public class ClientGui extends Application {
     }
 
     public static void createPlayerSocketThread(){
-        if(playerSocketThread!=null){
-            playerSocketThread.stop();
-        } 
         playerSocketThread = new Thread( new Runnable(){
             @Override
             public void run() {
@@ -113,10 +109,10 @@ public class ClientGui extends Application {
                             mpc.processMessage(msg);
                         }
                         }
+                    }  catch (ClassNotFoundException ex) {
+                        System.out.println("class not found");;
                     } catch (IOException ex) {
-                        System.out.println("IO");
-                    } catch (ClassNotFoundException ex) {
-                        System.out.println("");;
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
             }
@@ -125,7 +121,7 @@ public class ClientGui extends Application {
     }
     
     public static void startClient(Person p){
-        loggedPlayer=p;
+        ClientGui.loggedPlayer=p;
         createSocket();
         createPlayerSocketThread();
     }

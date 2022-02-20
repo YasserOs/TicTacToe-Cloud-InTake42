@@ -82,22 +82,21 @@ public class ServerHandler extends Thread {
             case "Chat":
                 sendMsgToAll(msg);
                 break;
-            case "Invite":
-                System.out.println(msg.getSender() + "\t" +msg.getReceiver() + "\t" + msg.getAction() + "\t" +msg.getContent());
-                handleInvitation(msg);
+            default:
+                sendMsgToReceiver(msg);
                 break;
         }
     }
 
     // send to receiver
     // send response back to sender
-    public void handleInvitation(Message msg) {
-        String content = msg.getContent();
-        // find the receiver server handler
+    public void sendMsgToReceiver(Message msg) {
+        
         for (ServerHandler sh : handlers) {
             try {
-                if (msg.getReceiver().equals(sh.loggedPlayer)) {
+                if (msg.getReceiver().equals(sh.loggedPlayer.getUsername())) {
                             sh.objectOutputStream.writeObject(msg);
+                            break;
                     }
             } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);

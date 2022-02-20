@@ -14,6 +14,7 @@ import javafx.scene.*;
 import java.util.*;
 import java.net.Socket;
 import java.net.URL;
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,6 +64,7 @@ public class MainRoomController implements Initializable {
     @FXML private Label pW;
     
     @FXML private void showinfo(ActionEvent event){
+        e = event;
         pN.setVisible(true);
         pS.setVisible(true);
         pW.setVisible(true);
@@ -83,7 +85,6 @@ public class MainRoomController implements Initializable {
     
      @FXML
     private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI) 
-         System.out.println(ClientGui.loggedPlayer.getUsername());
         fillList();
         if(plist.isVisible()){
             plist.setVisible(false); 
@@ -132,13 +133,23 @@ public class MainRoomController implements Initializable {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
-        
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(ViewScene);
-        MultiPlayerController controller = loader.getController();
-        controller.initSession(opponent,isInvited);
-        window.show();
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    window.setScene(ViewScene);
+                    MultiPlayerController controller = loader.getController();
+                    controller.initSession(opponent,isInvited);
+                    window.show();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
     public void processMessage(Message msg) throws IOException, ClassNotFoundException{
         String Action =msg.getAction(); 
@@ -159,6 +170,7 @@ public class MainRoomController implements Initializable {
         }
     }
     public void processInvitation(Message msg) throws IOException, ClassNotFoundException{
+        System.out.println(msg.getSender() + " Invited you ");
         String content = msg.getContent();
         switch(content){
             case "Accept":
@@ -171,12 +183,14 @@ public class MainRoomController implements Initializable {
         }
     }
     
-    public void openInvitationScreen(Message msg) throws IOException{
-        String decision ="" ;
+    public void openInvitationScreen(Message msg) throws IOException, ClassNotFoundException{
+        System.out.println("Invitation receive from "+msg.getSender());
+        String decision ="Accept" ;
         // open small log with sender name and 2 buttons to accept or refuse the invitation
         // then send a messag object with the content= accept or refuse back to the server handler
         Message response = new Message("Invite",ClientGui.loggedPlayer.getUsername(),msg.getSender(),decision);
         ClientGui.objectOutputStream.writeObject(response);
+        startMultiPlayerMatch(e, msg.getSender(), true);
     }
     
     public void openInvitationRefusalScreen()
