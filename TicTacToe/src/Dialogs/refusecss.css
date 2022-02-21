@@ -1,0 +1,19 @@
+#AnchorPane
+{
+         -fx-background-color: #274472;
+         -fx-color: white;
+}
+#play_again
+{
+    -fx-background-color: #FFFFFF;
+	-fx-color: white;
+	-fx-border: none;
+	-fx-border-radius: 5px;
+}
+#Exit
+{
+        -fx-background-color: #FFFFFF;
+	-fx-color: white;
+	-fx-border: none;
+	-fx-border-radius: 5px;
+}

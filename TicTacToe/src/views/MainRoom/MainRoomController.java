@@ -206,6 +206,7 @@ public class MainRoomController implements Initializable {
     public void fillList()
     {
         tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
+       
     }
    
     
