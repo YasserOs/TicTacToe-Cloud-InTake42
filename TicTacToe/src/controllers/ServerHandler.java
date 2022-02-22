@@ -76,14 +76,13 @@ public class ServerHandler extends Thread {
     }
     
     public void processMessage(JSONObject msg) throws IOException, SQLException {
-        String Action = msg.get("Action").toString();
+        String Action = msg.getString("Action");
         switch (Action) {
             case "SignUp":
                 SignUp(msg);
                 break;
             case "SignIn":
                 SignIn(msg);
-                //sendMsgToAll(msg);
                 break;
             case "Chat":
                 //sendMsgToAll(msg);
@@ -94,7 +93,7 @@ public class ServerHandler extends Thread {
                 getAllPlayers();
                 break;
             default:
-                //sendMsgToReceiver(msg);
+                sendMsgToReceiver(msg);
                 break;
         }
     }
@@ -172,11 +171,11 @@ public class ServerHandler extends Thread {
     }
     // send to receiver
     // send response back to sender
-    public void sendMsgToReceiver(Message msg) {
+    public void sendMsgToReceiver(JSONObject msg) {
         
         for (ServerHandler sh : handlers) {
-            if (msg.getReceiver().equals(sh.loggedPlayer.getUsername())) {
-                sh.printStream.println();
+            if (msg.getString("Receiver").equals(sh.loggedPlayer.getUsername())) {
+                sh.printStream.println(msg.toString());
                 break;
             }
         }

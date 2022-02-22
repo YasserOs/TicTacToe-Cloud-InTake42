@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Person;
 import org.json.JSONObject;
+import views.GeneralController;
 import views.MainRoom.MainRoomController;
 import views.MultiPlayer.MultiPlayerController;
 import views.StartPage.SignInController;
@@ -37,11 +38,7 @@ public class ClientGui extends Application {
     public static Socket playerSocket ;
     public static DataInputStream inputStream;
     public static PrintStream printStream;
-    public static MainRoomController mrc;
-    public static MultiPlayerController mpc;
-    public static SignUpController signUpctrl;
-    public static SignInController signInctrl;
-    
+    public static GeneralController currentLiveCtrl;
     @Override
     public void start(Stage primaryStage) throws IOException
     {
@@ -79,10 +76,6 @@ public class ClientGui extends Application {
             playerSocket=new Socket("127.0.0.1",9000);
             printStream = new PrintStream(playerSocket.getOutputStream());
             inputStream = new DataInputStream(playerSocket.getInputStream());
-            JSONObject msg = new JSONObject();
-            //msg.
-            /*Message msg = new Message("LoggedIn",ClientGui.loggedPlayer.getUsername(),"","");
-            ClientGui.objectOutputStream.writeObject(msg);*/
         }catch (IOException ex){
             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
         }  
@@ -97,26 +90,10 @@ public class ClientGui extends Application {
                 while(true){
                     try {
                         JSONObject msg = new JSONObject(inputStream.readLine());
-                        if(mrc!=null)
-                        {
-                            try {
-                                mrc.processMessage(msg);
-                            } catch (ClassNotFoundException ex) {
-                                Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                        else if(mpc!=null)
-                        {
-                            mpc.processMessage(msg);
-                        }
-                        else if(signUpctrl!=null){
-                            signUpctrl.processMessage(msg);
-                        }
-                        else if(signInctrl!=null){
-                            signInctrl.processMessage(msg);
-                        }
-                        
+                        currentLiveCtrl.processMessage(msg);                        
                     } catch (IOException ex) {
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
