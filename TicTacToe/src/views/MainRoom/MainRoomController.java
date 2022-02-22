@@ -5,7 +5,6 @@
  */
 package views.MainRoom;
 
-import com.sun.tools.javac.tree.JCTree;
 import models.*;
 import controllers.*;
 import java.io.*;
@@ -13,7 +12,6 @@ import java.util.logging.*;
 import javafx.fxml.*;
 import javafx.scene.*;
 import java.util.*;
-import java.net.Socket;
 import java.net.URL;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,9 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
-import controllers.Server;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -91,10 +87,8 @@ public class MainRoomController implements Initializable {
     }
     
      @FXML
-    private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI) 
-        
+    private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)        
         fillList();
-        
         if(plist.isVisible()){
             plist.setVisible(false); 
             multiBTN.setDisable(true);
@@ -267,20 +261,16 @@ public class MainRoomController implements Initializable {
     public void addplayer(JSONObject msg)
     {
          Playerslist.add(new DisplayPlayers(msg.getString("username"),"online"));
-         System.out.println("from addplayer");
-         fillList();
     }
     
     public void updateplayerlist(JSONObject msg,String status)
     {
-        System.out.println("from update ");
-        for(DisplayPlayers p: Playerslist)
-        {
-            if(p.getName().equals(msg.getString("username")))
-                p.setStatus(status);
+        for(int i=0 ; i <Playerslist.size();i++){
+            if(Playerslist.get(i).getName().equals(msg.getString("username"))){
+                Playerslist.set(i, new DisplayPlayers(msg.getString("username"),status));
+                break;
+            }
         }
-        fillList();
-    
     }
     
     

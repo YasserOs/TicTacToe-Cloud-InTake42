@@ -45,29 +45,31 @@ public class ServerHandler extends Thread {
         while (true) {
             try {
                 JSONObject msg = new JSONObject(inputStream.readLine()) ;
-                try {
-                    processMessage(msg);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                processMessage(msg);            
             } catch (IOException ex) {
-                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+                closeConnection();
+            } catch (SQLException ex){
+                System.out.println("FromSQL");
             }
           
         }
     }
     
-    public void closeConnection() throws IOException 
+    public void closeConnection() 
     {
-        System.out.println("");
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
+        Server.updateplayer(loggedPlayer.getUsername(), "offline");
         JSONObject msg=new JSONObject();
         msg.put("Action", "playersignout");
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
         handlers.remove(this);
-        this.inputStream.close();
+        try {
+            this.inputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.printStream.close();
         this.stop();
 

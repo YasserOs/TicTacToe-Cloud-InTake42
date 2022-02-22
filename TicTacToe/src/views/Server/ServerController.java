@@ -48,22 +48,11 @@ public class ServerController implements Initializable {
     
     ServerSocket  myServerSocket;
      Thread th;
-    /**
-     * Initializes the controller class.
-     */
-   // Display Online Players
-  
-    
-//       public void fillList()
-//    {
-//      tableView.setItems(Server.db.dPlayers);
-//      tableView.setVisible(true);
-//    }
      
      public void fillList()
     {
-        tableView.setItems(Server.db.displayPlayers());
-         tableView.setVisible(true);
+        tableView.setItems(Server.Playerslist);
+        tableView.setVisible(true);
        
     }
      
@@ -73,15 +62,15 @@ public class ServerController implements Initializable {
         new Server();
         myServerSocket = new ServerSocket(9000);
         th = new Thread( ()->{
-            while(true)
-            {
-                try {
-                      Socket s = myServerSocket.accept();             
-                      new ServerHandler(s);
-                  } catch (IOException ex) {
-                      Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                  }
-            }
+        while(true)
+        {
+              try {
+                    Socket s = myServerSocket.accept();             
+                    new ServerHandler(s);
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
         });
             lblonstatus.setTextFill(Color.web("green"));
            Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 9000"));

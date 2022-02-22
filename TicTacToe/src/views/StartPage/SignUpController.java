@@ -111,11 +111,9 @@ public class SignUpController  implements Initializable{
                     }
                 }else{
                     txtalert.setText("Player Already Exists !");
-                }
-                
+                }  
             }
         });
-        
     }
   
     public void finishSignUp(ActionEvent event) throws IOException{
