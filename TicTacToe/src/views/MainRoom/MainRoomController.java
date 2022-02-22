@@ -25,15 +25,15 @@ import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import views.GeneralController;
 
 
 /**
  *
  * @author Hossam
  */
-public class MainRoomController implements Initializable {
+public class MainRoomController extends GeneralController implements Initializable {
     
-    String chosenOpponent;
     @FXML BorderPane bp;
     @FXML
     private TextArea playersList; 
@@ -56,7 +56,6 @@ public class MainRoomController implements Initializable {
     @FXML Label labelName; // labelName.setText(person.getName());
     @FXML Label labelScore; // labelScore.setText(person.getScore());
     @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
-    @FXML Button refresh;
     @FXML private TableView<DisplayPlayers> tableView;
     @FXML private TableColumn<DisplayPlayers, String> name;
     @FXML private TableColumn<DisplayPlayers, String> status; 
@@ -64,6 +63,8 @@ public class MainRoomController implements Initializable {
     @FXML private Label pN;
     @FXML private Label pS;
     @FXML private Label pW;
+    
+    String chosenOpponent;
     ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
     
     @FXML private void showinfo(ActionEvent event){
@@ -97,11 +98,6 @@ public class MainRoomController implements Initializable {
            multiBTN.setDisable(false);
         }   
     }
-   @FXML
-   private void refresh(ActionEvent event){
-   
-       fillList();
-   }
     public void PlayVsAI(ActionEvent event) throws IOException{
       
         
@@ -121,20 +117,20 @@ public class MainRoomController implements Initializable {
         if(plist.isVisible()){
             if(chosen != null){
                 if( chosen.getStatus().equals("online")){
-
                     ObservableList<DisplayPlayers> SelectedRow = tableView.getSelectionModel().getSelectedItems();
                     chosenOpponent = SelectedRow.get(0).getName();
                     System.out.println(chosenOpponent);
-                    Message msg = new Message("Invite", ClientGui.loggedPlayer.getUsername(), chosenOpponent, "Pending");
-                    //ClientGui.objectOutputStream.writeObject(msg);
-
+                    JSONObject msg = new JSONObject();
+                    msg.put("Action","Invite");
+                    msg.put("Sender",ClientGui.loggedPlayer.getUsername());
+                    msg.put("Receiver", chosenOpponent);
+                    msg.put("Content","Pending");           
+                    ClientGui.printStream.println(msg.toString());
                 }
             }
         }
     }
     public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, ClassNotFoundException{
-    //    ClientGui.loggedPlayer.
-        
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -156,6 +152,7 @@ public class MainRoomController implements Initializable {
             }
         });
     }
+    @Override
     public void processMessage(JSONObject msg) throws IOException, ClassNotFoundException{
         String Action =msg.getString("Action"); 
         switch(Action)
@@ -164,7 +161,7 @@ public class MainRoomController implements Initializable {
        //         globalchat.appendText(msg.getContent());
                 break;
             case "Invite":
-              //  processInvitation(msg);
+                processInvitation(msg);
                 break;
             case "playersignup":
                 addplayer(msg);
@@ -176,30 +173,18 @@ public class MainRoomController implements Initializable {
                 updateplayerlist(msg, "offline");
                 break;
             case "Playerslist":
-                getplayers(msg);
+                initPlayersTable(msg);
                 break;
 
         }
     }
     
-    public void getplayers(JSONObject msg)
-    {
-        JSONArray names = msg.getJSONArray("names");
-        JSONArray status= msg.getJSONArray("status");
-        
-        for(int i=0 ; i<names.length(); i++)
-        {
-            Playerslist.add(new DisplayPlayers(names.getString(i), status.getString(i)));
-        
-        }
-        
-    }
-    public void processInvitation(Message msg) throws IOException, ClassNotFoundException{
-        System.out.println(msg.getSender() + " Invited you ");
-        String content = msg.getContent();
+   
+    public void processInvitation(JSONObject msg) throws IOException, ClassNotFoundException{
+        String content = msg.getString("Content");
         switch(content){
             case "Accept":
-                startMultiPlayerMatch(e , msg.getSender() , false);
+                startMultiPlayerMatch(e , msg.getString("Sender") , false);
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
@@ -208,12 +193,8 @@ public class MainRoomController implements Initializable {
         }
     }
     
-    public void openInvitationScreen(Message msg) throws IOException, ClassNotFoundException{
-        System.out.println("Invitation receive from "+msg.getSender());
-       
-        // open small log with sender name and 2 buttons to accept or refuse the invitation
-       
-        
+    public void openInvitationScreen(JSONObject msg) throws IOException, ClassNotFoundException{       
+        // open small log with sender name and 2 buttons to accept or refuse the invitation        
         Platform.runLater(new Runnable()
         {
             @Override
@@ -226,17 +207,31 @@ public class MainRoomController implements Initializable {
                 alert.setResizable(false);
                 alert.setContentText("Select okay or cancel this alert.");
                 Optional<ButtonType> result = alert.showAndWait();
+                Button newb = new Button();
                 ButtonType button = result.orElse(ButtonType.CANCEL);
                 if (button == ButtonType.OK) {
                     decision ="Accept"; // msg object
                 } else {
-                    decision ="canceled";
+                    decision ="Refuse";
+                }
+                JSONObject response = new JSONObject();
+                response.put("Action", "Invite");
+                response.put("Sender",ClientGui.loggedPlayer.getUsername());
+                response.put("Receiver", msg.getString("Sender"));
+                response.put("Content", decision);
+                ClientGui.printStream.println(response.toString());
+                if(decision.equals("Accept")){
+                    try {
+                        startMultiPlayerMatch(e, msg.getString("Sender"), true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
         
-        //Message response = new Message("Invite",ClientGui.loggedPlayer.getUsername(),msg.getSender(),decision);
-      //  ClientGui.objectOutputStream.writeObject(response);
     }
     
     public void openInvitationRefusalScreen()
@@ -248,7 +243,7 @@ public class MainRoomController implements Initializable {
     {  
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
-        ClientGui.mrc=this;
+        ClientGui.currentLiveCtrl=this;
         JSONObject msg = new JSONObject();        
         msg.put("Action", "getallplayers");
         ClientGui.printStream.println(msg.toString());        
@@ -271,6 +266,18 @@ public class MainRoomController implements Initializable {
                 break;
             }
         }
+    }
+     public void initPlayersTable(JSONObject msg)
+    {
+        JSONArray names = msg.getJSONArray("names");
+        JSONArray status= msg.getJSONArray("status");
+        
+        for(int i=0 ; i<names.length(); i++)
+        {
+            Playerslist.add(new DisplayPlayers(names.getString(i), status.getString(i)));
+        
+        }
+        
     }
     
     

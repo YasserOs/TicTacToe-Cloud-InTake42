@@ -35,12 +35,13 @@ import models.Message;
 import models.Person;
 import models.Session;
 import org.json.JSONObject;
+import views.GeneralController;
 
 /**
  *
  * @author Hossam
  */
-public class MultiPlayerController implements Initializable {
+public class MultiPlayerController extends GeneralController implements Initializable {
     @FXML AnchorPane ap;
     @FXML Button backbtn;
     @FXML Button restartbtn;
@@ -82,9 +83,12 @@ public class MultiPlayerController implements Initializable {
             playerTurn = randomTurn();
             oppTurn = !playerTurn;
             System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
-
-            Message msg = new Message("chooseTurn",player1.getUsername(),player2,Boolean.toString(oppTurn));
-            //ClientGui.objectOutputStream.writeObject(msg);
+            JSONObject msg = new JSONObject();
+            msg.put("Action", "chooseTurn");
+            msg.put("Sender", player1.getUsername());
+            msg.put("Receiver", player2);
+            msg.put("Content", oppTurn);
+            ClientGui.printStream.println(msg.toString());
             setPicks();
         }
         currentSession = new Session(player1.getUsername(),p2);
@@ -96,18 +100,18 @@ public class MultiPlayerController implements Initializable {
        String Action =msg.getString("Action"); 
        switch(Action){
            case "chooseTurn":
-//               setTurn(Boolean.parseBoolean(msg.getContent()));
-//               break;
-//           case "Pick":
-//               setMyPick(msg.getContent());
-//               break;
-//           case "Move":
-//               updateBoard(msg.getPosition());
-//               break;
-//           case "Won":
-//               System.out.println("Received won from " + msg.getSender());
-//               resetGrid();
-//               break;
+               setTurn(msg.getBoolean("Content"));
+               break;
+           case "Pick":
+               setMyPick(msg.getString("Content"));
+               break;
+           case "Move":
+               updateBoard(msg.getInt("Content"));
+               break;
+           case "Won":
+               System.out.println(msg.getString("Sender"));
+               //resetGrid();
+               break;
        }
     }
     
@@ -118,8 +122,7 @@ public class MultiPlayerController implements Initializable {
     }
     public void setTurn(boolean turn) throws IOException{
         playerTurn = turn;
-        setPicks();
-        
+        setPicks();    
     }
     public void setPicks() throws IOException{
         if(playerTurn){
@@ -134,11 +137,16 @@ public class MultiPlayerController implements Initializable {
         }else{
             opponentPick = "x";
         }
-         
+   
     }
     public void setOpponentPick(String pick) throws IOException{
-        Message msg = new Message("Pick",player1.getUsername(),player2,opponentPick);
-        //ClientGui.objectOutputStream.writeObject(msg);  
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "Pick");
+        msg.put("Sender", player1.getUsername());
+        msg.put("Receiver", player2);
+        msg.put("Content", opponentPick);
+        
+        ClientGui.printStream.println(msg.toString());  
     }
      public void resetGrid()
     {
@@ -172,15 +180,22 @@ public class MultiPlayerController implements Initializable {
     @FXML
     private void PlayerMove(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException 
     {
+        
         Button position = (Button) event.getSource();
+        System.out.println("Player 1 : "+player1.getUsername()+" - Pick : "+currentPlayerPick+" - Position : "+availablePositions.indexOf(position));
+
         if( isEmpty(position) && playerTurn){
             System.out.println("Player 1 : "+player1.getUsername()+" - Pick : "+currentPlayerPick+" - Position : "+availablePositions.indexOf(position));
             position.setText(currentPlayerPick);
             int buttPosition = currentSession.board.getBoard().indexOf(position);
             availablePositions.remove(position);
             playerTurn=false;
-            Message msg = new Message("Move",player1.getUsername(),player2,buttPosition);
-            //ClientGui.objectOutputStream.writeObject(msg);
+            JSONObject msg = new JSONObject();
+            msg.put("Action", "Move");
+            msg.put("Sender", player1.getUsername());
+            msg.put("Receiver", player2);
+            msg.put("Content",buttPosition);
+            ClientGui.printStream.println(msg.toString());
             numberOfPlays++;
             if(numberOfPlays>=5)
             {
@@ -194,9 +209,12 @@ public class MultiPlayerController implements Initializable {
     }
     public void playerWin() throws InterruptedException, IOException{
         System.out.println(player1.getUsername()+" Won !");
-        Message msg = new Message("Won",player1.getUsername(),player2,"");
-       //ClientGui.objectOutputStream.writeObject(msg);
-        resetGrid();
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "Won");
+        msg.put("Sender", player1.getUsername());
+        msg.put("Receiver", player2);
+        ClientGui.printStream.println(msg.toString());
+        //resetGrid();
     }
     private boolean isEmpty(Button pos)
     {
@@ -229,7 +247,7 @@ public class MultiPlayerController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ClientGui.mpc = this;
+        ClientGui.currentLiveCtrl = this;
         
     }    
     

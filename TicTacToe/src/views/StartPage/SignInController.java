@@ -30,12 +30,13 @@ import java.util.logging.Logger;
 import javafx.fxml.Initializable;
 import org.json.JSONException;
 import org.json.JSONObject;
+import views.GeneralController;
 
 /**
  *
  * @author Hossam
  */
-public class SignInController implements Initializable 
+public class SignInController extends GeneralController implements Initializable 
 {
     Database db;
     Person p;
@@ -134,7 +135,7 @@ public class SignInController implements Initializable
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  
-       ClientGui.signInctrl=this;
+       ClientGui.currentLiveCtrl=this;
     }
     
     

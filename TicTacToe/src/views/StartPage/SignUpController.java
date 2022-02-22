@@ -38,7 +38,7 @@ import java.util.Date;
  *
  * @author Hossam
  */
-public class SignUpController  implements Initializable{
+public class SignUpController  extends GeneralController implements Initializable{
     Database db;
     Person p;
     @FXML
@@ -139,6 +139,6 @@ public class SignUpController  implements Initializable{
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  
-       ClientGui.signUpctrl=this;
+       ClientGui.currentLiveCtrl=this;
     }
 }

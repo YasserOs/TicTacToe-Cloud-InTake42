@@ -29,9 +29,6 @@
                   <Font name="System Bold" size="18.0" />
                </font></Label>
          </top>
-         <bottom>
-            <Button fx:id="refresh" mnemonicParsing="false" onAction="#refresh" prefHeight="37.0" prefWidth="304.0" text="Refresh" BorderPane.alignment="CENTER" />
-         </bottom>
          <center>
             <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <columns>
