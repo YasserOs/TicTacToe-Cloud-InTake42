@@ -27,9 +27,9 @@ public class Database {
 
     ResultSet rs;
     Connection conn;
-    private String url = "jdbc:postgresql://localhost/tic-tac-toe";
-    private String user = "postgres";
-    private String password = "123456";
+    private String url = "jdbc:postgresql://localhost/postgresdb";
+    private String user = "gehad";
+    private String password = "1111";
 
     public Database() throws SQLException {
         connect();
@@ -123,7 +123,8 @@ public class Database {
     }
 
     // Sign Up Function
-    public boolean signUp(String username, String pswd, String email) throws SQLException {
+    public Person signUp(String username, String pswd, String email) throws SQLException {
+            Person p;
         try {
             conn = DriverManager.getConnection(url, user, password);
             String queryString = new String("insert into players"
@@ -140,16 +141,23 @@ public class Database {
             stmt.setInt(8, 0);
             stmt.setInt(9, 0);
             stmt.executeUpdate();
+            queryString = "select * from players where username=?";
+            stmt = conn.prepareStatement(queryString);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            p = createPerson(rs);
             System.out.println("Record successfully Inserted. ");
+            stmt.close();
         } catch (SQLException ex) {
             //can use it to print duplicate key error
             System.err.println(ex.getMessage());
-            return false;
+            return null;
         }
 
         conn.close();
 
-        return true;
+        return p;
     }
     
     //Check Register 
@@ -503,37 +511,14 @@ public class Database {
     
         return true;
     }
-    public ObservableList<DisplayPlayers> displayPlayers(String username){
+    public ObservableList<DisplayPlayers> displayPlayers()
+    {
         ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
 
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer','" +username+ "')";
-            ResultSet rs = select.executeQuery(query);
-            
-            while(rs.next()){
-            
-                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2)));
-            
-            }
-            select.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    
-    
-        return list;
-    }
-    // Display Online Players
-     public ObservableList<DisplayPlayers> dPlayers(){
-        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
-
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer') and status ='online' ";
+            String query ="select username, status from players where username not in ('Computer')";
             ResultSet rs = select.executeQuery(query);
             
             while(rs.next()){

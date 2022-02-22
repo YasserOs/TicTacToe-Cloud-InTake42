@@ -87,11 +87,8 @@ public class SingUpController  {
                 if(db.checkRegister(userName, email)){
                     txtalert.setText("This player already exists");
                 } else {
-                    db.signUp(userName, password, email) ;
-                    Server.db.updatePlayerStatus(userName, "online");
-                    p = db.getPlayer(userName);
+                    p = db.signUp(userName, password, email);
                     Server.updateAllPlayersVector(p);
-                    Server.updateOnlinePlayersVector(p);
                     finshSignUp(event);
             }
          }

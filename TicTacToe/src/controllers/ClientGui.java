@@ -120,11 +120,15 @@ public class ClientGui extends Application {
         playerSocketThread.start();
     }
     
-    public static void startClient(Person p){
+    
+    public static void startClient(Person p)
+    {
         ClientGui.loggedPlayer=p;
         createSocket();
         createPlayerSocketThread();
     }
+    
+    
     public static void main(String[] args) {
         launch(args);
     }

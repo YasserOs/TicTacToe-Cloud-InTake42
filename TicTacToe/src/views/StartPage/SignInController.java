@@ -93,7 +93,7 @@ public class SignInController   {
            } else{  
                     Server.db.updatePlayerStatus(userName, "online");
                     p = db.getPlayer(userName);
-                    Server.updateOnlinePlayersVector(p);
+                    Server.updateplayer(userName, "online");
                     finshSignIn(event);
                }     
             }  

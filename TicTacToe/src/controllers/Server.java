@@ -6,6 +6,7 @@
 package controllers;
 
 
+import static controllers.ServerHandler.allPlayers;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,12 +22,10 @@ public class Server
     ServerSocket myServerSocket;
     public static Database db ;
     public static Vector<Person> players ;
-    public static Vector<Person> onlinePlayers = new Vector<Person>();
     
     static{
         try {
             players = new Vector<Person>();
-            onlinePlayers = new Vector<Person>();
             db = new Database();
             players = db.getPlayers();
         } catch (SQLException ex) {
@@ -34,15 +33,15 @@ public class Server
         }
     }
     public Server() throws SQLException{ 
-//        try {
-//            myServerSocket = new ServerSocket(9000);
-//            while(true){
-//                Socket s = myServerSocket.accept();
-//                new ServerHandler(s);
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            myServerSocket = new ServerSocket(9000);
+            while(true){
+                Socket s = myServerSocket.accept();
+                new ServerHandler(s);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static Vector<Person> getPlayers(){
@@ -52,19 +51,27 @@ public class Server
 
         return db;
     }
-    
-    public static void updateOnlinePlayersVector(Person p) throws SQLException{
-         onlinePlayers.add(p);
-       
-    }
 
+    
     public static void updateAllPlayersVector(Person p) throws SQLException{
         players.add(p);
     }
     
-//    public static void main(String[] args) throws SQLException {
-//        Server serverMulti = new Server();
-//        
-//        
-//    }
+    public static void main(String[] args) throws SQLException {
+        Server serverMulti = new Server();
+        
+        
+    }
+    
+    public static void updateplayer(String userName, String status) 
+    {       
+        for (Person p : players) {
+            if (p.getUsername().equals(userName)) 
+            {
+                p.setStatus(status);
+                break;
+            }
+        }
+        
+    } 
 }

@@ -15,15 +15,16 @@ import java.util.*;
 import java.net.Socket;
 import java.net.URL;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
 import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
+import controllers.Server;
 
 /**
  *
@@ -130,6 +131,8 @@ public class MainRoomController implements Initializable {
         }
     }
     public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, ClassNotFoundException{
+    //    ClientGui.loggedPlayer.
+        
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -153,7 +156,8 @@ public class MainRoomController implements Initializable {
     }
     public void processMessage(Message msg) throws IOException, ClassNotFoundException{
         String Action =msg.getAction(); 
-        switch(Action){
+        switch(Action)
+        {
             case "Chat":
                 globalchat.appendText(msg.getContent());
                 break;
@@ -185,12 +189,33 @@ public class MainRoomController implements Initializable {
     
     public void openInvitationScreen(Message msg) throws IOException, ClassNotFoundException{
         System.out.println("Invitation receive from "+msg.getSender());
-        String decision ="Accept" ;
+       
         // open small log with sender name and 2 buttons to accept or refuse the invitation
-        // then send a messag object with the content= accept or refuse back to the server handler
-        Message response = new Message("Invite",ClientGui.loggedPlayer.getUsername(),msg.getSender(),decision);
-        ClientGui.objectOutputStream.writeObject(response);
-        startMultiPlayerMatch(e, msg.getSender(), true);
+       
+        
+        Platform.runLater(new Runnable()
+        {
+            @Override
+            public void run() {
+                String decision ;
+                // then send a messag object with the content= accept or refuse back to the server handler
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Invitation Recieved!");
+                alert.setHeaderText("Invited you to a game");
+                alert.setResizable(false);
+                alert.setContentText("Select okay or cancel this alert.");
+                Optional<ButtonType> result = alert.showAndWait();
+                ButtonType button = result.orElse(ButtonType.CANCEL);
+                if (button == ButtonType.OK) {
+                    decision ="Accept"; // msg object
+                } else {
+                    decision ="canceled";
+                }
+            }
+        });
+        
+        //Message response = new Message("Invite",ClientGui.loggedPlayer.getUsername(),msg.getSender(),decision);
+      //  ClientGui.objectOutputStream.writeObject(response);
     }
     
     public void openInvitationRefusalScreen()
@@ -205,9 +230,27 @@ public class MainRoomController implements Initializable {
     }
     public void fillList()
     {
-        tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
+        tableView.setItems(displayPlayers(ClientGui.loggedPlayer.getUsername()));
        
     }
+    
+    public ObservableList<DisplayPlayers> displayPlayers(String username)
+    {
+        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
+
+        for (Person p : Server.players) 
+        {
+            if(!p.getUsername().equals(username))
+            {
+                DisplayPlayers player=new DisplayPlayers(p.getUsername(),p.getStatus());
+                list.add(player);
+            }
+            
+        }
+            
+        return list;
+    }
+
    
     
 }

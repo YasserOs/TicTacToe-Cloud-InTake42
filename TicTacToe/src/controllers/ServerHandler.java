@@ -28,7 +28,6 @@ public class ServerHandler extends Thread {
     Player playertwo;
     static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
     static Vector<Person> allPlayers = new Vector<Person>();
-    static Vector<Person> onlinePlayers = new Vector<Person>();
     static Vector<Session> allsession = new Vector<Session>();
 
     public ServerHandler(Socket clientSocket) throws IOException {
@@ -59,11 +58,10 @@ public class ServerHandler extends Thread {
         }
     }
     
-    public void closeConnection() throws IOException   {
+    public void closeConnection() throws IOException 
+    {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
-        Server.onlinePlayers.remove(loggedPlayer);
-        onlinePlayers.remove(loggedPlayer);
         handlers.remove(this);
         Message msg = new Message("LogOut","","","");
         sendMsgToAll(msg);
@@ -82,6 +80,8 @@ public class ServerHandler extends Thread {
             case "Chat":
                 sendMsgToAll(msg);
                 break;
+            case "In game":
+                sendMsgToAll(msg);
             default:
                 sendMsgToReceiver(msg);
                 break;
@@ -107,8 +107,7 @@ public class ServerHandler extends Thread {
     public void loginPlayer(String userName) throws IOException {
         for (Person p : allPlayers) {
             if (p.getUsername().equals(userName)) {
-                p.setStatus("Online");
-                onlinePlayers.add(p);
+                p.setStatus("online");
                 loggedPlayer = p;
                 break;
             }

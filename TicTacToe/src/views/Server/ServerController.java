@@ -52,11 +52,21 @@ public class ServerController implements Initializable {
      * Initializes the controller class.
      */
    // Display Online Players
-    public void fillList()
+  
+    
+//       public void fillList()
+//    {
+//      tableView.setItems(Server.db.dPlayers);
+//      tableView.setVisible(true);
+//    }
+     
+     public void fillList()
     {
-      tableView.setItems(Server.db.dPlayers());
-      tableView.setVisible(true);
+        tableView.setItems(Server.db.displayPlayers());
+         tableView.setVisible(true);
+       
     }
+     
     // Start Server
     public void startServer() throws SQLException, IOException
     {
