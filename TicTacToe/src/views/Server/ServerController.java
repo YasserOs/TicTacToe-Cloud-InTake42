@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 import models.DisplayPlayers;
 
 /**
@@ -44,8 +45,6 @@ public class ServerController implements Initializable {
     private Button showbtn;
     @FXML
     private Label lblonstatus;
-     @FXML
-    private Label lbloffstatus;
     
     ServerSocket  myServerSocket;
      Thread th;
@@ -74,6 +73,7 @@ public class ServerController implements Initializable {
             }
     }
     });
+            lblonstatus.setTextFill(Color.web("green"));
            Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 9000"));
           th.start();
         
@@ -82,7 +82,8 @@ public class ServerController implements Initializable {
       
     // Stop Server
     public void stopServer(){
-         Platform.runLater(()->lbloffstatus.setText("Server Has Been Stopped"));
+        lblonstatus.setTextFill(Color.web("red"));
+         Platform.runLater(()->lblonstatus.setText("Server Has Been Stopped"));
                         try{myServerSocket.close();} catch(IOException ex){ex.printStackTrace();}
                         th.stop();
     }

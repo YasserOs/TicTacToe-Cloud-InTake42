@@ -49,15 +49,9 @@
           <TableColumn fx:id="status" prefWidth="111.199951171875" text="Status" />
         </columns>
       </TableView>
-      <Label fx:id="lblonstatus" alignment="CENTER" layoutX="189.0" layoutY="472.0" prefHeight="36.0" prefWidth="502.0" textFill="#056600">
+      <Label fx:id="lblonstatus" alignment="CENTER" layoutX="119.0" layoutY="472.0" prefHeight="36.0" prefWidth="572.0">
          <font>
-            <Font name="Arial Bold" size="16.0" />
-         </font>
-      </Label>
-      <Label fx:id="lbloffstatus" alignment="CENTER" layoutX="188.0" layoutY="490.0" prefHeight="36.0" prefWidth="501.0" textFill="#bf0000">
-         <font>
-            <Font name="Arial Bold" size="16.0" />
-         </font>
-      </Label>
+            <Font name="System Bold" size="18.0" />
+         </font></Label>
    </children>
 </AnchorPane>
