@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ServerHandler extends Thread {
@@ -44,14 +45,12 @@ public class ServerHandler extends Thread {
         while (true) {
             try {
                 JSONObject msg = new JSONObject(inputStream.readLine()) ;
-                processMessage(msg);
-            } catch (IOException ex) {
                 try {
-                    closeConnection();
-                } catch (IOException ex1) {
-                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex1);
+                    processMessage(msg);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (SQLException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
           
@@ -60,14 +59,18 @@ public class ServerHandler extends Thread {
     
     public void closeConnection() throws IOException 
     {
+        System.out.println("");
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
+        JSONObject msg=new JSONObject();
+        msg.put("Action", "playersignout");
+        msg.put("username",loggedPlayer.getUsername());
+        sendMsgToAll(msg);
         handlers.remove(this);
-        Message msg = new Message("LogOut","","","");
-        //sendMsgToAll(msg);
         this.inputStream.close();
         this.printStream.close();
         this.stop();
+
     }
     
     public void processMessage(JSONObject msg) throws IOException, SQLException {
@@ -85,18 +88,61 @@ public class ServerHandler extends Thread {
                 break;
             case "In game":
                 //sendMsgToAll(msg);
+            case "getallplayers":
+                getAllPlayers();
+                break;
             default:
                 //sendMsgToReceiver(msg);
                 break;
         }
     }
+    
+    
+    public void getAllPlayers()
+    {
+       JSONArray names = new JSONArray();
+       JSONArray status =new JSONArray();
+       JSONObject msg = new JSONObject();
+       
+       for(Person p: Server.players)
+       {   
+           if(!p.getUsername().equals(loggedPlayer.getUsername()))
+           {
+                names.put(p.getUsername());
+                status.put(p.getStatus());
+                
+           }        
+       
+       }
+       
+       msg.put("names", names);
+       msg.put("status", status);
+       msg.put("Action","Playerslist");
+       this.printStream.println(msg.toString());
+    }
 
     public void SignIn(JSONObject msg) throws SQLException {
         loggedPlayer = Server.SignIn(msg);
+        
+        if(loggedPlayer!=null)
+        {
+            JSONObject reply =new JSONObject();
+            reply.put("Action", "playersignin");
+            reply.put("username",loggedPlayer.getUsername());
+            sendMsgToAll(reply);
+        }
         sendResponse("SignIn");
     }
+ 
     public void SignUp(JSONObject msg) throws SQLException{
         loggedPlayer = Server.SignUp(msg);
+         if(loggedPlayer!=null)
+        {
+            JSONObject reply =new JSONObject();
+            reply.put("Action", "playersignup");
+            reply.put("username",loggedPlayer.getUsername());
+            sendMsgToAll(reply);
+        }
         sendResponse("SignUp");
 
     }
@@ -145,9 +191,11 @@ public class ServerHandler extends Thread {
 
     }
 
-    void sendMsgToAll(Message msg) {
+    void sendMsgToAll(JSONObject msg) 
+    {
         for (ServerHandler sh : handlers) {
-            sh.printStream.println();
+            if(!sh.loggedPlayer.getUsername().equals(loggedPlayer.getUsername()))
+               sh.printStream.println(msg.toString());
         }
     }
 

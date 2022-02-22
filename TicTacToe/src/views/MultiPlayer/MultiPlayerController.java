@@ -34,6 +34,7 @@ import javafx.stage.Stage;
 import models.Message;
 import models.Person;
 import models.Session;
+import org.json.JSONObject;
 
 /**
  *
@@ -91,22 +92,22 @@ public class MultiPlayerController implements Initializable {
     }
 
     
-    public void processMessage(Message msg) throws IOException{
-       String Action =msg.getAction(); 
+    public void processMessage(JSONObject msg) throws IOException{
+       String Action =msg.getString("Action"); 
        switch(Action){
            case "chooseTurn":
-               setTurn(Boolean.parseBoolean(msg.getContent()));
-               break;
-           case "Pick":
-               setMyPick(msg.getContent());
-               break;
-           case "Move":
-               updateBoard(msg.getPosition());
-               break;
-           case "Won":
-               System.out.println("Received won from " + msg.getSender());
-               resetGrid();
-               break;
+//               setTurn(Boolean.parseBoolean(msg.getContent()));
+//               break;
+//           case "Pick":
+//               setMyPick(msg.getContent());
+//               break;
+//           case "Move":
+//               updateBoard(msg.getPosition());
+//               break;
+//           case "Won":
+//               System.out.println("Received won from " + msg.getSender());
+//               resetGrid();
+//               break;
        }
     }
     

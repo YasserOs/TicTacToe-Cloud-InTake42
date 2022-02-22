@@ -60,11 +60,10 @@ public class SinglePlayerController implements Initializable {
     
     private boolean isEmpty(Button pos)
     {
-//        Button btn =(Button) grid.getChildren().get(pos);
-  
         return pos.getText().isEmpty();
     
     }
+    
     public void PlayerMove(ActionEvent event) throws InterruptedException 
     {
         Button btn = (Button) event.getSource(); 
@@ -76,7 +75,6 @@ public class SinglePlayerController implements Initializable {
                   {
                       if(current_board.checkWin("X"))
                       { 
-                          System.out.println("player one win");
                            availablePositions.clear();
 
                       }
@@ -123,7 +121,6 @@ public class SinglePlayerController implements Initializable {
                {
                    if(current_board.checkWin("O"))
                    { 
-                       System.out.println("pc win");
                        availablePositions.clear();
 
                    }
@@ -152,7 +149,6 @@ public class SinglePlayerController implements Initializable {
                 while(true){
                     
                     if(!playerTurn){
-                        System.out.println("Pc turn");
                         try {
                             Thread.sleep(2000);
                             
@@ -170,8 +166,6 @@ public class SinglePlayerController implements Initializable {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(SinglePlayerController.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    }else{
-                        System.out.println("Player's turn");
                     }
                 }
             }

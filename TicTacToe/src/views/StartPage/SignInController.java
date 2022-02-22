@@ -35,7 +35,8 @@ import org.json.JSONObject;
  *
  * @author Hossam
  */
-public class SignInController implements Initializable {
+public class SignInController implements Initializable 
+{
     Database db;
     Person p;
     @FXML
@@ -109,6 +110,7 @@ public class SignInController implements Initializable {
         });
         
     }
+    
     public void finshSignIn(ActionEvent event) throws IOException{   
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
@@ -118,6 +120,7 @@ public class SignInController implements Initializable {
         window.setScene(ViewScene);
         window.show();
     }
+    
     public void SwitchtoSignUp(ActionEvent event) throws IOException
     {
         Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignUp.fxml"));

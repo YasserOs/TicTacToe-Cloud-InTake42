@@ -99,16 +99,20 @@ public class ClientGui extends Application {
                         JSONObject msg = new JSONObject(inputStream.readLine());
                         if(mrc!=null)
                         {
-                            //mrc.processMessage(msg);
+                            try {
+                                mrc.processMessage(msg);
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                        if(mpc!=null)
+                        else if(mpc!=null)
                         {
-                            //mpc.processMessage(msg);
+                            mpc.processMessage(msg);
                         }
-                        if(signUpctrl!=null){
+                        else if(signUpctrl!=null){
                             signUpctrl.processMessage(msg);
                         }
-                        if(signInctrl!=null){
+                        else if(signInctrl!=null){
                             signInctrl.processMessage(msg);
                         }
                         

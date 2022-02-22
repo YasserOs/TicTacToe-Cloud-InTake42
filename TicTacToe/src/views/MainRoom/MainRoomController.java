@@ -5,6 +5,7 @@
  */
 package views.MainRoom;
 
+import com.sun.tools.javac.tree.JCTree;
 import models.*;
 import controllers.*;
 import java.io.*;
@@ -25,6 +26,10 @@ import javafx.stage.Stage;
 import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
 import controllers.Server;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  *
@@ -63,6 +68,7 @@ public class MainRoomController implements Initializable {
     @FXML private Label pN;
     @FXML private Label pS;
     @FXML private Label pW;
+    ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
     
     @FXML private void showinfo(ActionEvent event){
         e = event;
@@ -86,7 +92,9 @@ public class MainRoomController implements Initializable {
     
      @FXML
     private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI) 
+        
         fillList();
+        
         if(plist.isVisible()){
             plist.setVisible(false); 
             multiBTN.setDisable(true);
@@ -154,24 +162,43 @@ public class MainRoomController implements Initializable {
             }
         });
     }
-    public void processMessage(Message msg) throws IOException, ClassNotFoundException{
-        String Action =msg.getAction(); 
+    public void processMessage(JSONObject msg) throws IOException, ClassNotFoundException{
+        String Action =msg.getString("Action"); 
         switch(Action)
         {
             case "Chat":
-                globalchat.appendText(msg.getContent());
+       //         globalchat.appendText(msg.getContent());
                 break;
             case "Invite":
-                processInvitation(msg);
+              //  processInvitation(msg);
                 break;
-            case "LoggedIn":
-                fillList();
+            case "playersignup":
+                addplayer(msg);
                 break;
-            case "LogOut":
-                fillList();
+            case "playersignin":
+                updateplayerlist(msg, "online");
+                break;
+            case "playersignout":
+                updateplayerlist(msg, "offline");
+                break;
+            case "Playerslist":
+                getplayers(msg);
                 break;
 
         }
+    }
+    
+    public void getplayers(JSONObject msg)
+    {
+        JSONArray names = msg.getJSONArray("names");
+        JSONArray status= msg.getJSONArray("status");
+        
+        for(int i=0 ; i<names.length(); i++)
+        {
+            Playerslist.add(new DisplayPlayers(names.getString(i), status.getString(i)));
+        
+        }
+        
     }
     public void processInvitation(Message msg) throws IOException, ClassNotFoundException{
         System.out.println(msg.getSender() + " Invited you ");
@@ -223,34 +250,38 @@ public class MainRoomController implements Initializable {
         //open small log with with refuse statement
     }
     @Override
-    public void initialize(URL url, ResourceBundle rb){  
+    public void initialize(URL url, ResourceBundle rb)
+    {  
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         ClientGui.mrc=this;
+        JSONObject msg = new JSONObject();        
+        msg.put("Action", "getallplayers");
+        ClientGui.printStream.println(msg.toString());        
     }
     public void fillList()
     {
-        tableView.setItems(displayPlayers(ClientGui.loggedPlayer.getUsername()));
-       
+        tableView.setItems(Playerslist);       
     }
     
-    public ObservableList<DisplayPlayers> displayPlayers(String username)
+    public void addplayer(JSONObject msg)
     {
-        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
-
-        for (Person p : Server.players) 
-        {
-            if(!p.getUsername().equals(username))
-            {
-                DisplayPlayers player=new DisplayPlayers(p.getUsername(),p.getStatus());
-                list.add(player);
-            }
-            
-        }
-            
-        return list;
+         Playerslist.add(new DisplayPlayers(msg.getString("username"),"online"));
+         System.out.println("from addplayer");
+         fillList();
     }
-
-   
+    
+    public void updateplayerlist(JSONObject msg,String status)
+    {
+        System.out.println("from update ");
+        for(DisplayPlayers p: Playerslist)
+        {
+            if(p.getName().equals(msg.getString("username")))
+                p.setStatus(status);
+        }
+        fillList();
+    
+    }
+    
     
 }
