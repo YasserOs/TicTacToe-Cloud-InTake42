@@ -71,18 +71,18 @@ public class ServerController implements Initializable {
     public void startServer() throws SQLException, IOException
     {
         new Server();
-         myServerSocket = new ServerSocket(9000);
-          th = new Thread( ()->{
-    while(true)
-    {
-          try {
-                Socket s = myServerSocket.accept();             
-                new ServerHandler(s);
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        myServerSocket = new ServerSocket(9000);
+        th = new Thread( ()->{
+            while(true)
+            {
+                try {
+                      Socket s = myServerSocket.accept();             
+                      new ServerHandler(s);
+                  } catch (IOException ex) {
+                      Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                  }
             }
-    }
-    });
+        });
             lblonstatus.setTextFill(Color.web("green"));
            Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 9000"));
           th.start();

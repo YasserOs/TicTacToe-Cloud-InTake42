@@ -16,6 +16,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Person;
+import org.json.JSONObject;
 public class Server 
 {
     
@@ -33,7 +34,7 @@ public class Server
         }
     }
     public Server() throws SQLException{ 
-        try {
+        /*try {
             myServerSocket = new ServerSocket(9000);
             while(true){
                 Socket s = myServerSocket.accept();
@@ -41,7 +42,7 @@ public class Server
             }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
     public static Vector<Person> getPlayers(){
@@ -57,6 +58,31 @@ public class Server
         players.add(p);
     }
     
+    public static Person SignUp(JSONObject msg) throws SQLException{
+        String userName = msg.getString("username");
+        String email = msg.getString("email");
+        String password = msg.getString("password");
+        if(db.checkRegister(userName, email)){
+            return null;
+        } else {
+            Person p = db.signUp(userName, password, email);
+            updateAllPlayersVector(p);
+            return p;
+        }
+    }
+    public static Person SignIn(JSONObject msg) throws SQLException{
+        String userName = msg.getString("username");
+        String password = msg.getString("password");
+    
+        if(!db.logIn(userName, password)){
+            return null;
+        } else{  
+            db.updatePlayerStatus(userName, "online");
+            updateplayer(userName, "online");
+           return db.getPlayer(userName);
+                 
+        }
+    }
     public static void main(String[] args) throws SQLException {
         Server serverMulti = new Server();
         

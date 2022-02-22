@@ -124,7 +124,7 @@ public class MainRoomController implements Initializable {
                     chosenOpponent = SelectedRow.get(0).getName();
                     System.out.println(chosenOpponent);
                     Message msg = new Message("Invite", ClientGui.loggedPlayer.getUsername(), chosenOpponent, "Pending");
-                    ClientGui.objectOutputStream.writeObject(msg);
+                    //ClientGui.objectOutputStream.writeObject(msg);
 
                 }
             }

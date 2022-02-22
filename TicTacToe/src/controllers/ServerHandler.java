@@ -14,16 +14,16 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONObject;
 
 public class ServerHandler extends Thread {
 
-    InputStream inputStream;
-    OutputStream outputStream;
-    ObjectOutputStream objectOutputStream;
-    ObjectInputStream objectInputStream;
+    DataInputStream inputStream;
+    PrintStream printStream;
     Person loggedPlayer;
     Player playertwo;
     static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
@@ -32,10 +32,9 @@ public class ServerHandler extends Thread {
 
     public ServerHandler(Socket clientSocket) throws IOException {
         allPlayers = Server.players;
-        inputStream = clientSocket.getInputStream();
-        outputStream = clientSocket.getOutputStream();
-        objectOutputStream = new ObjectOutputStream(outputStream);
-        objectInputStream = new ObjectInputStream(inputStream);
+        inputStream = new DataInputStream(clientSocket.getInputStream());
+        printStream = new PrintStream(clientSocket.getOutputStream());
+
         handlers.add(this);
         start();
 
@@ -44,7 +43,7 @@ public class ServerHandler extends Thread {
     public void run() {
         while (true) {
             try {
-                Message msg = (Message) objectInputStream.readObject();
+                JSONObject msg = new JSONObject(inputStream.readLine()) ;
                 processMessage(msg);
             } catch (IOException ex) {
                 try {
@@ -52,9 +51,10 @@ public class ServerHandler extends Thread {
                 } catch (IOException ex1) {
                     Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex1);
                 }
-            } catch (ClassNotFoundException ex) {
-                System.out.println("");;
+            } catch (SQLException ex) {
+                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
+          
         }
     }
     
@@ -64,42 +64,72 @@ public class ServerHandler extends Thread {
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
         handlers.remove(this);
         Message msg = new Message("LogOut","","","");
-        sendMsgToAll(msg);
-        this.objectInputStream.close();
-        this.objectOutputStream.close();
+        //sendMsgToAll(msg);
+        this.inputStream.close();
+        this.printStream.close();
         this.stop();
     }
     
-    public void processMessage(Message msg) throws IOException {
-        String Action = msg.getAction();
+    public void processMessage(JSONObject msg) throws IOException, SQLException {
+        String Action = msg.get("Action").toString();
         switch (Action) {
-            case "LoggedIn":
-                loginPlayer(msg.getSender());
-                sendMsgToAll(msg);
+            case "SignUp":
+                SignUp(msg);
+                break;
+            case "SignIn":
+                SignIn(msg);
+                //sendMsgToAll(msg);
                 break;
             case "Chat":
-                sendMsgToAll(msg);
+                //sendMsgToAll(msg);
                 break;
             case "In game":
-                sendMsgToAll(msg);
+                //sendMsgToAll(msg);
             default:
-                sendMsgToReceiver(msg);
+                //sendMsgToReceiver(msg);
                 break;
         }
     }
 
+    public void SignIn(JSONObject msg) throws SQLException {
+        loggedPlayer = Server.SignIn(msg);
+        sendResponse("SignIn");
+    }
+    public void SignUp(JSONObject msg) throws SQLException{
+        loggedPlayer = Server.SignUp(msg);
+        sendResponse("SignUp");
+
+    }
+    public void  sendResponse(String Action){
+        JSONObject response = new JSONObject();        
+        if(loggedPlayer!=null){
+            response.put("Action",Action);
+            response.put("Response", true);
+            convertPlayerToJSON(loggedPlayer,response);
+            
+        }else{
+            response.put("Action", Action);
+            response.put("Response", false);
+        }
+        printStream.println(response.toString());
+    }
+    public void convertPlayerToJSON(Person p , JSONObject json){
+        json.put("username", p.getUsername());
+        json.put("score", p.getScore());
+        json.put("status", p.getStatus());
+        json.put("wins", p.getGames_won());
+        json.put("games", p.getGames_played());
+        json.put("draws", p.getDraws());
+        json.put("losses", p.getGames_lost());
+    }
     // send to receiver
     // send response back to sender
     public void sendMsgToReceiver(Message msg) {
         
         for (ServerHandler sh : handlers) {
-            try {
-                if (msg.getReceiver().equals(sh.loggedPlayer.getUsername())) {
-                            sh.objectOutputStream.writeObject(msg);
-                            break;
-                    }
-            } catch (IOException ex) {
-                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+            if (msg.getReceiver().equals(sh.loggedPlayer.getUsername())) {
+                sh.printStream.println();
+                break;
             }
         }
     }
@@ -117,11 +147,7 @@ public class ServerHandler extends Thread {
 
     void sendMsgToAll(Message msg) {
         for (ServerHandler sh : handlers) {
-            try {
-                sh.objectOutputStream.writeObject(msg);
-            } catch (IOException ex) {
-                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            sh.printStream.println();
         }
     }
 

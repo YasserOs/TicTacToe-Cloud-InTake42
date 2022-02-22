@@ -83,7 +83,7 @@ public class MultiPlayerController implements Initializable {
             System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
 
             Message msg = new Message("chooseTurn",player1.getUsername(),player2,Boolean.toString(oppTurn));
-            ClientGui.objectOutputStream.writeObject(msg);
+            //ClientGui.objectOutputStream.writeObject(msg);
             setPicks();
         }
         currentSession = new Session(player1.getUsername(),p2);
@@ -137,7 +137,7 @@ public class MultiPlayerController implements Initializable {
     }
     public void setOpponentPick(String pick) throws IOException{
         Message msg = new Message("Pick",player1.getUsername(),player2,opponentPick);
-        ClientGui.objectOutputStream.writeObject(msg);  
+        //ClientGui.objectOutputStream.writeObject(msg);  
     }
      public void resetGrid()
     {
@@ -179,7 +179,7 @@ public class MultiPlayerController implements Initializable {
             availablePositions.remove(position);
             playerTurn=false;
             Message msg = new Message("Move",player1.getUsername(),player2,buttPosition);
-            ClientGui.objectOutputStream.writeObject(msg);
+            //ClientGui.objectOutputStream.writeObject(msg);
             numberOfPlays++;
             if(numberOfPlays>=5)
             {
@@ -194,7 +194,7 @@ public class MultiPlayerController implements Initializable {
     public void playerWin() throws InterruptedException, IOException{
         System.out.println(player1.getUsername()+" Won !");
         Message msg = new Message("Won",player1.getUsername(),player2,"");
-        ClientGui.objectOutputStream.writeObject(msg);
+       //ClientGui.objectOutputStream.writeObject(msg);
         resetGrid();
     }
     private boolean isEmpty(Button pos)
