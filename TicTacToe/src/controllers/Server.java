@@ -34,15 +34,15 @@ public class Server
         }
     }
     public Server() throws SQLException{ 
-        try {
-            myServerSocket = new ServerSocket(9000);
-            while(true){
-                Socket s = myServerSocket.accept();
-                new ServerHandler(s);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            myServerSocket = new ServerSocket(9000);
+//            while(true){
+//                Socket s = myServerSocket.accept();
+//                new ServerHandler(s);
+//            }
+//        } catch (IOException ex) {
+//            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     
     public static Vector<Person> getPlayers(){
@@ -62,9 +62,9 @@ public class Server
         players.add(p);
     }
     
-    public static void main(String[] args) throws SQLException {
-        Server serverMulti = new Server();
-        
-        
-    }
+//    public static void main(String[] args) throws SQLException {
+//        Server serverMulti = new Server();
+//        
+//        
+//    }
 }

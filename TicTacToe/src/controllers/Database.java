@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Database {
@@ -27,7 +29,7 @@ public class Database {
     Connection conn;
     private String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private String user = "postgres";
-    private String password = "root";
+    private String password = "123456";
 
     public Database() throws SQLException {
         connect();
@@ -508,6 +510,30 @@ public class Database {
             conn = DriverManager.getConnection(url, user, password);
             Statement select = conn.createStatement();
             String query ="select username, status from players where username not in ('Computer','" +username+ "')";
+            ResultSet rs = select.executeQuery(query);
+            
+            while(rs.next()){
+            
+                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2)));
+            
+            }
+            select.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    
+    
+        return list;
+    }
+    
+     public ObservableList<DisplayPlayers> dPlayers(){
+        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
+
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement select = conn.createStatement();
+            String query ="select username, status from players where username not in ('Computer')";
             ResultSet rs = select.executeQuery(query);
             
             while(rs.next()){
