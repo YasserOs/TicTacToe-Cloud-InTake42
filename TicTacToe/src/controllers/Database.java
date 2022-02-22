@@ -526,14 +526,14 @@ public class Database {
     
         return list;
     }
-    
+    // Display Online Players
      public ObservableList<DisplayPlayers> dPlayers(){
         ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
 
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer')";
+            String query ="select username, status from players where username not in ('Computer') and status ='online' ";
             ResultSet rs = select.executeQuery(query);
             
             while(rs.next()){

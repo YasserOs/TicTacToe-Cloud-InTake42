@@ -43,7 +43,7 @@
             </Button>
          </children>
       </GridPane>
-      <TableView fx:id="tableView" layoutX="9.0" layoutY="16.0" prefHeight="424.0" prefWidth="350.0" visible="false">
+      <TableView fx:id="tableView" layoutX="9.0" layoutY="16.0" prefHeight="424.0" prefWidth="307.0" visible="false">
         <columns>
           <TableColumn fx:id="name" prefWidth="212.00002479553223" text="Name" />
           <TableColumn fx:id="status" prefWidth="111.199951171875" text="Status" />
