@@ -33,7 +33,7 @@ import views.GeneralController;
  * @author Hossam
  */
 public class MainRoomController extends GeneralController implements Initializable {
-    
+      boolean PendingInvitation=false;
     @FXML BorderPane bp;
     @FXML
     private TextArea playersList; 
@@ -118,13 +118,16 @@ public class MainRoomController extends GeneralController implements Initializab
         SinglePlayerController controller = loader.getController();
         window.show();
     }
-    public void PlayVsFriend(ActionEvent event) throws IOException{
+    public void PlayVsFriend(ActionEvent event) throws IOException
+    {
+      
         e = event;
         DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
 
         if(plist.isVisible()){
             if(chosen != null){
-                if( chosen.getStatus().equals("online")){
+                if( chosen.getStatus().equals("online")&& (PendingInvitation==false))
+                {
                     ObservableList<DisplayPlayers> SelectedRow = tableView.getSelectionModel().getSelectedItems();
                     chosenOpponent = SelectedRow.get(0).getName();
                     System.out.println(chosenOpponent);
@@ -134,6 +137,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     msg.put("Receiver", chosenOpponent);
                     msg.put("Content","Pending");           
                     ClientGui.printStream.println(msg.toString());
+                    PendingInvitation=true;
                 }
             }
         }
@@ -196,13 +200,47 @@ public class MainRoomController extends GeneralController implements Initializab
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
+                break;
             case "Pending":
-                openInvitationScreen(msg);
+                checkifPlayerPendingInvitation(msg);
+                break;
         }
+    }
+    
+    public void checkifPlayerPendingInvitation(JSONObject serverMsg)
+    {
+       
+        if(PendingInvitation == true)
+        {
+            sendInvitaionResponse(serverMsg, "Refuse");
+        }
+        else
+        {
+            try {
+                openInvitationScreen(serverMsg);
+            } catch (IOException ex) {
+                Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        }
+    }
+    
+    public void sendInvitaionResponse(JSONObject serverMsg,String decision)
+    {
+        JSONObject msg= new JSONObject();
+        msg.put("Action","Invite");
+        msg.put("Sender",ClientGui.loggedPlayer.getUsername());
+        msg.put("Receiver",serverMsg.getString("Sender"));
+        msg.put("Content",decision);
+        ClientGui.printStream.println(msg.toString());
+
     }
     
     public void openInvitationScreen(JSONObject msg) throws IOException, ClassNotFoundException{       
         // open small log with sender name and 2 buttons to accept or refuse the invitation        
+        PendingInvitation=true;
         Platform.runLater(new Runnable()
         {
             @Override
@@ -221,13 +259,11 @@ public class MainRoomController extends GeneralController implements Initializab
                     decision ="Accept"; // msg object
                 } else {
                     decision ="Refuse";
+                    PendingInvitation=false;
+                    
                 }
-                JSONObject response = new JSONObject();
-                response.put("Action", "Invite");
-                response.put("Sender",ClientGui.loggedPlayer.getUsername());
-                response.put("Receiver", msg.getString("Sender"));
-                response.put("Content", decision);
-                ClientGui.printStream.println(response.toString());
+                
+                sendInvitaionResponse(msg, decision);             
                 if(decision.equals("Accept")){
                     try {
                         startMultiPlayerMatch(e, msg.getString("Sender"), true);
@@ -242,11 +278,11 @@ public class MainRoomController extends GeneralController implements Initializab
     
     public void openInvitationRefusalScreen()
     {
-        //open small log with with refuse statement
+        PendingInvitation=false;
     }
     @Override
     public void initialize(URL url, ResourceBundle rb)
-    {  
+    {   PendingInvitation=false;
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         ClientGui.currentLiveCtrl=this;
