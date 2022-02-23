@@ -113,10 +113,32 @@ public class MultiPlayerController extends GeneralController implements Initiali
                updateBoard(msg.getInt("Content"));
                break;
            case "Won":
-               System.out.println(msg.getString("Sender"));
-               //resetGrid();
+               gameresult("lost");
+               break;
+           case "draw":
+               gameresult("draw");
+              
+              
                break;
        }
+    }
+    
+    public void gameresult(String result)
+    {
+        
+        playerTurn=false;
+        ClientGui.loggedPlayer.gamesplayed();
+        if(result.equals("lost"))
+        {
+             ClientGui.loggedPlayer.gameslost();
+        }
+        else
+        {
+            ClientGui.loggedPlayer.gamesdraws();
+            ClientGui.loggedPlayer.incrementTotal_score(2);    
+        }
+        
+       
     }
     
     public boolean randomTurn()
@@ -206,7 +228,13 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 { 
                     playerWin();
                 }
+                else if(numberOfPlays==9)
+                {
+                    playerdraw();
+                
+                }
             }
+           
 
         }
     }
@@ -217,8 +245,28 @@ public class MultiPlayerController extends GeneralController implements Initiali
         msg.put("Sender", player1.getUsername());
         msg.put("Receiver", player2);
         ClientGui.printStream.println(msg.toString());
+        ClientGui.loggedPlayer.incrementTotal_score(10);
+        ClientGui.loggedPlayer.gameswon();
+        ClientGui.loggedPlayer.gamesplayed();
+        
+        //availablePositions.clear();
         //resetGrid();
     }
+    
+     public void playerdraw() throws InterruptedException, IOException{
+        System.out.println(player1.getUsername()+" draw !");
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "draw");
+        msg.put("Sender", player1.getUsername());
+        msg.put("Receiver", player2);
+        ClientGui.printStream.println(msg.toString());
+        ClientGui.loggedPlayer.gamesplayed();
+        ClientGui.loggedPlayer.gamesdraws();
+        ClientGui.loggedPlayer.incrementTotal_score(2);
+        //availablePositions.clear();
+        //resetGrid();
+    }
+    
     private boolean isEmpty(Button pos)
     {
         return pos.getText().isEmpty();  

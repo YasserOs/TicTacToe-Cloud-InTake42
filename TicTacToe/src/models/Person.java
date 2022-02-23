@@ -154,6 +154,32 @@ public class Person extends Player{
     }
     
     
+    public void incrementTotal_score(int score) {
+        total_score+=score;
+    }
+    
+    public void decrementTotal_score()
+    {
+        total_score-=5;
+    }
+    public void gameslost()
+    {
+        games_lost++;
+    }
+    public void gameswon()
+    {
+        games_won++;
+    }
+    public void gamesdraws()
+    {
+        draws++;
+    }
+    
+    public void gamesplayed()
+    {
+        games_played++;
+    }
+    
     
     
 }
