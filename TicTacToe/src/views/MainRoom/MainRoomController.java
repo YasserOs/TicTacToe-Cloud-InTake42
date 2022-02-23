@@ -130,7 +130,10 @@ public class MainRoomController extends GeneralController implements Initializab
             }
         }
     }
-    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, ClassNotFoundException{
+    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException{
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "playerStartedMatch");
+        ClientGui.printStream.println(msg.toString());
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -139,16 +142,10 @@ public class MainRoomController extends GeneralController implements Initializab
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                try {
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     controller.initSession(opponent,isInvited);
-                    window.show();
-                } catch (IOException ex) {
-                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                    window.show();   
             }
         });
     }
@@ -171,6 +168,9 @@ public class MainRoomController extends GeneralController implements Initializab
                 break;
             case "playersignout":
                 updateplayerlist(msg, "offline");
+                break;
+            case "playerStartedMatch":
+                updateplayerlist(msg,"in-game");
                 break;
             case "Playerslist":
                 initPlayersTable(msg);
@@ -224,8 +224,6 @@ public class MainRoomController extends GeneralController implements Initializab
                     try {
                         startMultiPlayerMatch(e, msg.getString("Sender"), true);
                     } catch (IOException ex) {
-                        Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
                         Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

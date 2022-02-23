@@ -60,7 +60,7 @@ public class ServerController implements Initializable {
     public void startServer() throws SQLException, IOException
     {
         new Server();
-        myServerSocket = new ServerSocket(9000);
+        myServerSocket = new ServerSocket(12345);
         th = new Thread( ()->{
         while(true)
         {
@@ -73,7 +73,7 @@ public class ServerController implements Initializable {
         }
         });
             lblonstatus.setTextFill(Color.web("green"));
-           Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 9000"));
+           Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 12345"));
           th.start();
         
 

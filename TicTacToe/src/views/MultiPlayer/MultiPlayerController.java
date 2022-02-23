@@ -73,7 +73,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
     boolean invited =false;
     int numberOfPlays = 0 ;
     
-    public void initSession(String p2 , boolean isInvited ) throws IOException, ClassNotFoundException{
+    public void initSession(String p2 , boolean isInvited ){
         player1=ClientGui.loggedPlayer;
         System.out.println("Init Session - Player 1 : " + player1.getUsername() + " , Player 2 : "+p2);
         player2=p2;
@@ -89,7 +89,11 @@ public class MultiPlayerController extends GeneralController implements Initiali
             msg.put("Receiver", player2);
             msg.put("Content", oppTurn);
             ClientGui.printStream.println(msg.toString());
-            setPicks();
+            try {
+                setPicks();
+            } catch (IOException ex) {
+                Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         currentSession = new Session(player1.getUsername(),p2);
         resetGrid();
@@ -137,7 +141,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
         }else{
             opponentPick = "x";
         }
-   
     }
     public void setOpponentPick(String pick) throws IOException{
         JSONObject msg = new JSONObject();

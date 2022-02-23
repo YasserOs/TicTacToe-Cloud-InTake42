@@ -92,13 +92,23 @@ public class ServerHandler extends Thread {
             case "getallplayers":
                 getAllPlayers();
                 break;
+            case "playerStartedMatch" :
+                playerStratedMatch();
+                break;
             default:
                 sendMsgToReceiver(msg);
                 break;
         }
     }
     
-    
+    public void playerStratedMatch()
+    {
+        Server.updateplayer(loggedPlayer.getUsername(),"in-game");
+        JSONObject msg= new JSONObject();
+        msg.put("Action","playerStartedMatch");
+        msg.put("username",loggedPlayer.getUsername());
+        sendMsgToAll(msg);
+    }
     public void getAllPlayers()
     {
        JSONArray names = new JSONArray();
