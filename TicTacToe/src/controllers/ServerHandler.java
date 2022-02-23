@@ -5,13 +5,10 @@
  */
 package controllers;
 
+import static controllers.Server.db;
 import models.*;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -19,6 +16,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ServerHandler extends Thread {
@@ -47,7 +45,9 @@ public class ServerHandler extends Thread {
                 JSONObject msg = new JSONObject(inputStream.readLine()) ;
                 processMessage(msg);            
             } catch (IOException ex) {
+                
                 closeConnection();
+                break;
             } catch (SQLException ex){
                 System.out.println("FromSQL");
             }
@@ -60,10 +60,12 @@ public class ServerHandler extends Thread {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
         Server.updateplayer(loggedPlayer.getUsername(), "offline");
+        System.out.println("close connsection ");
         JSONObject msg=new JSONObject();
         msg.put("Action", "playersignout");
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
+        
         handlers.remove(this);
         try {
             this.inputStream.close();
@@ -84,8 +86,8 @@ public class ServerHandler extends Thread {
             case "SignIn":
                 SignIn(msg);
                 break;
-            case "Chat":
-                //sendMsgToAll(msg);
+            case "BroadcastChat":
+                sendMsgToAll(msg);
                 break;
             case "In game":
                 //sendMsgToAll(msg);
@@ -134,45 +136,53 @@ public class ServerHandler extends Thread {
        msg.put("Action","Playerslist");
        this.printStream.println(msg.toString());
     }
-
-    public void SignIn(JSONObject msg) throws SQLException {
-        loggedPlayer = Server.SignIn(msg);
-        
-        if(loggedPlayer!=null)
-        {
-            JSONObject reply =new JSONObject();
+   
+    public void SignIn(JSONObject msg) throws SQLException, JSONException {
+        int flag= Server.SignIn(msg);
+        if( flag == 1)
+        {  
+            loggedPlayer = db.getPlayer(msg.getString("username"));
+            System.out.println("From Signin Server handler" + loggedPlayer.getUsername());
+            JSONObject reply = new JSONObject();
             reply.put("Action", "playersignin");
-            reply.put("username",loggedPlayer.getUsername());
+            reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);
         }
-        sendResponse("SignIn");
+        sendResponse("SignIn", flag);
     }
  
-    public void SignUp(JSONObject msg) throws SQLException{
-        loggedPlayer = Server.SignUp(msg);
-         if(loggedPlayer!=null)
+    public void SignUp(JSONObject msg) throws SQLException, JSONException{
+        int flag = Server.SignUp(msg);
+        if (flag == 1) 
         {
-            JSONObject reply =new JSONObject();
+            loggedPlayer = db.getPlayer(msg.getString("username"));
+            System.out.println("From Signin Server handler" + loggedPlayer.getUsername());
+            JSONObject reply = new JSONObject();
             reply.put("Action", "playersignup");
-            reply.put("username",loggedPlayer.getUsername());
+            reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);
         }
-        sendResponse("SignUp");
+        sendResponse("SignUp", flag);
 
     }
-    public void  sendResponse(String Action){
-        JSONObject response = new JSONObject();        
+    public void  sendResponse(String Action, int flagDB) throws JSONException{
+        JSONObject response = new JSONObject();  
+        
         if(loggedPlayer!=null){
+            System.out.println("From sendResponse Server handler" + loggedPlayer.getUsername());
             response.put("Action",Action);
-            response.put("Response", true);
+            //response.put("Response", true);
+            response.put("Response", flagDB);
             convertPlayerToJSON(loggedPlayer,response);
             
         }else{
             response.put("Action", Action);
-            response.put("Response", false);
+            //response.put("Response", false);
+            response.put("Response", flagDB);
         }
         printStream.println(response.toString());
     }
+    
     public void convertPlayerToJSON(Person p , JSONObject json){
         json.put("username", p.getUsername());
         json.put("score", p.getScore());

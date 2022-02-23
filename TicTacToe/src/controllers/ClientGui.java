@@ -73,7 +73,7 @@ public class ClientGui extends Application {
     public static void createSocket()
     {
           try { 
-            playerSocket=new Socket("127.0.0.1",12345);
+            playerSocket=new Socket("127.0.0.1",12345); 
             printStream = new PrintStream(playerSocket.getOutputStream());
             inputStream = new DataInputStream(playerSocket.getInputStream());
         }catch (IOException ex){
@@ -111,6 +111,7 @@ public class ClientGui extends Application {
       int draws = json.getInt("draws");
       int losses = json.getInt("losses");
       Person p = new Person();
+      
       p.setUsername(userName);
       p.setStatus(status);
       p.setScore(score);

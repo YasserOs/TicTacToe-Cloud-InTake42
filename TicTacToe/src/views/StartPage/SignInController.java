@@ -92,20 +92,37 @@ public class SignInController extends GeneralController implements Initializable
       
     }
     
+    
     public void processMessage(JSONObject msg){
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                boolean response = msg.getBoolean("Response");
-                if(response){
-                    ClientGui.convertJSONtoPlayer(msg);
-                    try {
-                        finshSignIn(e);
-                    } catch (IOException ex) {
-                        Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }else{
-                    txtalert.setText("Player Alredy Logged In !");
+                try {
+                    int response = msg.getInt("Response");
+                    switch(response){
+                        case 0: // player Dosen't exist or username is incorrect
+                            txtalert.setText("This user does not exist !");
+                            break;
+                        case 1: // the username and pw are correct success
+                                ClientGui.convertJSONtoPlayer(msg);
+                            try {
+                                finshSignIn(e);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                        case 2: // the password is incorrect
+                            txtalert.setText("The username or Password is incorrect !");
+                            break;
+                        case 3:  //the user is already logged/ online
+                            txtalert.setText("Player Alredy Logged In !");
+                            break;
+                        case 4: // error occured while connecting to the datebase
+                            txtalert.setText("An error occured!");
+                            break;   
+                    }  
+                } catch (JSONException ex) {
+                    Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

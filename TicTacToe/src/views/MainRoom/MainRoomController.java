@@ -164,8 +164,8 @@ public class MainRoomController extends GeneralController implements Initializab
         String Action =msg.getString("Action"); 
         switch(Action)
         {
-            case "Chat":
-       //         globalchat.appendText(msg.getContent());
+            case "BroadcastChat":
+                broadcastChat(msg);
                 break;
             case "Invite":
                 processInvitation(msg);
@@ -191,6 +191,20 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     
+    public void broadcastChat(JSONObject msg)
+    {
+        globalchat.appendText("\n"+msg.getString("content").toString());   
+    }
+    
+    public void sendBroadcastMsg()
+    {
+        String msgcontent=msgContent.getText().toString();
+        JSONObject msg= new JSONObject();
+        msg.put("Action","BroadcastChat");
+        msg.put("Sender",ClientGui.loggedPlayer.getUsername());
+        msg.put("Content",msgcontent);
+        ClientGui.printStream.println(msg.toString());    
+    }
    
     public void processInvitation(JSONObject msg) throws IOException, ClassNotFoundException{
         String content = msg.getString("Content");

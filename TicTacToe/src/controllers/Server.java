@@ -15,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.DisplayPlayers;
 import models.Person;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Server 
@@ -55,32 +56,56 @@ public class Server
         Playerslist.add(new DisplayPlayers(p.getUsername(),"online"));
     }
     
-    public static Person SignUp(JSONObject msg) throws SQLException{
+  public static int SignUp(JSONObject msg) throws SQLException, JSONException{
         String userName = msg.getString("username");
         String email = msg.getString("email");
         String password = msg.getString("password");
-        if(db.checkRegister(userName, email)){
-            return null;
-        } else {
-            Person p = db.signUp(userName, password, email);
-            updateAllPlayersVector(p);
-            return p;
-        }
+        if(!playerExists(userName)){
+            int flagFromDB = db.checkRegister(userName, email);
+                    switch(flagFromDB){
+                        case 1: // Both username and email not used 
+                             Person p = db.signUp(userName, password, email);
+                              updateAllPlayersVector(p);
+                            return flagFromDB;
+                        case 2:  //email already used
+                            return flagFromDB;
+                        case 3:   // error occured while connecting to the datebase
+                            return flagFromDB;
+                    }
+            }
+        return 0;// username already used   
     }
-    public static Person SignIn(JSONObject msg) throws SQLException{
+    public static int SignIn(JSONObject msg) throws SQLException, JSONException{
         String userName = msg.getString("username");
         String password = msg.getString("password");
-    
-        if(!db.logIn(userName, password)){
-            return null;
-        } else{  
-            db.updatePlayerStatus(userName, "online");
-            updateplayer(userName, "online");
-           return db.getPlayer(userName);
-                 
+        if(playerExists(userName)){
+           int flagFromDB = db.logIn(userName, password);
+                switch(flagFromDB){
+                    case 1: //the username and pw are correct success 
+                        db.updatePlayerStatus(userName, "online");
+                        updateplayer(userName, "online");
+                        return flagFromDB;
+                    case 2:  // the password is incorrect
+                        return flagFromDB;
+                    case 3:  //the user is already logged/ online
+                        return flagFromDB;
+                    case 4: // error occured while connecting to the datebase
+                        return flagFromDB;
+                }
         }
+        return 0;// player Dosen't exist or username is incorrect   
     }
     
+      public static boolean playerExists(String username){
+        for (Person player : players) {
+            if(player.getUsername().equals(username)){
+                return true;
+            }
+        }
+    
+       return false; 
+    }
+      
     public static void updateplayer(String userName, String status) 
     {       
         for (Person p : players)

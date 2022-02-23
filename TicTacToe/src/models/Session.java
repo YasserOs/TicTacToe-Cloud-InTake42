@@ -14,8 +14,8 @@ public class Session {
 
     public String p1 ;
     public String p2;
-    String p1Pick,p2Pick;
-    int turn ;
+    public String p1Pick,p2Pick;
+    public int turn ;
     boolean status; // 0 for paused session 1 for running
     public Board board;
     

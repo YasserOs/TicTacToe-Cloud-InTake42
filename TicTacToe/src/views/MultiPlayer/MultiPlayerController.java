@@ -242,7 +242,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         msg.put("Action", "playerFinishMatch");
         ClientGui.printStream.println(msg.toString());
         
-     Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Scene ViewScene = new Scene(View);
         
        

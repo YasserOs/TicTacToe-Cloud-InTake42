@@ -33,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.JSONObject;
 import views.MainRoom.MainRoomController;
 import java.util.Date;
+import org.json.JSONException;
 /**
  * FXML Controller class
  *
@@ -101,21 +102,34 @@ public class SignUpController  extends GeneralController implements Initializabl
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                boolean response = msg.getBoolean("Response");
-                if(response){
-                    ClientGui.convertJSONtoPlayer(msg);
-                    try {
-                        finishSignUp(e);
-                    } catch (IOException ex) {
-                        Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }else{
-                    txtalert.setText("Player Already Exists !");
+                try {
+                    int response = msg.getInt("Response");
+                    switch(response){
+                        case 0: // username already used
+                            txtalert.setText("This username is already used !");
+                            break;
+                        case 1: // Both username and email not used success
+                                ClientGui.convertJSONtoPlayer(msg);
+                            try {
+                                finishSignUp(e);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                        case 2: //email already used
+                            txtalert.setText("This email is already used!");
+                            break;
+                        case 3:  // error occured while connecting to the datebase
+                            txtalert.setText("An error occurred!");
+                            break;
+                        
+                    }  
+                } catch (JSONException ex) {
+                    Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
                 }  
             }
         });
-    }
-  
+    } 
     public void finishSignUp(ActionEvent event) throws IOException{
     
         FXMLLoader loader = new FXMLLoader();
@@ -126,8 +140,7 @@ public class SignUpController  extends GeneralController implements Initializabl
         window.setScene(ViewScene);
         window.show();
     }
-    
- public void SwitchtoSignN(ActionEvent event) throws IOException
+    public void SwitchtoSignN(ActionEvent event) throws IOException
     {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
