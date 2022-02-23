@@ -236,6 +236,12 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }
    
     public void back2MainRoom(ActionEvent event) throws IOException{
+        
+        
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "playerFinishMatch");
+        ClientGui.printStream.println(msg.toString());
+        
      Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Scene ViewScene = new Scene(View);
         

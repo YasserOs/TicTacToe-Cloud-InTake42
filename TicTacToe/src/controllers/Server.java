@@ -6,11 +6,7 @@
 package controllers;
 
 
-import static controllers.ServerHandler.allPlayers;
-import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -20,6 +16,7 @@ import javafx.collections.ObservableList;
 import models.DisplayPlayers;
 import models.Person;
 import org.json.JSONObject;
+
 public class Server 
 {
     
@@ -86,7 +83,8 @@ public class Server
     
     public static void updateplayer(String userName, String status) 
     {       
-        for (Person p : players) {
+        for (Person p : players)
+        {
             if (p.getUsername().equals(userName)) 
             {
                 p.setStatus(status);

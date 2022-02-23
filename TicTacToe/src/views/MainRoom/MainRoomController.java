@@ -98,9 +98,17 @@ public class MainRoomController extends GeneralController implements Initializab
            multiBTN.setDisable(false);
         }   
     }
+    
+    public void PlayerStartedMatch()
+    {
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "playerStartedMatch");
+        ClientGui.printStream.println(msg.toString());
+    
+    }
     public void PlayVsAI(ActionEvent event) throws IOException{
       
-        
+        PlayerStartedMatch();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
         Parent View = loader.load();
@@ -131,9 +139,7 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException{
-        JSONObject msg = new JSONObject();
-        msg.put("Action", "playerStartedMatch");
-        ClientGui.printStream.println(msg.toString());
+        PlayerStartedMatch();       
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -175,6 +181,8 @@ public class MainRoomController extends GeneralController implements Initializab
             case "Playerslist":
                 initPlayersTable(msg);
                 break;
+            case "playerFinishMatch":
+                updateplayerlist(msg,"online");
 
         }
     }

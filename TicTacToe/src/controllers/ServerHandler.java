@@ -93,7 +93,10 @@ public class ServerHandler extends Thread {
                 getAllPlayers();
                 break;
             case "playerStartedMatch" :
-                playerStratedMatch();
+                changeplayerstatus("playerStartedMatch","in-game");
+                break;
+            case "playerFinishMatch":
+                changeplayerstatus("playerFinishMatch","online");
                 break;
             default:
                 sendMsgToReceiver(msg);
@@ -101,11 +104,11 @@ public class ServerHandler extends Thread {
         }
     }
     
-    public void playerStratedMatch()
+    public void changeplayerstatus(String action,String status)
     {
-        Server.updateplayer(loggedPlayer.getUsername(),"in-game");
+        Server.updateplayer(loggedPlayer.getUsername(),status);
         JSONObject msg= new JSONObject();
-        msg.put("Action","playerStartedMatch");
+        msg.put("Action",action);
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
     }

@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
 /**
  *
@@ -134,6 +135,9 @@ public class SinglePlayerController implements Initializable {
     public void back2MainRoom(ActionEvent event) throws IOException
     
     {
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "playerFinishMatch");
+        ClientGui.printStream.println(msg.toString());
         pc.stop();
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Scene ViewScene = new Scene(View);       
