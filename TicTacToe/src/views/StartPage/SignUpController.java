@@ -29,14 +29,17 @@ import controllers.Database;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.cell.PropertyValueFactory;
+import org.json.JSONObject;
 import views.MainRoom.MainRoomController;
-
+import java.util.Date;
+import org.json.JSONException;
 /**
  * FXML Controller class
  *
  * @author Hossam
  */
-public class SingUpController  {
+public class SignUpController  extends GeneralController implements Initializable{
     Database db;
     Person p;
     @FXML
@@ -54,11 +57,11 @@ public class SingUpController  {
     @FXML
     private Label txtalert ;
 
+    ActionEvent e = new ActionEvent();
    
     @FXML
-    private void SignUPhandle(ActionEvent event) throws SQLException, IOException {
-        //check for a vaild mail
-        db = Server.getDatabase();
+    private void SignUPhandle(ActionEvent event) throws SQLException, IOException, JSONException {
+        e = event;
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(txtemail.getText());
@@ -84,40 +87,60 @@ public class SingUpController  {
                   txtalert.setText("Please check your password");
                 }); 
         } else {
-                if(db.checkRegister(userName, email)){
-                    txtalert.setText("This player already exists");
-                } else {
-                    db.signUp(userName, password, email) ;
-                    Server.db.updatePlayerStatus(userName, "online");
-                    p = db.getPlayer(userName);
-                    Server.updateAllPlayersVector(p);
-                    Server.updateOnlinePlayersVector(p);
-                    finshSignUp(event);
-            }
+                JSONObject msg = new JSONObject();
+                msg.put("Action", "SignUp");
+                msg.put("username", userName);
+                msg.put("email", email);
+                msg.put("password", password);
+                ClientGui.printStream.println(msg.toString());       
          }
       // signed user
       
 
-}
-    public void finshSignUp(ActionEvent event) throws IOException{
-         
+    }
+    public void processMessage(JSONObject msg){
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    int response = msg.getInt("Response");
+                    switch(response){
+                        case 0: // username already used
+                            txtalert.setText("This username is already used !");
+                            break;
+                        case 1: // Both username and email not used success
+                                ClientGui.convertJSONtoPlayer(msg);
+                            try {
+                                finishSignUp(e);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SignInController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                        case 2: //email already used
+                            txtalert.setText("This email is already used!");
+                            break;
+                        case 3:  // error occured while connecting to the datebase
+                            txtalert.setText("An error occurred!");
+                            break;
+                        
+                    }  
+                } catch (JSONException ex) {
+                    Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
+                }  
+            }
+        });
+    }
+  
+    public void finishSignUp(ActionEvent event) throws IOException{
+    
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
         Parent View = loader.load();
-        ClientGui.startClient(p);
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
         window.show();
     }
-    
-//      public void logPlayer(Person p)
-//      {
-//        System.out.println("Printing from main room controller");
-//        loggedPlayer=p;
-//        System.out.println(p.getUsername()+"\n"+p.getEmail());
-//    }
-    
     
  public void SwitchtoSignN(ActionEvent event) throws IOException
     {
@@ -128,5 +151,9 @@ public class SingUpController  {
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
         window.setScene(signNViewScene);
         window.show();
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle rb){  
+       ClientGui.currentLiveCtrl=this;
     }
 }

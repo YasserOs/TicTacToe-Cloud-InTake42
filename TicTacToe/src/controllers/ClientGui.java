@@ -1,32 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package controllers;
 
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import models.Message;
 import models.Person;
+import org.json.JSONException;
+import org.json.JSONObject;
+import views.GeneralController;
 import views.MainRoom.MainRoomController;
 import views.MultiPlayer.MultiPlayerController;
+import views.StartPage.SignInController;
+import views.StartPage.SignUpController;
 
 /**
  *
@@ -37,12 +31,11 @@ public class ClientGui extends Application {
     private double yOffset = 0;
     
     public static Person loggedPlayer;
-    public static Thread playerSocketThread = null;
-    public static Socket playerSocket =null;
-    public static ObjectOutputStream objectOutputStream ;
-    public static ObjectInputStream objectInputStream;
-    public static MainRoomController mrc;
-    public static MultiPlayerController mpc;
+    public static Thread playerSocketThread;
+    public static Socket playerSocket ;
+    public static DataInputStream inputStream;
+    public static PrintStream printStream;
+    public static GeneralController currentLiveCtrl;
     @Override
     public void start(Stage primaryStage) throws IOException
     {
@@ -76,47 +69,32 @@ public class ClientGui extends Application {
     }
     public static void createSocket()
     {
-          try {
-            Socket playerSocket = new Socket("127.0.0.1",9000);
-            ClientGui.playerSocket=playerSocket;
-            OutputStream outputStream = playerSocket.getOutputStream();
-            ClientGui.objectOutputStream = new ObjectOutputStream(outputStream);
-            InputStream inputStream = playerSocket.getInputStream();
-            ClientGui.objectInputStream= new ObjectInputStream(inputStream);
-            Message msg = new Message("LoggedIn",ClientGui.loggedPlayer.getUsername(),"","");
-            ClientGui.objectOutputStream.writeObject(msg);
+          try { 
+            playerSocket=new Socket("127.0.0.1",9000);
+            printStream = new PrintStream(playerSocket.getOutputStream());
+            inputStream = new DataInputStream(playerSocket.getInputStream());
         }catch (IOException ex){
-            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+              System.out.println("The server is off");
         }  
        
        
     }
 
     public static void createPlayerSocketThread(){
-        if(playerSocketThread!=null){
-            playerSocketThread.stop();
-        } 
         playerSocketThread = new Thread( new Runnable(){
             @Override
             public void run() {
                 while(true){
                     try {
-                        Message msg = (Message)ClientGui.objectInputStream.readObject();
-                        if(msg!=null)
-                        {
-                        if(mrc!=null)
-                        {
-                            mrc.processMessage(msg);
-                        }
-                        if(mpc!=null)
-                        {
-                            mpc.processMessage(msg);
-                        }
-                        }
+                        JSONObject msg = new JSONObject(inputStream.readLine());
+                        currentLiveCtrl.processMessage(msg);                        
                     } catch (IOException ex) {
-                        System.out.println("IO");
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (ClassNotFoundException ex) {
-                        System.out.println("");;
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (JSONException ex) {
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
             }
@@ -124,13 +102,35 @@ public class ClientGui extends Application {
         playerSocketThread.start();
     }
     
-    public static void startClient(Person p){
-        loggedPlayer=p;
+    public static void convertJSONtoPlayer(JSONObject json) throws JSONException{
+      String userName = json.getString("username");
+      int score = json.getInt("score");
+      String status = json.getString("status");
+      int wins = json.getInt("wins");
+      int games = json.getInt("games");
+      int draws = json.getInt("draws");
+      int losses = json.getInt("losses");
+      Person p = new Person();
+      p.setUsername(userName);
+      p.setStatus(status);
+      p.setScore(score);
+      p.setGames_played(games);
+      p.setGames_won(wins);
+      p.setGames_lost(losses);
+      p.setDraws(draws);
+      loggedPlayer = p ;
+    }
+    public static void startClient()
+    {
         createSocket();
         createPlayerSocketThread();
     }
+    
+    
     public static void main(String[] args) {
+        startClient();
         launch(args);
     }
     
 }
+

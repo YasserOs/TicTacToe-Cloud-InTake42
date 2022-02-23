@@ -1,3 +1,4 @@
+<<<<<<< OURS
 package controllers;
 
 import models.*;
@@ -19,9 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 public class Database {
 
@@ -123,7 +124,8 @@ public class Database {
     }
 
     // Sign Up Function
-    public boolean signUp(String username, String pswd, String email) throws SQLException {
+    public Person signUp(String username, String pswd, String email) throws SQLException {
+            Person p;
         try {
             conn = DriverManager.getConnection(url, user, password);
             String queryString = new String("insert into players"
@@ -140,41 +142,49 @@ public class Database {
             stmt.setInt(8, 0);
             stmt.setInt(9, 0);
             stmt.executeUpdate();
+            queryString = "select * from players where username=?";
+            stmt = conn.prepareStatement(queryString);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            p = createPerson(rs);
             System.out.println("Record successfully Inserted. ");
+            stmt.close();
         } catch (SQLException ex) {
             //can use it to print duplicate key error
             System.err.println(ex.getMessage());
-            return false;
+            return null;
         }
 
         conn.close();
 
-        return true;
+        return p;
     }
     
     //Check Register 
-    public boolean checkRegister(String username, String email) throws SQLException 
+    public int checkRegister(String username, String email) throws SQLException 
     {
         ResultSet rs ;
         PreparedStatement ps;
-        try{
+        
+            try{
             conn = DriverManager.getConnection(url,user,password);
             ps = conn.prepareStatement("select * from players where username = ? or email = ?");
             ps.setString(1, username);
             ps.setString(2, email);
             rs =  ps.executeQuery();
             if(!rs.next()){
-                return false;
+                return 2; //email already used
             }
             System.out.println("Already Signed Up");
             
         }catch(SQLException ex){
             ex.printStackTrace();
-            return false;
+            return 3; //error failed to connect to DB
         }
         ps.close();
         conn.close();
-        return true;
+        return 1; // Both username and email not used
     }
     
     //get UserName By Email
@@ -216,9 +226,10 @@ public class Database {
     }
     
     // login With username
-    public boolean logIn(String username, String pswd) throws SQLException {
+    public int logIn(String username, String pswd) throws SQLException {
             String passwordEncrypted = passwordEnc(pswd);
          try {
+              
              conn = DriverManager.getConnection(url, user, password);
             Statement selectStatement = conn.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_INSENSITIVE);
             String query = new String("select username, password,status from players where username='" + username +"'");
@@ -229,7 +240,7 @@ public class Database {
                 System.out.println("Logged in successfully");
                 String Status=rs.getString("status");
                 if(Status.equals("online")){
-                    return false;
+                  return 3; //the user is already logged/ online
                 }
                 
                 selectStatement.close();
@@ -238,7 +249,7 @@ public class Database {
                 System.out.println("The password you entered is incorrect");
                 selectStatement.close();
                 conn.close();
-                return false;
+                return 2; // the password is incorrect
             }
             
         } catch (SQLException ex) {
@@ -246,10 +257,11 @@ public class Database {
             System.err.println(ex.getMessage());
              System.out.println("The username you entered is not correct");
              conn.close();
-            return false;
+            return 4; // error occured while connecting to the datebase
         }
          conn.close();
-        return true;
+         return 1;// the username and pw are correct success
+        // successful retrieved the user from the datebase and the password is entered correctly
     }
     // login With email
     public boolean logInUsingEmail(String email, String pswd) throws SQLException {
@@ -367,12 +379,6 @@ public class Database {
             int games = rs.getInt("games_played")+1;
             rs.updateInt("games_played", games);
             rs.updateRow();
-            selectUserStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-             rs= selectUserStatement.executeQuery("select * from players where username='" +playerTwoName +"'");
-            rs.next();
-            games = rs.getInt("games_played")+1;
-            rs.updateInt("games_played", games);
-            rs.updateRow();
             selectUserStatement.close();
           conn.close();
         } catch (SQLException ex) {
@@ -381,10 +387,21 @@ public class Database {
         }
         return true;
     }
-    public boolean updateGame(String winner, String loser, int gameID){
-        String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+    public boolean updateGame(String winner, String loser){
+        int gameID;
+        String query;
         try {
+            
             conn = DriverManager.getConnection(url, user, password);
+            query = new String("select game_id from games where player_one_name=? and player_two_name=?");
+            PreparedStatement selectGameID = conn.prepareStatement(query);
+            selectGameID.setString(1,winner);
+            selectGameID.setString(2, loser);
+            ResultSet rs = selectGameID.executeQuery();
+            rs.next();
+            gameID = rs.getInt("game_id");
+            selectGameID.close();
+            query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
             PreparedStatement updateGameStatement = conn.prepareStatement(query);
             updateGameStatement.setString(1, "Finished");
             updateGameStatement.setString(2, "Resolved");
@@ -424,10 +441,19 @@ public class Database {
        
         return true;
     }
-    public boolean draw(String playerOne, String PlayerTwo, int gameID){
+    public boolean draw(String playerOne, String PlayerTwo ){
+        int gameID;
         try {
             conn = DriverManager.getConnection(url, user, password);
-             String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
+            String  query = new String("select game_id from games where player_one_name=? and player_two_name=?");
+            PreparedStatement selectGameID = conn.prepareStatement(query);
+            selectGameID.setString(1,playerOne);
+            selectGameID.setString(2, PlayerTwo);
+            ResultSet rs = selectGameID.executeQuery();
+            rs.next();
+            gameID = rs.getInt("game_id");
+            selectGameID.close();
+             query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
             PreparedStatement drawGameStatement = conn.prepareStatement(query);
             drawGameStatement.setString(1, "Finished");
             drawGameStatement.setString(2, "Draw");
@@ -437,7 +463,7 @@ public class Database {
             drawGameStatement.close();
             query = "select * from players where username='" + playerOne + "'";
             Statement updatePlayersStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet rs = updatePlayersStatement.executeQuery(query);
+            rs = updatePlayersStatement.executeQuery(query);
             rs.next();
             int draws=rs.getInt("draws") +1 ;
             int score = rs.getInt("total_score")+1;
@@ -481,13 +507,14 @@ public class Database {
     
         return true;
     }
-    public ObservableList<DisplayPlayers> displayPlayers(String username){
+    public ObservableList<DisplayPlayers> displayPlayers()
+    {
         ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
 
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer','" +username+ "')";
+            String query ="select username, status from players where username not in ('Computer')";
             ResultSet rs = select.executeQuery(query);
             
             while(rs.next()){
@@ -504,6 +531,7 @@ public class Database {
     
         return list;
     }
+    
     public boolean saveGame(Session session){
          int gameId;
         try {
@@ -622,4 +650,6 @@ public class Database {
     }
     
     
+  
 }
+
