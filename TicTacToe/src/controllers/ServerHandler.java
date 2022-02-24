@@ -87,7 +87,7 @@ public class ServerHandler extends Thread {
                 SignIn(msg);
                 break;
             case "BroadcastChat":
-                sendMsgToAll(msg);
+                broadcastMsg(msg);
                 break;
             case "In game":
                 //sendMsgToAll(msg);
@@ -219,6 +219,13 @@ public class ServerHandler extends Thread {
     {
         for (ServerHandler sh : handlers) {
             if(!sh.loggedPlayer.getUsername().equals(loggedPlayer.getUsername()))
+               sh.printStream.println(msg.toString());
+        }
+    }
+    
+     void broadcastMsg(JSONObject msg) 
+    {
+        for (ServerHandler sh : handlers) {
                sh.printStream.println(msg.toString());
         }
     }

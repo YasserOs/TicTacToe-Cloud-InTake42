@@ -56,10 +56,6 @@ public class ClientGui extends Application {
             primaryStage.setY(event.getScreenY() - yOffset);
         });
         primaryStage.setTitle("Home");
-        primaryStage.setMaxWidth(1200);
-        primaryStage.setMinHeight(650);
-       
-
         Scene scene = new Scene(root);
         //set transparent
         scene.setFill(Color.TRANSPARENT);

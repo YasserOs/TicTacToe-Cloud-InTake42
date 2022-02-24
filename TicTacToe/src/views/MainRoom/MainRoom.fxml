@@ -49,12 +49,12 @@
          <bottom>
             <FlowPane hgap="10.0" prefHeight="30.0" prefWidth="405.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextField id="field" fx:id="msg" prefHeight="37.0" prefWidth="308.0" promptText="Write  a message...">
+                  <TextField fx:id="msgContent" prefHeight="37.0" prefWidth="308.0" promptText="Write  a message...">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </TextField>
-                  <Button fx:id="sendmsg" defaultButton="true" mnemonicParsing="false" onAction="#SendingMSG" prefHeight="25.0" prefWidth="38.0" style="-fx-background-color: transparent;">
+                  <Button fx:id="sendmsg" defaultButton="true" mnemonicParsing="false" onAction="#sendBroadcastMsg" prefHeight="25.0" prefWidth="38.0" style="-fx-background-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="22.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                            <image>

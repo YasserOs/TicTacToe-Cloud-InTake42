@@ -193,12 +193,19 @@ public class MainRoomController extends GeneralController implements Initializab
     
     public void broadcastChat(JSONObject msg)
     {
-        globalchat.appendText("\n"+msg.getString("content").toString());   
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                globalchat.appendText("\n"+msg.getString("Sender")+": "+msg.getString("Content"));   
+            }
+        });
     }
     
-    public void sendBroadcastMsg()
+    public void sendBroadcastMsg(ActionEvent event)
     {
-        String msgcontent=msgContent.getText().toString();
+        String msgcontent= new String(msgContent.getText());     
+        System.out.println("text ==="+msgContent.getText());
+        msgContent.setText("");
         JSONObject msg= new JSONObject();
         msg.put("Action","BroadcastChat");
         msg.put("Sender",ClientGui.loggedPlayer.getUsername());
@@ -292,6 +299,7 @@ public class MainRoomController extends GeneralController implements Initializab
     
     public void openInvitationRefusalScreen()
     {
+        
         PendingInvitation=false;
     }
     @Override
