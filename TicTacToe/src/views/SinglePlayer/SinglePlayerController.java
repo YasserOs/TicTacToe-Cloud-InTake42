@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -132,7 +133,7 @@ public class SinglePlayerController implements Initializable {
         
     }
 
-    public void back2MainRoom(ActionEvent event) throws IOException
+    public void back2MainRoom(ActionEvent event) throws IOException, JSONException
     
     {
         JSONObject msg = new JSONObject();

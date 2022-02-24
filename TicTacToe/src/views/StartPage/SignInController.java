@@ -56,7 +56,7 @@ public class SignInController extends GeneralController implements Initializable
     
     
     @FXML
-    private void SignNHandle(ActionEvent event) throws SQLException, IOException{
+    private void SignNHandle(ActionEvent event) throws SQLException, IOException, JSONException{
         e = event;
         String regex = "^[a-zA-Z0-9]+$";
         Pattern pattern = Pattern.compile(regex);

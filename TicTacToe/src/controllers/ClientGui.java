@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Person;
+import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
 import views.MainRoom.MainRoomController;
@@ -91,6 +92,8 @@ public class ClientGui extends Application {
                         Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (JSONException ex) {
+                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
             }
@@ -98,7 +101,7 @@ public class ClientGui extends Application {
         playerSocketThread.start();
     }
     
-    public static void convertJSONtoPlayer(JSONObject json){
+    public static void convertJSONtoPlayer(JSONObject json) throws JSONException{
       String userName = json.getString("username");
       int score = json.getInt("score");
       String status = json.getString("status");

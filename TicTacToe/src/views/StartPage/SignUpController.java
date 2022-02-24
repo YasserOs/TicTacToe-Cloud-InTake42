@@ -60,7 +60,7 @@ public class SignUpController  extends GeneralController implements Initializabl
     ActionEvent e = new ActionEvent();
    
     @FXML
-    private void SignUPhandle(ActionEvent event) throws SQLException, IOException {
+    private void SignUPhandle(ActionEvent event) throws SQLException, IOException, JSONException {
         e = event;
         String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
         Pattern pattern = Pattern.compile(regex);

@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import views.MultiPlayer.MultiPlayerController;
 import views.SinglePlayer.SinglePlayerController;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
 
@@ -99,14 +100,14 @@ public class MainRoomController extends GeneralController implements Initializab
         }   
     }
     
-    public void PlayerStartedMatch()
+    public void PlayerStartedMatch() throws JSONException
     {
         JSONObject msg = new JSONObject();
         msg.put("Action", "playerStartedMatch");
         ClientGui.printStream.println(msg.toString());
     
     }
-    public void PlayVsAI(ActionEvent event) throws IOException{
+    public void PlayVsAI(ActionEvent event) throws IOException, JSONException{
       
         PlayerStartedMatch();
         FXMLLoader loader = new FXMLLoader();
@@ -118,7 +119,7 @@ public class MainRoomController extends GeneralController implements Initializab
         SinglePlayerController controller = loader.getController();
         window.show();
     }
-    public void PlayVsFriend(ActionEvent event) throws IOException
+    public void PlayVsFriend(ActionEvent event) throws IOException, JSONException
     {
       
         e = event;
@@ -142,7 +143,7 @@ public class MainRoomController extends GeneralController implements Initializab
             }
         }
     }
-    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException{
+    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, JSONException{
         PlayerStartedMatch();       
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
@@ -152,43 +153,50 @@ public class MainRoomController extends GeneralController implements Initializab
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
+                try {
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     controller.initSession(opponent,isInvited);
                     window.show();   
+                } catch (JSONException ex) {
+                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
     @Override
     public void processMessage(JSONObject msg) throws IOException, ClassNotFoundException{
-        String Action =msg.getString("Action"); 
-        switch(Action)
-        {
-            case "BroadcastChat":
-                broadcastChat(msg);
-                break;
-            case "Invite":
-                processInvitation(msg);
-                break;
-            case "playersignup":
-                addplayer(msg);
-                break;
-            case "playersignin":
-                updateplayerlist(msg, "online");
-                break;
-            case "playersignout":
-                updateplayerlist(msg, "offline");
-                break;
-            case "playerStartedMatch":
-                updateplayerlist(msg,"in-game");
-                break;
-            case "Playerslist":
-                initPlayersTable(msg);
-                break;
-            case "playerFinishMatch":
-                updateplayerlist(msg,"online");
-
-        }
+          try {
+              String Action =msg.getString("Action");
+              switch(Action)
+              {
+                  case "BroadcastChat":
+                      broadcastChat(msg);
+                      break;
+                  case "Invite":
+                      processInvitation(msg);
+                      break;
+                  case "playersignup":
+                      addplayer(msg);
+                      break;
+                  case "playersignin":
+                      updateplayerlist(msg, "online");
+                      break;
+                  case "playersignout":
+                      updateplayerlist(msg, "offline");
+                      break;
+                  case "playerStartedMatch":
+                      updateplayerlist(msg,"in-game");
+                      break;
+                  case "Playerslist":
+                      initPlayersTable(msg);
+                      break;
+                  case "playerFinishMatch":
+                      updateplayerlist(msg,"online");
+                      
+              } } catch (JSONException ex) {
+              Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+          }
     }
     
     public void broadcastChat(JSONObject msg)
@@ -196,12 +204,16 @@ public class MainRoomController extends GeneralController implements Initializab
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                globalchat.appendText("\n"+msg.getString("Sender")+": "+msg.getString("Content"));   
+                try {   
+                    globalchat.appendText("\n"+msg.getString("Sender")+": "+msg.getString("Content"));
+                } catch (JSONException ex) {
+                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
     
-    public void sendBroadcastMsg(ActionEvent event)
+    public void sendBroadcastMsg(ActionEvent event) throws JSONException
     {
         String msgcontent= new String(msgContent.getText());     
         System.out.println("text ==="+msgContent.getText());
@@ -213,7 +225,7 @@ public class MainRoomController extends GeneralController implements Initializab
         ClientGui.printStream.println(msg.toString());    
     }
    
-    public void processInvitation(JSONObject msg) throws IOException, ClassNotFoundException{
+    public void processInvitation(JSONObject msg) throws IOException, ClassNotFoundException, JSONException{
         String content = msg.getString("Content");
         switch(content){
             case "Accept":
@@ -228,7 +240,7 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     
-    public void checkifPlayerPendingInvitation(JSONObject serverMsg)
+    public void checkifPlayerPendingInvitation(JSONObject serverMsg) throws JSONException
     {
        
         if(PendingInvitation == true)
@@ -248,7 +260,7 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     
-    public void sendInvitaionResponse(JSONObject serverMsg,String decision)
+    public void sendInvitaionResponse(JSONObject serverMsg,String decision) throws JSONException
     {
         JSONObject msg= new JSONObject();
         msg.put("Action","Invite");
@@ -266,29 +278,33 @@ public class MainRoomController extends GeneralController implements Initializab
         {
             @Override
             public void run() {
-                String decision ;
-                // then send a messag object with the content= accept or refuse back to the server handler
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Invitation Recieved!");
-                alert.setHeaderText(msg.getString("Sender")+" Invited you to a game");
-                alert.setResizable(false);
-                alert.setContentText("Select okay or cancel this alert.");
-                Optional<ButtonType> result = alert.showAndWait();
-                Button newb = new Button();
-                ButtonType button = result.orElse(ButtonType.CANCEL);
-                if (button == ButtonType.OK) {
-                    decision ="Accept"; // msg object
-                } else {
-                    decision ="Refuse";
-                    PendingInvitation=false;                   
-                }            
-                sendInvitaionResponse(msg, decision);             
-                if(decision.equals("Accept")){
-                    try {
-                        startMultiPlayerMatch(e, msg.getString("Sender"), true);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                try {
+                    String decision ;
+                    // then send a messag object with the content= accept or refuse back to the server handler
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Invitation Recieved!");
+                    alert.setHeaderText(msg.getString("Sender")+" Invited you to a game");
+                    alert.setResizable(false);
+                    alert.setContentText("Select okay or cancel this alert.");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    Button newb = new Button();
+                    ButtonType button = result.orElse(ButtonType.CANCEL);
+                    if (button == ButtonType.OK) {
+                        decision ="Accept"; // msg object
+                    } else {
+                        decision ="Refuse";
+                        PendingInvitation=false;
                     }
+                    sendInvitaionResponse(msg, decision);
+                    if(decision.equals("Accept")){
+                        try {
+                            startMultiPlayerMatch(e, msg.getString("Sender"), true);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                } catch (JSONException ex) {
+                    Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -302,25 +318,29 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     @Override
     public void initialize(URL url, ResourceBundle rb)
-    {   PendingInvitation=false;
+    {     try {
+        PendingInvitation=false;
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         ClientGui.currentLiveCtrl=this;
         JSONObject msg = new JSONObject();        
         msg.put("Action", "getallplayers");
         ClientGui.printStream.println(msg.toString());        
+          } catch (JSONException ex) {
+              Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+          }
     }
     public void fillList()
     {
         tableView.setItems(Playerslist);       
     }
     
-    public void addplayer(JSONObject msg)
+    public void addplayer(JSONObject msg) throws JSONException
     {
          Playerslist.add(new DisplayPlayers(msg.getString("username"),"online"));
     }
     
-    public void updateplayerlist(JSONObject msg,String status)
+    public void updateplayerlist(JSONObject msg,String status) throws JSONException
     {
         for(int i=0 ; i <Playerslist.size();i++){
             if(Playerslist.get(i).getName().equals(msg.getString("username"))){
@@ -329,7 +349,7 @@ public class MainRoomController extends GeneralController implements Initializab
             }
         }
     }
-     public void initPlayersTable(JSONObject msg)
+     public void initPlayersTable(JSONObject msg) throws JSONException
     {
         JSONArray names = msg.getJSONArray("names");
         JSONArray status= msg.getJSONArray("status");
