@@ -89,8 +89,6 @@ public class ServerHandler extends Thread {
             case "BroadcastChat":
                 broadcastMsg(msg);
                 break;
-            case "In game":
-                //sendMsgToAll(msg);
             case "getallplayers":
                 getAllPlayers();
                 break;

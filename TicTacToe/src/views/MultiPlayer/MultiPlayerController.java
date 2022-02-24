@@ -103,6 +103,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
     public void processMessage(JSONObject msg) throws IOException{
        String Action =msg.getString("Action"); 
        switch(Action){
+           case "Chat" :
+               receiveChat(msg);
+               break;
            case "chooseTurn":
                setTurn(msg.getBoolean("Content"));
                break;
@@ -201,6 +204,22 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }
     
   
+    private void receiveChat(JSONObject msg){
+        chattxt.appendText(msg.getString("Sender")+": "+msg.getString("Content")+"\n");
+    }
+     
+    @FXML 
+    private void SendChat(ActionEvent event){
+        chattxt.appendText(player1.getUsername()+": "+chatmsg.getText()+"\n");
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "Chat");
+        msg.put("Sender", player1.getUsername());
+        msg.put("Receiver", player2);
+        msg.put("Content",chatmsg.getText());
+        ClientGui.printStream.println(msg.toString());
+        chatmsg.clear();
+
+    }
     
     @FXML
     private void PlayerMove(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException 
