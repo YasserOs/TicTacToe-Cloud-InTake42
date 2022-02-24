@@ -144,7 +144,7 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, JSONException{
-        PlayerStartedMatch();       
+               
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -157,6 +157,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     controller.initSession(opponent,isInvited);
+                    PlayerStartedMatch();
                     window.show();   
                 } catch (JSONException ex) {
                     Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
@@ -318,17 +319,14 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     @Override
     public void initialize(URL url, ResourceBundle rb)
-    {     try {
+    {     
         PendingInvitation=false;
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         ClientGui.currentLiveCtrl=this;
         JSONObject msg = new JSONObject();        
         msg.put("Action", "getallplayers");
-        ClientGui.printStream.println(msg.toString());        
-          } catch (JSONException ex) {
-              Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-          }
+        ClientGui.printStream.println(msg.toString());              
     }
     public void fillList()
     {

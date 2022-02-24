@@ -154,10 +154,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     try {
                     alert.hide();
                     showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
-                    back2MainRoom(e);
-                } catch (JSONException ex) {
-                    Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                }   catch (IOException ex) {
+                    //back2MainRoom(e);
+                    } catch (JSONException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -384,20 +382,18 @@ public class MultiPlayerController extends GeneralController implements Initiali
         });
         numberOfPlays++;
         playerTurn=true;
-    } 
+    }
+    @FXML
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{
         
         
         JSONObject msg = new JSONObject();
-        msg.put("Action", "playerFinishMatch");
+        msg.put ("Action", "playerFinishMatch");
         ClientGui.printStream.println(msg.toString());
         
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        Scene ViewScene = new Scene(View);
-        
-       
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
+        Scene ViewScene = new Scene(View);      
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();   
         window.setScene(ViewScene);
         window.show();
     
