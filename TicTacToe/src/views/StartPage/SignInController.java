@@ -5,6 +5,10 @@
  */
 package views.StartPage;
 import controllers.ClientGui;
+import static controllers.ClientGui.MainRoom;
+import static controllers.ClientGui.mainStage;
+import static controllers.ClientGui.registerController;
+import static controllers.ClientGui.signUp;
 import controllers.Server;
 import models.*;
 import java.io.IOException;
@@ -38,6 +42,8 @@ import views.GeneralController;
  */
 public class SignInController extends GeneralController implements Initializable 
 {
+    
+    
     Database db;
     Person p;
     @FXML
@@ -50,6 +56,8 @@ public class SignInController extends GeneralController implements Initializable
     private TextField txtpassword;
     @FXML
     private Label txtalert ;
+    private Stage stage;
+    
     
     ActionEvent e = new ActionEvent();
     
@@ -130,31 +138,43 @@ public class SignInController extends GeneralController implements Initializable
     }
     
     public void finshSignIn(ActionEvent event) throws IOException{   
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        Parent View = loader.load();
-        Scene ViewScene = new Scene(View);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(ViewScene);
-        window.show();
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+//        Parent View = loader.load();
+//        Scene ViewScene = new Scene(View);
+//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        window.setScene(ViewScene);
+//        window.show();
+          FXMLLoader fxmlMainRoom = new FXMLLoader(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+         MainRoom = new Scene(fxmlMainRoom.load());
+         mainStage.hide();
+         mainStage.setScene(MainRoom);
+         mainStage.show();
     }
     
     public void SwitchtoSignUp(ActionEvent event) throws IOException
     {
-        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignUp.fxml"));
-        Scene signUpViewScene = new Scene(signUpView);
+//        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignUp.fxml"));
+//        Scene signUpViewScene = new Scene(signUpView);
+//        
+//        //This line gets the Stage information
+//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        
+//        window.setScene(signUpViewScene);
+//        window.show();
+         FXMLLoader fxmlLoaderrigister = new FXMLLoader(getClass().getResource("/views/StartPage/SignUp.fxml"));
+         signUp = new Scene(fxmlLoaderrigister.load());
+         
+         mainStage.hide();
+         mainStage.setScene(signUp);
+         mainStage.show();
         
-        //This line gets the Stage information
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        
-        window.setScene(signUpViewScene);
-        window.show();
+         
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  
        ClientGui.currentLiveCtrl=this;
     }
     
-    
-    
+     
 }

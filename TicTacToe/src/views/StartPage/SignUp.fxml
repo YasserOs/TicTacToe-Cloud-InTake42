@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -7,42 +8,94 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignUpController">
-   <children>
-      <AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0">
-          <children>
-            <ImageView fitHeight="611.0" fitWidth="802.0" styleClass="form_box">
+<AnchorPane id="AnchorPane" prefHeight="679.0" prefWidth="1170.0" style="-fx-background-color: #075EEA;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignUpController">
+    <children>
+      <AnchorPane prefHeight="703.0" prefWidth="581.0" style="-fx-background-color: #075EEA;">
+         <children>
+            <ImageView fitHeight="712.0" fitWidth="581.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@images/tictactoe.jpg" />
+                  <Image url="@images/bc.png" />
                </image>
             </ImageView>
-            <AnchorPane id="anchorPane" layoutX="169.0" layoutY="36.0" prefHeight="436.0" prefWidth="464.0">
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="560.0">
+         <children>
+            <AnchorPane id="anchorPane" layoutX="22.0" prefHeight="712.0" prefWidth="625.0" style="-fx-background-color: #ffffff;">
                <children>
-                  <Button fx:id="loginbtn" layoutX="81.0" layoutY="359.0" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="31.0" prefWidth="311.0" text="Sign in">
+                  <FlowPane alignment="CENTER" hgap="1.0" layoutX="128.0" layoutY="537.0" prefHeight="58.0" prefWidth="385.0">
+                     <children>
+                        <Label prefHeight="20.0" prefWidth="108.0" text=" have account?" textFill="#42444a">
+                           <font>
+                              <Font name="Times New Roman Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Button id="signin" fx:id="singupbtn" mnemonicParsing="false" onAction="#SwitchtoSignN" prefHeight="50.0" prefWidth="67.0" style="-fx-background-color: transparent;" text="Sign In" textFill="#1f8bf8">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </FlowPane>
+                  <Label alignment="CENTER" layoutX="97.0" layoutY="53.0" prefHeight="86.0" prefWidth="385.0" text="Sign Up" textFill="#097ff3">
                      <font>
-                        <Font name="System Bold" size="12.0" />
+                        <Font name="System Bold Italic" size="45.0" />
                      </font>
-                  </Button>
-                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="161.0" layoutY="27.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Sign Up" textFill="WHITE">
+                  </Label>
+                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="31.0" layoutY="38.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Login" textFill="WHITE">
                      <font>
                         <Font name="System Bold Italic" size="32.0" />
                      </font>
                   </Label>
-                  <PasswordField id="field" fx:id="txtpassword" alignment="CENTER" layoutX="80.0" layoutY="189.0" prefHeight="37.0" prefWidth="311.0" promptText="Password" />
-                  <TextField id="field" fx:id="txtemail" alignment="CENTER" layoutX="81.0" layoutY="96.0" prefHeight="37.0" prefWidth="311.0" promptText="Email Address" />
-                  <TextField id="field" fx:id="txtusername" alignment="CENTER" layoutX="79.0" layoutY="142.0" prefHeight="37.0" prefWidth="311.0" promptText="Username" />
-                  <PasswordField id="field" fx:id="txtpassword1" alignment="CENTER" layoutX="79.0" layoutY="239.0" prefHeight="37.0" prefWidth="311.0" promptText="Confirm Password" />
-                  <Button fx:id="singupbtn" layoutX="81.0" layoutY="296.0" mnemonicParsing="false" onAction="#SignUPhandle" prefHeight="31.0" prefWidth="311.0" text="Sign up" />
-                  <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="78.0" layoutY="426.0" prefHeight="58.0" prefWidth="317.0" textFill="#f70000">
+                  <Button fx:id="loginbtn" layoutX="120.0" layoutY="489.0" mnemonicParsing="false" onAction="#SignUPhandle" prefHeight="37.0" prefWidth="385.0" text="Sign Up" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="15.0" />
+                        <Font name="System Bold Italic" size="12.0" />
                      </font>
-                  </Label>
+                  </Button>
+                  <Label id="txtalert" fx:id="txtalert" alignment="CENTER" contentDisplay="CENTER" layoutX="120.0" layoutY="573.0" prefHeight="44.0" prefWidth="385.0" textFill="#f70000">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                  <VBox layoutX="113.0" layoutY="187.0" prefHeight="320.0" prefWidth="432.0">
+                     <children>
+                        <FlowPane prefHeight="68.0" prefWidth="422.0">
+                           <children>
+                              <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" textFill="#1f8bf8" />
+                              <TextField id="email" fx:id="txtemail" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Email Address" style="-fx-background-color: #F7F7F7;" />
+                           </children>
+                        </FlowPane>
+                        <FlowPane prefHeight="68.0" prefWidth="422.0">
+                           <children>
+                              <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" textFill="#1f8bf8" />
+                              <TextField id="username" fx:id="txtusername" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Username" style="-fx-background-color: #F7F7F7;" />
+                           </children>
+                        </FlowPane>
+                        <FlowPane prefHeight="68.0" prefWidth="422.0">
+                           <children>
+                              <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" />
+                              <PasswordField id="password" fx:id="txtpassword" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Password" style="-fx-background-color: #F7F7F7;" />
+                           </children>
+                        </FlowPane>
+                        <FlowPane prefHeight="68.0" prefWidth="422.0">
+                           <children>
+                              <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" />
+                              <PasswordField id="password" fx:id="txtpassword1" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Password" style="-fx-background-color: #F7F7F7;" />
+                           </children>
+                        </FlowPane>
+                     </children>
+                  </VBox>
                </children>
             </AnchorPane>
-          </children>
+         </children>
       </AnchorPane>
-   </children>
+    </children>
+   <stylesheets>
+      <URL value="@newCascadeStyleSheet.css" />
+      <URL value="@Style.css" />
+   </stylesheets>
 </AnchorPane>

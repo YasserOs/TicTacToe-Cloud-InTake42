@@ -18,7 +18,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "root";
+    private final String password = "admin";
 
     public Database() throws SQLException {
         connect();
@@ -612,6 +612,19 @@ public class Database {
             
         }
         return playerSavedGames;
+    }
+     public Vector<Person> Top5Players() throws SQLException {
+        Vector<Person> players = new Vector<Person>();
+        conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement();
+        String queryString = new String("select * from players order by total_score desc limit 5");
+        rs = stmt.executeQuery(queryString);
+        while (rs.next()) {
+            Person p = createPerson(rs);
+            players.add(p);
+
+        }
+        return players;
     }
     
 }

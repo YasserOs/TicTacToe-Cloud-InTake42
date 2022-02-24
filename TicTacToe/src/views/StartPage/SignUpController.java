@@ -5,6 +5,10 @@
  */
 package views.StartPage;
 import controllers.*;
+import static controllers.ClientGui.MainRoom;
+import static controllers.ClientGui.mainStage;
+import static controllers.ClientGui.sceneRegister;
+import static controllers.ClientGui.signUp;
 import views.*;
 import models.*;
 import java.io.IOException;
@@ -132,23 +136,32 @@ public class SignUpController  extends GeneralController implements Initializabl
     } 
     public void finishSignUp(ActionEvent event) throws IOException{
     
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-        Parent View = loader.load();
-        Scene ViewScene = new Scene(View);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(ViewScene);
-        window.show();
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+//        Parent View = loader.load();
+//        Scene ViewScene = new Scene(View);
+//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        window.setScene(ViewScene);
+//        window.show();
+         FXMLLoader fxmlMainRoom = new FXMLLoader(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+         MainRoom = new Scene(fxmlMainRoom.load());
+         mainStage.hide();
+         mainStage.setScene(MainRoom);
+         mainStage.show();
     }
     public void SwitchtoSignN(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
-        Parent signNView = loader.load();
-        Scene signNViewScene = new Scene(signNView);        
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
-        window.setScene(signNViewScene);
-        window.show();
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
+//        Parent signNView = loader.load();
+//        Scene signNViewScene = new Scene(signNView);        
+//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
+//        window.setScene(signNViewScene);
+//        window.show();
+        
+         mainStage.hide();
+         mainStage.setScene(sceneRegister);
+         mainStage.show();
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  

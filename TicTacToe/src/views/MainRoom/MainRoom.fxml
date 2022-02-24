@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -15,14 +14,14 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.MainRoom.MainRoomController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.MainRoom.MainRoomController">
    <children>
-      <ImageView id="img" fitHeight="746.0" fitWidth="1291.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView id="img" fitHeight="834.0" fitWidth="1246.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@bg.png" />
+            <Image url="@testsvg.png" />
          </image>
       </ImageView>
-      <BorderPane fx:id="plist" layoutY="-4.0" prefHeight="745.0" prefWidth="305.0" visible="false">
+      <BorderPane fx:id="plist" layoutX="14.0" layoutY="347.0" prefHeight="424.0" prefWidth="305.0">
          <top>
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="305.0" style="-fx-background-color: #DBDBDB;" text="List of Players" BorderPane.alignment="CENTER">
                <font>
@@ -30,7 +29,7 @@
                </font></Label>
          </top>
          <center>
-            <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tableView" prefHeight="200.0" prefWidth="305.0" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="name" prefWidth="158.39996033906937" text="Player Name" />
                 <TableColumn fx:id="status" prefWidth="146.40000305175784" text="Status" />
@@ -38,9 +37,9 @@
             </TableView>
          </center>
       </BorderPane>
-      <BorderPane layoutX="975.0" layoutY="2.0" prefHeight="745.0" prefWidth="305.0">
+      <BorderPane layoutX="923.0" layoutY="331.0" prefHeight="402.0" prefWidth="308.0">
          <top>
-            <Label alignment="CENTER" prefHeight="27.0" prefWidth="410.0" style="-fx-background-color: #DBDBDB;" text="Global Chat" BorderPane.alignment="CENTER">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="309.0" style="-fx-background-color: #39b5ff;" text="Global Chat" textFill="WHITE" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -49,12 +48,12 @@
          <bottom>
             <FlowPane hgap="10.0" prefHeight="30.0" prefWidth="405.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextField fx:id="msgContent" prefHeight="37.0" prefWidth="308.0" promptText="Write  a message...">
+                  <TextField id="field" fx:id="msgContent" prefHeight="39.0" prefWidth="309.0" promptText="Write  a message...">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </TextField>
-                  <Button fx:id="sendmsg" defaultButton="true" mnemonicParsing="false" onAction="#sendBroadcastMsg" prefHeight="25.0" prefWidth="38.0" style="-fx-background-color: transparent;">
+                  <Button fx:id="sendmsg" defaultButton="true" mnemonicParsing="false" onAction="#sendBroadcastMsg" prefHeight="25.0" prefWidth="38.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="22.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -63,14 +62,14 @@
                         </ImageView>
                      </graphic>
                      <FlowPane.margin>
-                        <Insets left="-50.0" />
+                        <Insets left="270.0" top="-45.0" />
                      </FlowPane.margin>
                   </Button>
                </children>
             </FlowPane>
          </bottom>
          <center>
-            <TextArea id="field" fx:id="globalchat" editable="false" prefHeight="262.0" prefWidth="370.0" BorderPane.alignment="CENTER">
+            <TextArea id="field" fx:id="globalchat" editable="false" prefHeight="262.0" prefWidth="334.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets />
                </BorderPane.margin>
@@ -80,47 +79,62 @@
             </TextArea>
          </center>
       </BorderPane>
-      <AnchorPane id="anchorPane" layoutX="403.0" layoutY="28.0" prefHeight="671.0" prefWidth="465.0">
+      <AnchorPane id="anchorPane" layoutX="391.0" layoutY="79.0" prefHeight="671.0" prefWidth="465.0">
          <children>
-            <Button fx:id="multiBTN" disable="true" layoutX="97.0" layoutY="365.0" mnemonicParsing="false" onAction="#PlayVsFriend" prefHeight="80.0" prefWidth="310.0" text="Play with a friend" />
-            <Button fx:id="signleBTN" layoutX="97.0" layoutY="230.0" mnemonicParsing="false" onAction="#PlayVsAI" prefHeight="80.0" prefWidth="310.0" text="Play vs Computer" />
-            <Button fx:id="showBTN" layoutX="97.0" layoutY="497.0" mnemonicParsing="false" onAction="#ShowPlayers" prefHeight="80.0" prefWidth="310.0" text="Show list of players" />
-            <Label fx:id="pN" layoutX="53.0" layoutY="55.0" prefHeight="25.0" prefWidth="110.0" text="PlayerName:" textFill="#fffefe" visible="false">
+            <Button fx:id="multiBTN" layoutX="87.0" layoutY="273.0" mnemonicParsing="false" onAction="#PlayVsFriend" prefHeight="80.0" prefWidth="310.0" text="Invite Player" />
+            <Button fx:id="signleBTN" layoutX="87.0" layoutY="149.0" mnemonicParsing="false" onAction="#PlayVsAI" prefHeight="80.0" prefWidth="310.0" text="Play vs Computer" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="pS" layoutX="53.0" layoutY="96.0" prefHeight="17.0" prefWidth="59.0" text="Score:" textFill="#fffefe" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="pW" layoutX="53.0" layoutY="134.0" prefHeight="27.0" prefWidth="59.0" text="Wins:" textFill="#fffefe" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="labelName" layoutX="226.0" layoutY="55.0" prefHeight="25.0" prefWidth="110.0" textFill="#fffefe" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="labelScore" layoutX="226.0" layoutY="96.0" prefHeight="27.0" prefWidth="110.0" textFill="#fffefe" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="labelWins" layoutX="226.0" layoutY="134.0" prefHeight="27.0" prefWidth="96.0" textFill="#fffefe" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Button fx:id="info" layoutX="224.0" layoutY="610.0" mnemonicParsing="false" onAction="#showinfo" text="Info" />
+                  <Font name="System Bold Italic" size="24.0" />
+               </font></Button>
+            <Button layoutX="87.0" layoutY="407.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="310.0" text="Saved Games" />
          </children>
       </AnchorPane>
+       <Button layoutX="965.0" layoutY="35.0" mnemonicParsing="false" onAction="#LeaderBoards" prefHeight="95.0" prefWidth="261.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="119.0" fitWidth="252.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@4.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <AnchorPane layoutX="32.0" layoutY="205.0" prefHeight="111.0" prefWidth="305.0">
+         <children>
+            <Label fx:id="pN" prefHeight="25.0" prefWidth="110.0" text="PlayerName:" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="pS" layoutY="41.0" prefHeight="17.0" prefWidth="59.0" text="Score:" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="pW" layoutY="79.0" prefHeight="27.0" prefWidth="59.0" text="Wins:" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelName" layoutX="173.0" prefHeight="25.0" prefWidth="110.0" text="name" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelScore" layoutX="173.0" layoutY="41.0" prefHeight="27.0" prefWidth="110.0" text="score" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelWins" layoutX="173.0" layoutY="79.0" prefHeight="27.0" prefWidth="96.0" text="wins" textFill="#fffefe">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="78.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@boy.png" />
+         </image>
+      </ImageView>
    </children>
-   <stylesheets>
-      <URL value="@Style.css" />
-      <URL value="@Style.css" />
-   </stylesheets>
 </AnchorPane>
