@@ -7,11 +7,6 @@ package views.MainRoom;
 
 import models.*;
 import controllers.*;
-import static controllers.ClientGui.LeaderBoards;
-import static controllers.ClientGui.SingleRoom;
-import static controllers.ClientGui.mainStage;
-import static controllers.ClientGui.sceneRegister;
-import static controllers.ClientGui.signUp;
 import java.io.*;
 import java.util.logging.*;
 import javafx.fxml.*;
@@ -32,7 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
-import views.SinglePlayer.SinglePlayer;
 
 
 /**
@@ -70,24 +64,10 @@ public class MainRoomController extends GeneralController implements Initializab
     @FXML private Label pN;
     @FXML private Label pS;
     @FXML private Label pW;
-    public static Scene MainRoom;
-
     
     String chosenOpponent;
     ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
     
-//    @FXML private void showinfo(ActionEvent event){
-//        e = event;
-//        pN.setVisible(true);
-//        pS.setVisible(true);
-//        pW.setVisible(true);
-//        labelName.setVisible(true);
-//        labelScore.setVisible(true);
-//        labelWins.setVisible(true);
-//        labelName.setText(ClientGui.loggedPlayer.getUsername());
-//        labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
-//        labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
-//    }
     // all functions implementation is just for test, feel free to put ur back end implementation   
     @FXML
     private void SendingMSG(ActionEvent event) {    // assigned to button send (bottom right on GUI)
@@ -95,18 +75,6 @@ public class MainRoomController extends GeneralController implements Initializab
         globalchat.appendText(msgContent.getText()+"\n"); 
         msgContent.clear();
     }
-    
-//     @FXML
-//    private void ShowPlayers(ActionEvent event) { // assigned to button Showlist of players (bottom center on GUI)        
-//        fillList();
-//        if(plist.isVisible()){
-//            plist.setVisible(false); 
-//            multiBTN.setDisable(true);
-//        }else{
-//            plist.setVisible(true);
-//           multiBTN.setDisable(false);
-//        }   
-//    }
     
     public void PlayerStartedMatch() throws JSONException
     {
@@ -117,20 +85,15 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     public void PlayVsAI(ActionEvent event) throws IOException, JSONException{
       
-//        PlayerStartedMatch();
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
-//        Parent View = loader.load();
-//        Scene ViewScene = new Scene(View);
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        window.setScene(ViewScene);
-//        SinglePlayerController controller = loader.getController();
-//        window.show();
-          FXMLLoader fxmlsingleRoom = new FXMLLoader(getClass().getResource("views/SinglePlayer/SinglePlayer.fxml"));
-         SingleRoom = new Scene(fxmlsingleRoom.load());
-          mainStage.hide();
-         mainStage.setScene(SingleRoom);
-         mainStage.show();
+        PlayerStartedMatch();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(ViewScene);
+        SinglePlayerController controller = loader.getController();
+        window.show();
     }
     public void PlayVsFriend(ActionEvent event) throws IOException, JSONException
     {
@@ -153,34 +116,25 @@ public class MainRoomController extends GeneralController implements Initializab
                     ClientGui.printStream.println(msg.toString());
                     PendingInvitation=true;
                 }
-               
             }
         }
     }
-    public void startMultiPlayerMatch(  String opponent , boolean isInvited) throws IOException, JSONException{
+    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, JSONException{
                
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
-//        Parent View = loader.load();
-//        Scene ViewScene = new Scene(View);
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
-         MainRoom = new Scene(loader.load());
-         
-        
-         
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
                 try {
-                    //window.setScene(ViewScene);
-                     mainStage.hide();
-                    mainStage.setScene(MainRoom);
-                    mainStage.show();
+                    window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     controller.initSession(opponent,isInvited);
                     PlayerStartedMatch();
-                   // window.show();   
+                    window.show();   
                 } catch (JSONException ex) {
                     Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -252,7 +206,7 @@ public class MainRoomController extends GeneralController implements Initializab
         String content = msg.getString("Content");
         switch(content){
             case "Accept":
-                startMultiPlayerMatch(msg.getString("Sender") , false);
+                startMultiPlayerMatch(e , msg.getString("Sender") , false);
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
@@ -314,7 +268,6 @@ public class MainRoomController extends GeneralController implements Initializab
                     ButtonType button = result.orElse(ButtonType.CANCEL);
                     if (button == ButtonType.OK) {
                         decision ="Accept"; // msg object
-                          
                     } else {
                         decision ="Refuse";
                         PendingInvitation=false;
@@ -322,8 +275,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     sendInvitaionResponse(msg, decision);
                     if(decision.equals("Accept")){
                         try {
-                            startMultiPlayerMatch( msg.getString("Sender"), true);
-                            
+                            startMultiPlayerMatch(e, msg.getString("Sender"), true);
                         } catch (IOException ex) {
                             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -349,19 +301,16 @@ public class MainRoomController extends GeneralController implements Initializab
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
         ClientGui.currentLiveCtrl=this;
         JSONObject msg = new JSONObject();        
-          try {
-              msg.put("Action", "getallplayers");
-          } catch (JSONException ex) {
-              Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        ClientGui.printStream.println(msg.toString());  
-         labelName.setText(ClientGui.loggedPlayer.getUsername());
+        msg.put("Action", "getallplayers");
+        ClientGui.printStream.println(msg.toString());   
+        labelName.setText(ClientGui.loggedPlayer.getUsername());
         labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
         labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
         fillList();
     }
     public void fillList()
     {
+       
         tableView.setItems(Playerslist);       
     }
     
@@ -392,22 +341,5 @@ public class MainRoomController extends GeneralController implements Initializab
         
     }
     
-    @FXML
-    public void LeaderBoards(ActionEvent event) throws IOException{
-      
-   
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/LeaderBoards/LeaderBoards.fxml"));
-//        Parent View = loader.load();
-//        Scene ViewScene = new Scene(View);
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        window.setScene(ViewScene);
-//        window.show();
-        FXMLLoader fxmlLeaderBoards = new FXMLLoader(getClass().getClassLoader().getResource("views/LeaderBoards/LeaderBoards.fxml"));
-         LeaderBoards = new Scene(fxmlLeaderBoards.load());
-         mainStage.hide();
-         mainStage.setScene(LeaderBoards);
-         mainStage.show();
-    }
     
 }

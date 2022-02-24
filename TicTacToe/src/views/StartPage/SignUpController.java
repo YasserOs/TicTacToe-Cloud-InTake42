@@ -5,10 +5,6 @@
  */
 package views.StartPage;
 import controllers.*;
-import static controllers.ClientGui.MainRoom;
-import static controllers.ClientGui.mainStage;
-import static controllers.ClientGui.sceneRegister;
-import static controllers.ClientGui.signUp;
 import views.*;
 import models.*;
 import java.io.IOException;
@@ -60,9 +56,9 @@ public class SignUpController  extends GeneralController implements Initializabl
      private TextField txtpassword1;
     @FXML
     private Label txtalert ;
-
+ 
     ActionEvent e = new ActionEvent();
-   
+
     @FXML
     private void SignUPhandle(ActionEvent event) throws SQLException, IOException, JSONException {
         e = event;
@@ -74,18 +70,18 @@ public class SignUpController  extends GeneralController implements Initializabl
         String password = txtpassword.getText().trim();
         String cpassword = txtpassword1.getText().trim();
         //System.out.print((userName+" "+ " "+ email+" "+password+" "+cpassword));
-
+ 
         if (userName.isEmpty() || email.isEmpty()
                 || password.isEmpty()) {
             Platform.runLater(() -> {
                 txtalert.setText("Empty Fields is Required");
             });
-
+ 
         } else if (!matcher.matches()) {
             Platform.runLater(() -> {
                 txtalert.setText("Please enter a valid mail");
             });
-
+ 
         } else if(!txtpassword.getText().equals(txtpassword1.getText())){
                 Platform.runLater(()->{
                   txtalert.setText("Please check your password");
@@ -99,8 +95,7 @@ public class SignUpController  extends GeneralController implements Initializabl
                 ClientGui.printStream.println(msg.toString());       
          }
       // signed user
-      
-
+ 
     }
     public void processMessage(JSONObject msg){
         Platform.runLater(new Runnable(){
@@ -126,7 +121,7 @@ public class SignUpController  extends GeneralController implements Initializabl
                         case 3:  // error occured while connecting to the datebase
                             txtalert.setText("An error occurred!");
                             break;
-                        
+
                     }  
                 } catch (JSONException ex) {
                     Logger.getLogger(SignUpController.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,33 +130,24 @@ public class SignUpController  extends GeneralController implements Initializabl
         });
     } 
     public void finishSignUp(ActionEvent event) throws IOException{
-    
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-//        Parent View = loader.load();
-//        Scene ViewScene = new Scene(View);
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        window.setScene(ViewScene);
-//        window.show();
-         FXMLLoader fxmlMainRoom = new FXMLLoader(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-         MainRoom = new Scene(fxmlMainRoom.load());
-         mainStage.hide();
-         mainStage.setScene(MainRoom);
-         mainStage.show();
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(ViewScene);
+        window.show();
     }
     public void SwitchtoSignN(ActionEvent event) throws IOException
     {
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
-//        Parent signNView = loader.load();
-//        Scene signNViewScene = new Scene(signNView);        
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
-//        window.setScene(signNViewScene);
-//        window.show();
-        
-         mainStage.hide();
-         mainStage.setScene(sceneRegister);
-         mainStage.show();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/StartPage/SignIn.fxml"));
+        Parent signNView = loader.load();
+        Scene signNViewScene = new Scene(signNView);        
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();        
+        window.setScene(signNViewScene);
+        window.show();
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  

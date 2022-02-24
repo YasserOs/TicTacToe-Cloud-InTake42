@@ -89,7 +89,7 @@
             <Button layoutX="87.0" layoutY="407.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="310.0" text="Saved Games" />
          </children>
       </AnchorPane>
-       <Button layoutX="965.0" layoutY="35.0" mnemonicParsing="false" onAction="#LeaderBoards" prefHeight="95.0" prefWidth="261.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+       <Button layoutX="965.0" layoutY="35.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="261.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
          <graphic>
             <ImageView fitHeight="119.0" fitWidth="252.0" pickOnBounds="true" preserveRatio="true">
                <image>

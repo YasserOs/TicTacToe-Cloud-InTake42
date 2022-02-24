@@ -5,10 +5,6 @@
  */
 package views.StartPage;
 import controllers.ClientGui;
-import static controllers.ClientGui.MainRoom;
-import static controllers.ClientGui.mainStage;
-import static controllers.ClientGui.registerController;
-import static controllers.ClientGui.signUp;
 import controllers.Server;
 import models.*;
 import java.io.IOException;
@@ -35,15 +31,13 @@ import javafx.fxml.Initializable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
-
+ 
 /**
  *
  * @author Hossam
  */
 public class SignInController extends GeneralController implements Initializable 
 {
-    
-    
     Database db;
     Person p;
     @FXML
@@ -56,13 +50,11 @@ public class SignInController extends GeneralController implements Initializable
     private TextField txtpassword;
     @FXML
     private Label txtalert ;
-    private Stage stage;
-    
-    
+
     ActionEvent e = new ActionEvent();
-    
-    
-    
+
+
+
     @FXML
     private void SignNHandle(ActionEvent event) throws SQLException, IOException, JSONException{
         e = event;
@@ -70,18 +62,18 @@ public class SignInController extends GeneralController implements Initializable
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(txtusername.getText());
         String userName = txtusername.getText().trim();
-       
+
         String password = txtpassword.getText().trim();
         if (userName.isEmpty() || password.isEmpty()) {
             Platform.runLater(()-> {
                 txtalert.setText("Empty Fields is Required");
             });
-
+ 
         } else if(txtusername.getText().equals("")){
                  Platform.runLater(()-> {
                 txtalert.setText("Please enter a valid username");
         });
-
+ 
         }else if(!matcher.matches()){
             Platform.runLater(()->{
               txtalert.setText("Please enter a valid username");
@@ -97,10 +89,10 @@ public class SignInController extends GeneralController implements Initializable
             msg.put("password", password);
             ClientGui.printStream.println(msg.toString());  
         }  
-      
+
     }
-    
-    
+
+
     public void processMessage(JSONObject msg){
         Platform.runLater(new Runnable(){
             @Override
@@ -134,47 +126,35 @@ public class SignInController extends GeneralController implements Initializable
                 }
             }
         });
-        
+
     }
-    
+
     public void finshSignIn(ActionEvent event) throws IOException{   
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-//        Parent View = loader.load();
-//        Scene ViewScene = new Scene(View);
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        window.setScene(ViewScene);
-//        window.show();
-          FXMLLoader fxmlMainRoom = new FXMLLoader(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
-         MainRoom = new Scene(fxmlMainRoom.load());
-         mainStage.hide();
-         mainStage.setScene(MainRoom);
-         mainStage.show();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(ViewScene);
+        window.show();
     }
-    
+
     public void SwitchtoSignUp(ActionEvent event) throws IOException
     {
-//        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignUp.fxml"));
-//        Scene signUpViewScene = new Scene(signUpView);
-//        
-//        //This line gets the Stage information
-//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        
-//        window.setScene(signUpViewScene);
-//        window.show();
-         FXMLLoader fxmlLoaderrigister = new FXMLLoader(getClass().getResource("/views/StartPage/SignUp.fxml"));
-         signUp = new Scene(fxmlLoaderrigister.load());
-         
-         mainStage.hide();
-         mainStage.setScene(signUp);
-         mainStage.show();
-        
-         
+        Parent signUpView =  FXMLLoader.load(getClass().getClassLoader().getResource("views/StartPage/SignUp.fxml"));
+        Scene signUpViewScene = new Scene(signUpView);
+
+        //This line gets the Stage information
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene(signUpViewScene);
+        window.show();
     }
     @Override
     public void initialize(URL url, ResourceBundle rb){  
        ClientGui.currentLiveCtrl=this;
     }
-    
-     
+
+
+
 }

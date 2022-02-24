@@ -131,6 +131,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     break;
                 case "RestartMatch":
                     checkGameRestart(msg);
+                    break;
             }} catch (JSONException ex) {
             Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -138,28 +139,20 @@ public class MultiPlayerController extends GeneralController implements Initiali
     
     
     private void checkGameRestart(JSONObject msg) throws IOException, JSONException {
+        
         String response = msg.getString("Content");
-        if(response.equals("true")){
-                    player2Restart = true;
-                    if(player1Restart&&player2Restart){
-                        player1Restart = player2Restart= false;
-                        resetGrid();
-                    }
-        }
-        else if(response.equals("false")){
+//        if(response.equals("true")){
+//                    player2Restart = true;
+//                    if(player1Restart&&player2Restart){
+//                        player1Restart = player2Restart= false;
+//                        resetGrid();
+//                    }
+//        }
+        if(response.equals("false")){
             
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                    alert.hide();
-                    showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
-                    //back2MainRoom(e);
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
+            alert.hide();
+            showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
+            System.out.println("eeeeeeee");
             
         }
     }
