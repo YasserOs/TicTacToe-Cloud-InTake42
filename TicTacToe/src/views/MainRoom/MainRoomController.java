@@ -270,7 +270,7 @@ public class MainRoomController extends GeneralController implements Initializab
                 // then send a messag object with the content= accept or refuse back to the server handler
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Invitation Recieved!");
-                alert.setHeaderText("Invited you to a game");
+                alert.setHeaderText(msg.getString("Sender")+" Invited you to a game");
                 alert.setResizable(false);
                 alert.setContentText("Select okay or cancel this alert.");
                 Optional<ButtonType> result = alert.showAndWait();
@@ -280,10 +280,8 @@ public class MainRoomController extends GeneralController implements Initializab
                     decision ="Accept"; // msg object
                 } else {
                     decision ="Refuse";
-                    PendingInvitation=false;
-                    
-                }
-                
+                    PendingInvitation=false;                   
+                }            
                 sendInvitaionResponse(msg, decision);             
                 if(decision.equals("Accept")){
                     try {

@@ -13,6 +13,7 @@ import java.net.Socket;
 import views.SinglePlayer.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -25,7 +26,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -59,7 +62,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
     @FXML TextField chatmsg;
     @FXML Label labelLeft; //player1
     @FXML Label labelRight; // player2
-    
+    ActionEvent e;
     ArrayList<Button> availablePositions = new ArrayList<Button>();
     Person player1; // loggedPlayer
     String player2;
@@ -67,8 +70,12 @@ public class MultiPlayerController extends GeneralController implements Initiali
     String opponentPick="" ;
     Session currentSession;
 
+    
     Thread playerSocketThread;
     boolean playerTurn;
+    boolean playerWon =false;
+    boolean player1Restart = false;
+    boolean player2Restart = false;
     boolean oppTurn;
     boolean invited =false;
     int numberOfPlays = 0 ;
@@ -79,10 +86,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
         player2=p2;
         invited = isInvited;
         if(!invited){
-            //random boolean to decide which player to start , but only the player who sent the invite is gonna run it
             playerTurn = randomTurn();
-            oppTurn = !playerTurn;
-            System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
+            oppTurn = !playerTurn;     
             JSONObject msg = new JSONObject();
             msg.put("Action", "chooseTurn");
             msg.put("Sender", player1.getUsername());
@@ -94,6 +99,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
             } catch (IOException ex) {
                 Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
+            
         }
         currentSession = new Session(player1.getUsername(),p2);
         resetGrid();
@@ -116,34 +123,31 @@ public class MultiPlayerController extends GeneralController implements Initiali
                updateBoard(msg.getInt("Content"));
                break;
            case "Won":
-               gameresult("lost");
+               gameresult("Loss");
                break;
-           case "draw":
-               gameresult("draw");
-              
-              
+           case "Draw":
+               gameresult("Draw");
                break;
+           case "RestartMatch":
+               checkGameRestart(msg);
        }
     }
     
-    public void gameresult(String result)
-    {
-        
-        playerTurn=false;
-        ClientGui.loggedPlayer.gamesplayed();
-        if(result.equals("lost"))
-        {
-             ClientGui.loggedPlayer.gameslost();
-        }
-        else
-        {
-            ClientGui.loggedPlayer.gamesdraws();
-            ClientGui.loggedPlayer.incrementTotal_score(2);    
-        }
-        
-       
-    }
     
+    private void checkGameRestart(JSONObject msg) throws IOException {
+        String response = msg.getString("Content");
+        if(response.equals("true")){
+                    player2Restart = true;
+                    if(player1Restart&&player2Restart){
+                        player1Restart = player2Restart= false;
+                        resetGrid();
+                    }
+        }
+        else if(response.equals("false")){
+            showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", "Returning to main room...");
+            this.back2MainRoom(e);
+        }
+    }
     public boolean randomTurn()
     {
         Random rand = new Random();
@@ -154,7 +158,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         setPicks();    
     }
     public void setPicks() throws IOException{
-        if(playerTurn){
+        if(playerTurn){     
             setMyPick("x");
             setOpponentPick(opponentPick);
         }
@@ -168,19 +172,28 @@ public class MultiPlayerController extends GeneralController implements Initiali
         }
     }
     public void setOpponentPick(String pick) throws IOException{
-        JSONObject msg = new JSONObject();
-        msg.put("Action", "Pick");
-        msg.put("Sender", player1.getUsername());
-        msg.put("Receiver", player2);
-        msg.put("Content", opponentPick);
-        
-        ClientGui.printStream.println(msg.toString());  
+        sendMsgToPlayer("Pick",opponentPick);  
     }
      public void resetGrid()
     {
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
+                if(playerWon){
+                    try {
+                        playerTurn = randomTurn();
+                        oppTurn = !playerTurn;     
+                        JSONObject msg = new JSONObject();
+                        msg.put("Action", "chooseTurn");
+                        msg.put("Sender", player1.getUsername());
+                        msg.put("Receiver", player2);
+                        msg.put("Content", oppTurn);
+                        ClientGui.printStream.println(msg.toString());
+                        setPicks();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 availablePositions.clear();
                 availablePositions.add(btn1);
                 availablePositions.add(btn2);
@@ -202,44 +215,28 @@ public class MultiPlayerController extends GeneralController implements Initiali
         });
         ;        
     }
-    
-  
     private void receiveChat(JSONObject msg){
         chattxt.appendText(msg.getString("Sender")+": "+msg.getString("Content")+"\n");
-    }
-     
+    }  
     @FXML 
     private void SendChat(ActionEvent event){
         chattxt.appendText(player1.getUsername()+": "+chatmsg.getText()+"\n");
-        JSONObject msg = new JSONObject();
-        msg.put("Action", "Chat");
-        msg.put("Sender", player1.getUsername());
-        msg.put("Receiver", player2);
-        msg.put("Content",chatmsg.getText());
-        ClientGui.printStream.println(msg.toString());
+        sendMsgToPlayer("Chat",chatmsg.getText());
         chatmsg.clear();
 
-    }
-    
+    }  
     @FXML
     private void PlayerMove(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException 
-    {
-        
+    {   
+        e=event;
         Button position = (Button) event.getSource();
-        System.out.println("Player 1 : "+player1.getUsername()+" - Pick : "+currentPlayerPick+" - Position : "+availablePositions.indexOf(position));
-
         if( isEmpty(position) && playerTurn){
             System.out.println("Player 1 : "+player1.getUsername()+" - Pick : "+currentPlayerPick+" - Position : "+availablePositions.indexOf(position));
             position.setText(currentPlayerPick);
             int buttPosition = currentSession.board.getBoard().indexOf(position);
             availablePositions.remove(position);
             playerTurn=false;
-            JSONObject msg = new JSONObject();
-            msg.put("Action", "Move");
-            msg.put("Sender", player1.getUsername());
-            msg.put("Receiver", player2);
-            msg.put("Content",buttPosition);
-            ClientGui.printStream.println(msg.toString());
+            sendMsgToPlayer("Move",Integer.toString(buttPosition));
             numberOfPlays++;
             if(numberOfPlays>=5)
             {
@@ -252,40 +249,92 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     playerdraw();
                 
                 }
-            }
-           
-
+            } 
         }
-    }
-    public void playerWin() throws InterruptedException, IOException{
+    }  
+    public void playerWin() throws IOException{
         System.out.println(player1.getUsername()+" Won !");
-        JSONObject msg = new JSONObject();
-        msg.put("Action", "Won");
-        msg.put("Sender", player1.getUsername());
-        msg.put("Receiver", player2);
-        ClientGui.printStream.println(msg.toString());
-        ClientGui.loggedPlayer.incrementTotal_score(10);
-        ClientGui.loggedPlayer.gameswon();
-        ClientGui.loggedPlayer.gamesplayed();
+        playerWon=true;
+        sendMsgToPlayer("Won","");
+        gameresult("Won");
         
-        //availablePositions.clear();
-        //resetGrid();
     }
-    
-     public void playerdraw() throws InterruptedException, IOException{
+     public void playerdraw() throws IOException{
         System.out.println(player1.getUsername()+" draw !");
+        gameresult("Draw");
+    }
+     public void gameresult(String result) throws IOException
+    {
+        playerTurn=false;
+        ClientGui.loggedPlayer.gamesplayed();
+        if(result.equals("Won"))
+        {
+            ClientGui.loggedPlayer.gamesdraws();
+            ClientGui.loggedPlayer.incrementTotal_score(10);        
+
+        }else if(result.equals("Loss")){
+            playerWon=false;
+            System.out.println(ClientGui.loggedPlayer + " Lost !");
+            ClientGui.loggedPlayer.gameslost();
+        }
+        else
+        {
+            ClientGui.loggedPlayer.gamesdraws();
+            ClientGui.loggedPlayer.incrementTotal_score(2);    
+        }
+        // then send a messag object with the content= accept or refuse back to the server handler
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                Optional<ButtonType> res = showAlert(result, "Want to Play again ?", "Select okay to restart / X to return to main room .");
+                Button newb = new Button();
+                ButtonType button = res.orElse(ButtonType.CANCEL);
+                if (button == ButtonType.OK) {
+                    player1Restart = true;
+                    sendMsgToPlayer("RestartMatch","true");
+                    if(player2Restart){
+                        resetGrid();
+                    }else{
+                        showAlert("Restart Match", "Waitin Player 2 Response...", "");
+                    }
+
+                } else {
+                    sendMsgToPlayer("RestartMatch","false");
+                    try {
+                        back2MainRoom(e);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        
+        
+       
+    }
+    private Optional<ButtonType> showAlert(String title , String header , String body){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setResizable(false);
+        alert.setContentText(body);
+        Optional<ButtonType> res = alert.showAndWait();
+        return res;
+    }
+    private void sendMsgToPlayer(String Action , String Content){
         JSONObject msg = new JSONObject();
-        msg.put("Action", "draw");
+        msg.put("Action", Action);
         msg.put("Sender", player1.getUsername());
         msg.put("Receiver", player2);
+        if(Action == "Move"){
+            int movePos = Integer.parseInt(Content);
+            msg.put("Content", movePos);
+
+        }else{
+            msg.put("Content", Content);
+        }
         ClientGui.printStream.println(msg.toString());
-        ClientGui.loggedPlayer.gamesplayed();
-        ClientGui.loggedPlayer.gamesdraws();
-        ClientGui.loggedPlayer.incrementTotal_score(2);
-        //availablePositions.clear();
-        //resetGrid();
     }
-    
     private boolean isEmpty(Button pos)
     {
         return pos.getText().isEmpty();  
@@ -300,8 +349,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         });
         numberOfPlays++;
         playerTurn=true;
-    }
-   
+    } 
     public void back2MainRoom(ActionEvent event) throws IOException{
         
         
@@ -318,13 +366,13 @@ public class MultiPlayerController extends GeneralController implements Initiali
         window.setScene(ViewScene);
         window.show();
     
-    }
-    
-    
+    }   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ClientGui.currentLiveCtrl = this;
         
     }    
+
+    
     
 }
