@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import javafx.scene.image.Image;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Person;
+import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
 import views.MainRoom.MainRoomController;
@@ -58,8 +60,11 @@ public class ClientGui extends Application {
         primaryStage.setTitle("Home");
         Scene scene = new Scene(root);
         //set transparent
+        Image icon = new Image("controllers/test2.png"); //either this or test 2 
+        primaryStage.getIcons().add(icon);
         scene.setFill(Color.TRANSPARENT);
         primaryStage.setScene(scene);
+        
         primaryStage.show();
         primaryStage.setOnCloseRequest((event) -> {
             System.exit(1);
@@ -85,7 +90,12 @@ public class ClientGui extends Application {
             public void run() {
                 while(true){
                     try {
-                        JSONObject msg = new JSONObject(inputStream.readLine());
+                        JSONObject msg = null;
+                        try {
+                            msg = new JSONObject(inputStream.readLine());
+                        } catch (JSONException ex) {
+                            Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         currentLiveCtrl.processMessage(msg);                        
                     } catch (IOException ex) {
                         Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,7 +108,7 @@ public class ClientGui extends Application {
         playerSocketThread.start();
     }
     
-    public static void convertJSONtoPlayer(JSONObject json){
+    public static void convertJSONtoPlayer(JSONObject json) throws JSONException{
       String userName = json.getString("username");
       int score = json.getInt("score");
       String status = json.getString("status");

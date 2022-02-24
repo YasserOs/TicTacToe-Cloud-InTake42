@@ -8,37 +8,72 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="473.0" prefWidth="802.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignInController">
+<AnchorPane id="AnchorPane" prefHeight="688.0" prefWidth="1170.0" style="-fx-background-color: #075EEA;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignInController">
     <children>
-      <ImageView fitHeight="558.0" fitWidth="802.0" styleClass="form_box">
-         <image>
-            <Image url="@images/tictactoe.jpg" />
-         </image>
-      </ImageView>
-      <AnchorPane id="anchorPane" layoutX="190.0" layoutY="21.0" prefHeight="436.0" prefWidth="464.0">
+      <AnchorPane prefHeight="690.0" prefWidth="562.0">
          <children>
-            <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="156.0" layoutY="48.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Login" textFill="WHITE">
-               <font>
-                  <Font name="System Bold Italic" size="32.0" />
-               </font>
-            </Label>
-            <PasswordField id="field" fx:id="txtpassword" alignment="CENTER" layoutX="73.0" layoutY="186.0" prefHeight="37.0" prefWidth="311.0" promptText="Password" />
-            <TextField id="field" fx:id="txtusername" alignment="CENTER" layoutX="72.0" layoutY="135.0" prefHeight="37.0" prefWidth="311.0" promptText="Username" />
-            <Button fx:id="loginbtn" layoutX="72.0" layoutY="240.0" mnemonicParsing="false" onAction="#SignNHandle" prefHeight="37.0" prefWidth="311.0" text="Sign in">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Button>
-            <Button fx:id="singupbtn" layoutX="72.0" layoutY="297.0" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="37.0" prefWidth="311.0" text="Sign up">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Button>
-            <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="83.0" layoutY="379.0" prefHeight="58.0" prefWidth="290.0" textFill="#f70000">
+            <ImageView fitHeight="690.0" fitWidth="578.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/BGS.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="560.0">
+         <children>
+            <AnchorPane id="anchorPane" prefHeight="690.0" prefWidth="610.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="log" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" layoutX="229.0" layoutY="31.0" prefHeight="58.0" prefWidth="144.0" stylesheets="@newCascadeStyleSheet.css" text="Login" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="15.0" />
+                        <Font name="System Bold Italic" size="32.0" />
                      </font>
                   </Label>
+                  <Button fx:id="loginbtn" layoutX="108.0" layoutY="421.0" mnemonicParsing="false" onAction="#SignNHandle" prefHeight="37.0" prefWidth="385.0" text="Sign in" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold Italic" size="12.0" />
+                     </font>
+                  </Button>
+                  <Label id="txtalert" fx:id="txtalert" contentDisplay="CENTER" layoutX="116.0" layoutY="534.0" prefHeight="44.0" prefWidth="385.0" textFill="#f70000">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                  <FlowPane layoutX="97.0" layoutY="246.0" prefHeight="68.0" prefWidth="422.0">
+                     <children>
+                        <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" textFill="#1f8bf8" />
+                        <TextField id="field" fx:id="txtusername" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Username" style="-fx-background-color: #F7F7F7;" />
+                     </children>
+                  </FlowPane>
+                  <FlowPane layoutX="97.0" layoutY="326.0" prefHeight="68.0" prefWidth="422.0">
+                     <children>
+                        <Label prefHeight="44.0" prefWidth="7.0" style="-fx-background-color: #1F8BF8;" />
+                        <PasswordField id="field" fx:id="txtpassword" alignment="CENTER" prefHeight="44.0" prefWidth="385.0" promptText="Password" style="-fx-background-color: #F7F7F7;" />
+                     </children>
+                  </FlowPane>
+                  <FlowPane hgap="1.0" layoutX="179.0" layoutY="476.0" prefHeight="58.0" prefWidth="242.0">
+                     <children>
+                        <Label prefHeight="20.0" prefWidth="166.0" text="Don't have an account?" textFill="#42444a">
+                           <font>
+                              <Font name="Times New Roman Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="singupbtn" mnemonicParsing="false" onAction="#SwitchtoSignUp" prefHeight="43.0" prefWidth="67.0" style="-fx-background-color: transparent;" text="Sign up" textFill="#1f8bf8">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </FlowPane>
+                  <Label alignment="CENTER" layoutX="107.0" layoutY="127.0" prefHeight="86.0" prefWidth="385.0" text="Login" textFill="#097ff3">
+                     <font>
+                        <Font name="System Bold Italic" size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
     </children>

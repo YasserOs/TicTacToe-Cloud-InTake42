@@ -37,6 +37,7 @@ import javafx.stage.Stage;
 import models.Message;
 import models.Person;
 import models.Session;
+import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
 
@@ -80,7 +81,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
     boolean invited =false;
     int numberOfPlays = 0 ;
     
-    public void initSession(String p2 , boolean isInvited ){
+    public void initSession(String p2 , boolean isInvited ) throws JSONException{
         player1=ClientGui.loggedPlayer;
         System.out.println("Init Session - Player 1 : " + player1.getUsername() + " , Player 2 : "+p2);
         player2=p2;
@@ -108,33 +109,36 @@ public class MultiPlayerController extends GeneralController implements Initiali
 
     
     public void processMessage(JSONObject msg) throws IOException{
-       String Action =msg.getString("Action"); 
-       switch(Action){
-           case "Chat" :
-               receiveChat(msg);
-               break;
-           case "chooseTurn":
-               setTurn(msg.getBoolean("Content"));
-               break;
-           case "Pick":
-               setMyPick(msg.getString("Content"));
-               break;
-           case "Move":
-               updateBoard(msg.getInt("Content"));
-               break;
-           case "Won":
-               gameresult("Loss");
-               break;
-           case "Draw":
-               gameresult("Draw");
-               break;
-           case "RestartMatch":
-               checkGameRestart(msg);
-       }
+        try {
+            String Action =msg.getString("Action");
+            switch(Action){
+                case "Chat" :
+                    receiveChat(msg);
+                    break;
+                case "chooseTurn":
+                    setTurn(msg.getBoolean("Content"));
+                    break;
+                case "Pick":
+                    setMyPick(msg.getString("Content"));
+                    break;
+                case "Move":
+                    updateBoard(msg.getInt("Content"));
+                    break;
+                case "Won":
+                    gameresult("Loss");
+                    break;
+                case "Draw":
+                    gameresult("Draw");
+                    break;
+                case "RestartMatch":
+                    checkGameRestart(msg);
+            }} catch (JSONException ex) {
+            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     
-    private void checkGameRestart(JSONObject msg) throws IOException {
+    private void checkGameRestart(JSONObject msg) throws IOException, JSONException {
         String response = msg.getString("Content");
         if(response.equals("true")){
                     player2Restart = true;
@@ -153,11 +157,11 @@ public class MultiPlayerController extends GeneralController implements Initiali
         Random rand = new Random();
         return rand.nextBoolean();
     }
-    public void setTurn(boolean turn) throws IOException{
+    public void setTurn(boolean turn) throws IOException, JSONException{
         playerTurn = turn;
         setPicks();    
     }
-    public void setPicks() throws IOException{
+    public void setPicks() throws IOException, JSONException{
         if(playerTurn){     
             setMyPick("x");
             setOpponentPick(opponentPick);
@@ -171,7 +175,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             opponentPick = "x";
         }
     }
-    public void setOpponentPick(String pick) throws IOException{
+    public void setOpponentPick(String pick) throws IOException, JSONException{
         sendMsgToPlayer("Pick",opponentPick);  
     }
      public void resetGrid()
@@ -184,12 +188,32 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         playerTurn = randomTurn();
                         oppTurn = !playerTurn;     
                         JSONObject msg = new JSONObject();
-                        msg.put("Action", "chooseTurn");
-                        msg.put("Sender", player1.getUsername());
-                        msg.put("Receiver", player2);
-                        msg.put("Content", oppTurn);
+                        try {
+                            msg.put("Action", "chooseTurn");
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        try {
+                            msg.put("Sender", player1.getUsername());
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        try {
+                            msg.put("Receiver", player2);
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        try {
+                            msg.put("Content", oppTurn);
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         ClientGui.printStream.println(msg.toString());
-                        setPicks();
+                        try {
+                            setPicks();
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -215,18 +239,18 @@ public class MultiPlayerController extends GeneralController implements Initiali
         });
         ;        
     }
-    private void receiveChat(JSONObject msg){
+    private void receiveChat(JSONObject msg) throws JSONException{
         chattxt.appendText(msg.getString("Sender")+": "+msg.getString("Content")+"\n");
     }  
     @FXML 
-    private void SendChat(ActionEvent event){
+    private void SendChat(ActionEvent event) throws JSONException{
         chattxt.appendText(player1.getUsername()+": "+chatmsg.getText()+"\n");
         sendMsgToPlayer("Chat",chatmsg.getText());
         chatmsg.clear();
 
     }  
     @FXML
-    private void PlayerMove(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException 
+    private void PlayerMove(ActionEvent event) throws IOException, ClassNotFoundException, InterruptedException, JSONException 
     {   
         e=event;
         Button position = (Button) event.getSource();
@@ -252,7 +276,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             } 
         }
     }  
-    public void playerWin() throws IOException{
+    public void playerWin() throws IOException, JSONException{
         System.out.println(player1.getUsername()+" Won !");
         playerWon=true;
         sendMsgToPlayer("Won","");
@@ -290,19 +314,27 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 Button newb = new Button();
                 ButtonType button = res.orElse(ButtonType.CANCEL);
                 if (button == ButtonType.OK) {
-                    player1Restart = true;
-                    sendMsgToPlayer("RestartMatch","true");
-                    if(player2Restart){
-                        resetGrid();
-                    }else{
-                        showAlert("Restart Match", "Waitin Player 2 Response...", "");
+                    try {
+                        player1Restart = true;
+                        sendMsgToPlayer("RestartMatch","true");
+                        if(player2Restart){
+                            resetGrid();
+                        }else{
+                            showAlert("Restart Match", "Waitin Player 2 Response...", "");
+                        }
+                    } catch (JSONException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 } else {
-                    sendMsgToPlayer("RestartMatch","false");
                     try {
-                        back2MainRoom(e);
-                    } catch (IOException ex) {
+                        sendMsgToPlayer("RestartMatch","false");
+                        try {
+                            back2MainRoom(e);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (JSONException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -321,7 +353,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         Optional<ButtonType> res = alert.showAndWait();
         return res;
     }
-    private void sendMsgToPlayer(String Action , String Content){
+    private void sendMsgToPlayer(String Action , String Content) throws JSONException{
         JSONObject msg = new JSONObject();
         msg.put("Action", Action);
         msg.put("Sender", player1.getUsername());
@@ -350,7 +382,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         numberOfPlays++;
         playerTurn=true;
     } 
-    public void back2MainRoom(ActionEvent event) throws IOException{
+    public void back2MainRoom(ActionEvent event) throws IOException, JSONException{
         
         
         JSONObject msg = new JSONObject();

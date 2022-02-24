@@ -42,11 +42,24 @@ public class ServerHandler extends Thread {
     public void run() {
         while (true) {
             try {
-                JSONObject msg = new JSONObject(inputStream.readLine()) ;
-                processMessage(msg);            
+                JSONObject msg = null ;
+                try {
+                    msg = new JSONObject(inputStream.readLine());
+                } catch (JSONException ex) {
+                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {            
+                    processMessage(msg);
+                } catch (JSONException ex) {
+                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (IOException ex) {
                 
-                closeConnection();
+                try {
+                    closeConnection();
+                } catch (JSONException ex1) {
+                    Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex1);
+                }
                 break;
             } catch (SQLException ex){
                 System.out.println("FromSQL");
@@ -55,7 +68,7 @@ public class ServerHandler extends Thread {
         }
     }
     
-    public void closeConnection() 
+    public void closeConnection() throws JSONException 
     {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
         Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
@@ -77,7 +90,7 @@ public class ServerHandler extends Thread {
 
     }
     
-    public void processMessage(JSONObject msg) throws IOException, SQLException {
+    public void processMessage(JSONObject msg) throws IOException, SQLException, JSONException {
         String Action = msg.getString("Action");
         switch (Action) {
             case "SignUp":
@@ -104,7 +117,7 @@ public class ServerHandler extends Thread {
         }
     }
     
-    public void changeplayerstatus(String action,String status)
+    public void changeplayerstatus(String action,String status) throws JSONException
     {
         Server.updateplayer(loggedPlayer.getUsername(),status);
         JSONObject msg= new JSONObject();
@@ -112,7 +125,7 @@ public class ServerHandler extends Thread {
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
     }
-    public void getAllPlayers()
+    public void getAllPlayers() throws JSONException
     {
        JSONArray names = new JSONArray();
        JSONArray status =new JSONArray();
@@ -181,7 +194,7 @@ public class ServerHandler extends Thread {
         printStream.println(response.toString());
     }
     
-    public void convertPlayerToJSON(Person p , JSONObject json){
+    public void convertPlayerToJSON(Person p , JSONObject json) throws JSONException{
         json.put("username", p.getUsername());
         json.put("score", p.getScore());
         json.put("status", p.getStatus());
@@ -192,7 +205,7 @@ public class ServerHandler extends Thread {
     }
     // send to receiver
     // send response back to sender
-    public void sendMsgToReceiver(JSONObject msg) {
+    public void sendMsgToReceiver(JSONObject msg) throws JSONException {
         
         for (ServerHandler sh : handlers) {
             if (msg.getString("Receiver").equals(sh.loggedPlayer.getUsername())) {

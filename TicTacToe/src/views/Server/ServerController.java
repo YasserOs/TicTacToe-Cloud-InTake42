@@ -91,7 +91,8 @@ public class ServerController implements Initializable {
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status"));
          //tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
-         
+           
+         tableView.setItems(Server.Playerslist);
     }    
     
 }
