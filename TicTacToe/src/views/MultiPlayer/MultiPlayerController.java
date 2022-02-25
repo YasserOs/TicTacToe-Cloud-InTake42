@@ -320,7 +320,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                } else {
+                } else if(button==ButtonType.CANCEL) {
                     try {
                         sendMsgToPlayer("RestartMatch","false");
                         try {

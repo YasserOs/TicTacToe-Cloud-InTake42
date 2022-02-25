@@ -15,6 +15,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -83,8 +84,17 @@ public class ServerController implements Initializable {
     public void stopServer(){
         lblonstatus.setTextFill(Color.web("red"));
          Platform.runLater(()->lblonstatus.setText("Server Has Been Stopped"));
-                        try{myServerSocket.close();} catch(IOException ex){ex.printStackTrace();}
+                        try{
+                            closeServerHandler();
+                            myServerSocket.close();
+                        } catch(IOException ex){
+                            ex.printStackTrace();
+                        }
                         th.stop();
+    }
+    
+    public void closeServerHandler() throws IOException{
+        ServerHandler.closeAllConnections();
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {

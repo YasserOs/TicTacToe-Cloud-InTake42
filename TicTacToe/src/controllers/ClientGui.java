@@ -9,12 +9,16 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Person;
@@ -40,9 +44,12 @@ public class ClientGui extends Application {
     public static DataInputStream inputStream;
     public static PrintStream printStream;
     public static GeneralController currentLiveCtrl;
+    public static Stage mainStage;
+    public static Alert alert;
     @Override
     public void start(Stage primaryStage) throws IOException
     {
+        mainStage=primaryStage;
          Parent root = FXMLLoader.load(getClass().getResource("/views/StartPage/SignIn.fxml"));
 
         //grab your root here
@@ -73,8 +80,10 @@ public class ClientGui extends Application {
             playerSocket=new Socket("127.0.0.1",12345); 
             printStream = new PrintStream(playerSocket.getOutputStream());
             inputStream = new DataInputStream(playerSocket.getInputStream());
+            createPlayerSocketThread();
+
         }catch (IOException ex){
-            Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+              System.out.println("Server is not running .");
         }  
 
 
@@ -86,10 +95,16 @@ public class ClientGui extends Application {
             public void run() {
                 while(true){
                     try {
-                        JSONObject msg = new JSONObject(inputStream.readLine());
+                        String response = inputStream.readLine();
+                        if(response==null){
+                            System.out.println("Server Close");
+                            closeClient();
+                            break;
+                        }
+                        JSONObject msg = new JSONObject(response);
                         currentLiveCtrl.processMessage(msg);                        
                     } catch (IOException ex) {
-                        Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("server closed");
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(ClientGui.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (JSONException ex) {
@@ -123,9 +138,26 @@ public class ClientGui extends Application {
     public static void startClient()
     {
         createSocket();
-        createPlayerSocketThread();
     }
 
+    public static void closeClient(){
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                showAlert("Server Closed", "Closing Client ...");
+                 mainStage.close();
+            }
+        });
+        
+        playerSocketThread.stop();
+    }
+     private static void showAlert(String title , String header ){
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setResizable(false);
+        alert.showAndWait();
+    }
 
     public static void main(String[] args) {
         startClient();

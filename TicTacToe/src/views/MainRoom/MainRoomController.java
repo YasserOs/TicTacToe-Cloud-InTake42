@@ -65,16 +65,33 @@ public class MainRoomController extends GeneralController implements Initializab
     @FXML private Label pS;
     @FXML private Label pW;
     
+    Alert alert;
     String chosenOpponent;
     ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
     
-    // all functions implementation is just for test, feel free to put ur back end implementation   
-    @FXML
-    private void SendingMSG(ActionEvent event) {    // assigned to button send (bottom right on GUI)
-      
-        globalchat.appendText(msgContent.getText()+"\n"); 
-        msgContent.clear();
+    @Override
+    public void initialize(URL url, ResourceBundle rb)
+    {     
+        
+        name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
+        status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
+        ClientGui.currentLiveCtrl=this;
+        JSONObject msg = new JSONObject();        
+        msg.put("Action", "getallplayers");
+        ClientGui.printStream.println(msg.toString());
+        PendingInvitation=false;
+        labelName.setText(ClientGui.loggedPlayer.getUsername());
+        labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
+        labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
+        fillList();
     }
+    public void fillList()
+    {
+       
+        tableView.setItems(Playerslist);       
+    }
+    
+    // all functions implementation is just for test, feel free to put ur back end implementation   
 
     public void PlayerStartedMatch() throws JSONException
     {
@@ -92,7 +109,6 @@ public class MainRoomController extends GeneralController implements Initializab
         Scene ViewScene = new Scene(View);
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(ViewScene);
-        SinglePlayerController controller = loader.getController();
         window.show();
     }
     public void PlayVsFriend(ActionEvent event) throws IOException, JSONException
@@ -189,16 +205,20 @@ public class MainRoomController extends GeneralController implements Initializab
         });
     }
     
+    @FXML
     public void sendBroadcastMsg(ActionEvent event) throws JSONException
     {
-        String msgcontent= new String(msgContent.getText());     
-        System.out.println("text ==="+msgContent.getText());
-        msgContent.setText("");
-        JSONObject msg= new JSONObject();
-        msg.put("Action","BroadcastChat");
-        msg.put("Sender",ClientGui.loggedPlayer.getUsername());
-        msg.put("Content",msgcontent);
-        ClientGui.printStream.println(msg.toString());    
+        if(!msgContent.getText().isEmpty()){
+            String msgcontent= new String(msgContent.getText());     
+            System.out.println("text ==="+msgContent.getText());
+            msgContent.setText("");
+            JSONObject msg= new JSONObject();
+            msg.put("Action","BroadcastChat");
+            msg.put("Sender",ClientGui.loggedPlayer.getUsername());
+            msg.put("Content",msgcontent);
+            ClientGui.printStream.println(msg.toString()); 
+        }
+           
     }
    
     public void processInvitation(JSONObject msg) throws IOException, ClassNotFoundException, JSONException{
@@ -249,20 +269,14 @@ public class MainRoomController extends GeneralController implements Initializab
     
     public void openInvitationScreen(JSONObject msg) throws IOException, ClassNotFoundException{       
         // open small log with sender name and 2 buttons to accept or refuse the invitation        
-        PendingInvitation=true;
         Platform.runLater(new Runnable()
         {
             @Override
             public void run() {
                 try {
                     String decision ;
-                    // then send a messag object with the content= accept or refuse back to the server handler
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Invitation Recieved!");
-                    alert.setHeaderText(msg.getString("Sender")+" Invited you to a game");
-                    alert.setResizable(false);
-                    alert.setContentText("Select okay or cancel this alert.");
-                    Optional<ButtonType> result = alert.showAndWait();
+                    PendingInvitation=true;
+                    Optional<ButtonType> result = showAlert("Invitation Recieved!",msg.getString("Sender")+" Invited you to a game");
                     Button newb = new Button();
                     ButtonType button = result.orElse(ButtonType.CANCEL);
                     if (button == ButtonType.OK) {
@@ -288,31 +302,26 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     
     public void openInvitationRefusalScreen()
+            
     {
-        
-        PendingInvitation=false;
-    }
-    @Override
-    public void initialize(URL url, ResourceBundle rb)
-    {     
-        PendingInvitation=false;
-        name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
-        status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
-        ClientGui.currentLiveCtrl=this;
-        JSONObject msg = new JSONObject();        
-        msg.put("Action", "getallplayers");
-        ClientGui.printStream.println(msg.toString());   
-        labelName.setText(ClientGui.loggedPlayer.getUsername());
-        labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
-        labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
-        fillList();
-    }
-    public void fillList()
-    {
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                 showAlert("Invitation","invitation refused .");
+                 PendingInvitation=false;
+            }
+        });
        
-        tableView.setItems(Playerslist);       
     }
     
+    private Optional<ButtonType> showAlert(String title , String header ){
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setResizable(false);
+        Optional<ButtonType> res = alert.showAndWait();
+        return res;
+    }
     public void addplayer(JSONObject msg) throws JSONException
     {
          Playerslist.add(new DisplayPlayers(msg.getString("username"),"online"));

@@ -23,9 +23,9 @@ public class ServerHandler extends Thread {
 
     DataInputStream inputStream;
     PrintStream printStream;
-    Person loggedPlayer;
+    public Person loggedPlayer;
     Player playertwo;
-    static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
+    public static Vector<ServerHandler> handlers = new Vector<ServerHandler>();
     static Vector<Person> allPlayers = new Vector<Person>();
     static Vector<Session> allsession = new Vector<Session>();
 
@@ -83,6 +83,16 @@ public class ServerHandler extends Thread {
 
     }
     
+    public static void closeAllConnections() throws IOException{
+        for (ServerHandler sh : handlers){
+            Server.db.updatePlayerStatus(sh.loggedPlayer.getUsername(), "offline");
+            Server.updateplayer(sh.loggedPlayer.getUsername(), "offline");
+            sh.inputStream.close();
+            sh.printStream.close();
+            sh.stop();
+        }
+        handlers.clear();
+    }
     public void processMessage(JSONObject msg) throws IOException, SQLException, JSONException {
         String Action = msg.getString("Action");
         switch (Action) {
