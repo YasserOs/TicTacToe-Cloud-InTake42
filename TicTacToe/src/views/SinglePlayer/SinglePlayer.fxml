@@ -39,6 +39,13 @@
                      </image>
                   </ImageView>
                </center>
+               <bottom>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@o.png" />
+                     </image>
+                  </ImageView>
+               </bottom>
             </BorderPane>
             <Button fx:id="backbtn" layoutX="50.0" layoutY="721.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="51.0" prefWidth="183.0" style="-fx-background-color: transparent;">
                <font>
@@ -108,7 +115,7 @@
             </GridPane>
             <BorderPane layoutX="43.0" layoutY="149.0" prefHeight="412.0" prefWidth="314.0">
                <top>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="326.0" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                  <Label fx:id="playerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="326.0" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font></Label>
@@ -120,10 +127,17 @@
                      </image>
                   </ImageView>
                </center>
+               <bottom>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@x.png" />
+                     </image>
+                  </ImageView>
+               </bottom>
             </BorderPane>
-            <Button layoutX="50.0" layoutY="667.0" mnemonicParsing="false" onAction="#back2MainRoom">
+            <Button layoutX="50.0" layoutY="667.0" mnemonicParsing="false" onAction="#back2MainRoom" style="-fx-background-color: transparent;">
                <graphic>
-                  <ImageView fitHeight="89.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="90.0" fitWidth="257.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@BackButton%20.png" />
                      </image>
