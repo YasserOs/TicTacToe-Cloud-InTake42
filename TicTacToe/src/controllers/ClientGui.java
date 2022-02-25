@@ -19,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import models.Person;
@@ -63,6 +64,8 @@ public class ClientGui extends Application {
             primaryStage.setX(event.getScreenX() - xOffset);
             primaryStage.setY(event.getScreenY() - yOffset);
         });
+        Image icon  = new Image("controllers/icon.png");
+        primaryStage.getIcons().add(icon);
         primaryStage.setTitle("Home");
         Scene scene = new Scene(root);
         //set transparent

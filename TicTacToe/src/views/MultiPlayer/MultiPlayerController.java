@@ -32,6 +32,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.Message;
@@ -79,6 +81,18 @@ public class MultiPlayerController extends GeneralController implements Initiali
     boolean oppTurn;
     boolean invited =false;
     int numberOfPlays = 0 ;
+    Image iconX ;
+    Image iconO;
+    @FXML
+    ImageView leftPlayer;
+    @FXML
+    ImageView rightPlayer;
+  @FXML
+  Label leftPlayerName;
+  @FXML
+  Label rightPlayerName;
+  @FXML
+  TextArea SHOWTRUN;
     
     public void initSession(String p2 , boolean isInvited ) throws JSONException{
         player1=ClientGui.loggedPlayer;
@@ -106,6 +120,10 @@ public class MultiPlayerController extends GeneralController implements Initiali
         chattxt.appendText("System: " +String.valueOf(playerTurn) + "\n");
         currentSession = new Session(player1.getUsername(),p2);
         resetGrid();
+        
+         leftPlayerName.setText(player1.getUsername());
+         rightPlayerName.setText(p2);
+         
     }
 
     
@@ -252,8 +270,15 @@ public class MultiPlayerController extends GeneralController implements Initiali
         currentPlayerPick=pick;   
         if(pick.equals("x")){
               opponentPick = "o";
+           
+          leftPlayer.setImage(iconX);
+          rightPlayer.setImage(iconO);
+         
+        
         }else{
-            opponentPick = "x";
+                opponentPick = "x";
+             leftPlayer.setImage(iconO);
+             rightPlayer.setImage(iconX);
         }
     }
     public void setOpponentPick(String pick) throws IOException, JSONException{
@@ -476,7 +501,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ClientGui.currentLiveCtrl = this;
-        
+         iconX = new Image("views/MultiPlayer/x.png");
+         iconO = new Image("views/MultiPlayer/o.png");
     }    
 
     

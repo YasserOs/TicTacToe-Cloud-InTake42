@@ -59,6 +59,7 @@ public class SinglePlayerController implements Initializable {
     Person loggedPlayer = ClientGui.loggedPlayer;
     Thread pc;
     @FXML
+    Label playerName;
     
     private boolean isEmpty(Button pos)
     {
@@ -183,7 +184,8 @@ public class SinglePlayerController implements Initializable {
     public void initialize(URL url, ResourceBundle rb)
     {
         resetGrid();    
-        createPc();        
+        createPc();   
+         playerName.setText(ClientGui.loggedPlayer.getUsername());
     }    
  
 }

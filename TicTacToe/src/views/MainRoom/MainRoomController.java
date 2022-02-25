@@ -54,9 +54,12 @@ public class MainRoomController extends GeneralController implements Initializab
     private Button showBTN;
     @FXML
     private BorderPane plist;
-    @FXML Label labelName; // labelName.setText(person.getName());
-    @FXML Label labelScore; // labelScore.setText(person.getScore());
-    @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
+     @FXML Label labelName; 
+    @FXML Label labelScore;
+    @FXML Label labelWins; 
+    @FXML Label labelGames;
+    @FXML Label labelLosses;
+    @FXML Label labelDraws;
     @FXML private TableView<DisplayPlayers> tableView;
     @FXML private TableColumn<DisplayPlayers, String> name;
     @FXML private TableColumn<DisplayPlayers, String> status; 
@@ -94,6 +97,9 @@ public class MainRoomController extends GeneralController implements Initializab
               labelName.setText(ClientGui.loggedPlayer.getUsername());
               labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
               labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
+              labelGames.setText(String.valueOf(ClientGui.loggedPlayer.getGames_played()));
+              labelLosses.setText(String.valueOf(ClientGui.loggedPlayer.getGames_lost()));
+              labelDraws.setText(String.valueOf(ClientGui.loggedPlayer.getDraws()));
               fillList();
           } catch (JSONException ex) {
               Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
@@ -388,6 +394,16 @@ public class MainRoomController extends GeneralController implements Initializab
 //        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
 //        window.setScene(ViewScene);
 //        window.show();
+    }
+    public void LeaderBoard(ActionEvent event) throws IOException, JSONException{
+      
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getClassLoader().getResource("views/LeaderBoards/LeaderBoards.fxml"));
+        Parent View = loader.load();
+        Scene ViewScene = new Scene(View);
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(ViewScene);
+        window.show();
     }
     
 }

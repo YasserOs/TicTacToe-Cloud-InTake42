@@ -64,11 +64,11 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Button layoutX="39.0" layoutY="588.0" mnemonicParsing="false" onAction="#back2MainRoom" style="-fx-background-color: transparent;">
+      <Button layoutY="583.0" mnemonicParsing="false" onAction="#back2MainRoom" style="-fx-background-color: transparent;">
          <graphic>
-            <ImageView fitHeight="74.0" fitWidth="92.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="106.0" fitWidth="215.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@back_arrow_11236.png" />
+                  <Image url="@BackButton%20.png" />
                </image>
             </ImageView>
          </graphic>
