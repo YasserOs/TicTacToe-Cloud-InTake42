@@ -55,8 +55,8 @@ public class LeaderBoardsController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            p1.setText(Server.db.Top5Players().get(0).getUsername());
+         /*try {
+           p1.setText(Server.db.Top5Players().get(0).getUsername());
             p2.setText(Server.db.Top5Players().get(1).getUsername());
             p3.setText(Server.db.Top5Players().get(2).getUsername());
             p4.setText(Server.db.Top5Players().get(3).getUsername());
@@ -69,7 +69,7 @@ public class LeaderBoardsController implements Initializable {
           
         } catch (SQLException ex) {
             Logger.getLogger(LeaderBoardsController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException
     

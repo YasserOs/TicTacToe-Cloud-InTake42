@@ -73,17 +73,21 @@ public class MainRoomController extends GeneralController implements Initializab
     public void initialize(URL url, ResourceBundle rb)
     {     
         
-        name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
-        status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status")); 
-        ClientGui.currentLiveCtrl=this;
-        JSONObject msg = new JSONObject();        
-        msg.put("Action", "getallplayers");
-        ClientGui.printStream.println(msg.toString());
-        PendingInvitation=false;
-        labelName.setText(ClientGui.loggedPlayer.getUsername());
-        labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
-        labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
-        fillList();
+          try {
+              name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
+              status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status"));
+              ClientGui.currentLiveCtrl=this;
+              JSONObject msg = new JSONObject();
+              msg.put("Action", "getallplayers");
+              ClientGui.printStream.println(msg.toString());
+              PendingInvitation=false;
+              labelName.setText(ClientGui.loggedPlayer.getUsername());
+              labelWins.setText(String.valueOf(ClientGui.loggedPlayer.getGames_won()));
+              labelScore.setText(String.valueOf(ClientGui.loggedPlayer.getTotal_score()));
+              fillList();
+          } catch (JSONException ex) {
+              Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
+          }
     }
     public void fillList()
     {

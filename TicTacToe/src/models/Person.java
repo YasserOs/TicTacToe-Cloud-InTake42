@@ -20,7 +20,6 @@ public class Person extends Player{
     private String email;
     private String password;
     private int id ;
-    private int score;
     private String status;
     private Date last_seen;
     private int total_score;
@@ -35,7 +34,6 @@ public class Person extends Player{
         this.username = "";
         this.email = "";
         this.password="";
-        this.score = 0;
         this.status = "offline";
         this.last_seen = new Date(0000, 00, 00);
         this.total_score = 0;
@@ -87,13 +85,7 @@ public class Person extends Player{
     public String getPassword (){
         return this.password;
     }
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
+   
 
     public boolean isOnline() {
         return status == "online" ? true : false ;

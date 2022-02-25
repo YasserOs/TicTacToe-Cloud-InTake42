@@ -64,7 +64,8 @@ public class ServerHandler extends Thread {
     public void closeConnection() throws JSONException 
     {
         System.out.println(loggedPlayer.getUsername() + " Closed connection !");
-        Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
+        //Server.db.updatePlayerStatus(loggedPlayer.getUsername(), "offline");
+        Server.db.playerClosing(loggedPlayer);
         Server.updateplayer(loggedPlayer.getUsername(), "offline");
         System.out.println("close connsection ");
         JSONObject msg=new JSONObject();
@@ -85,8 +86,8 @@ public class ServerHandler extends Thread {
     
     public static void closeAllConnections() throws IOException{
         for (ServerHandler sh : handlers){
-            Server.db.updatePlayerStatus(sh.loggedPlayer.getUsername(), "offline");
-            Server.updateplayer(sh.loggedPlayer.getUsername(), "offline");
+            Server.db.playerClosing(sh.loggedPlayer);
+            //Server.updateplayer(sh.loggedPlayer.getUsername(), "offline");
             sh.inputStream.close();
             sh.printStream.close();
             sh.stop();
@@ -113,6 +114,7 @@ public class ServerHandler extends Thread {
                 break;
             case "playerFinishMatch":
                 changeplayerstatus("playerFinishMatch","online");
+                updatePlayerScore(msg);
                 break;
             default:
                 sendMsgToReceiver(msg);
@@ -127,6 +129,15 @@ public class ServerHandler extends Thread {
         msg.put("Action",action);
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
+    }
+    private void updatePlayerScore(JSONObject msg) throws JSONException {
+        loggedPlayer.setTotal_score( msg.getInt("score"));
+        loggedPlayer.setGames_won( msg.getInt("Wins"));
+        loggedPlayer.setGames_lost(msg.getInt("Loses"));
+        loggedPlayer.setDraws(msg.getInt("Draws"));
+        loggedPlayer.setGames_played(msg.getInt("Games"));
+        loggedPlayer.setStatus("online");
+        Server.updateplayerScore(loggedPlayer);
     }
     public void getAllPlayers() throws JSONException
     {
@@ -199,7 +210,7 @@ public class ServerHandler extends Thread {
     
     public void convertPlayerToJSON(Person p , JSONObject json) throws JSONException{
         json.put("username", p.getUsername());
-        json.put("score", p.getScore());
+        json.put("score", p.getTotal_score());
         json.put("status", p.getStatus());
         json.put("wins", p.getGames_won());
         json.put("games", p.getGames_played());
@@ -247,5 +258,7 @@ public class ServerHandler extends Thread {
     public static void saveSession(Session session) {
 
     }
+
+    
 
 }

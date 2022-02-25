@@ -16,7 +16,7 @@
    <children>
       <AnchorPane fx:id="ap" prefHeight="707.0" prefWidth="1321.0">
          <children>
-            <Button fx:id="restartbtn" layoutX="738.0" layoutY="603.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="222.0" text="Pause" />
+            <Button fx:id="pausebtn" onAction="#pauseGameRequest" layoutX="738.0" layoutY="603.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="222.0" text="Pause" />
             <BorderPane layoutX="729.0" layoutY="7.0" prefHeight="468.0" prefWidth="240.0">
                <top>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="51.0" prefWidth="240.0" text="Player 2 Name" textAlignment="CENTER" BorderPane.alignment="CENTER" />
@@ -104,7 +104,7 @@
                   <FlowPane prefHeight="52.0" prefWidth="245.0" BorderPane.alignment="CENTER">
                      <children>
                         <TextField fx:id="chatmsg" prefHeight="25.0" prefWidth="216.0" />
-                        <Button fx:id="sendbtn" defaultButton="true" onAction="#SendChat" mnemonicParsing="false" prefHeight="23.0" prefWidth="53.0" text="Send" />
+                        <Button fx:id="sendbtn" defaultButton="true" mnemonicParsing="false" onAction="#SendChat" prefHeight="23.0" prefWidth="53.0" text="Send" />
                      </children>
                   </FlowPane>
                </bottom>

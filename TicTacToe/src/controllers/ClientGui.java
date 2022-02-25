@@ -128,7 +128,7 @@ public class ClientGui extends Application {
 
       p.setUsername(userName);
       p.setStatus(status);
-      p.setScore(score);
+      p.setTotal_score(score);
       p.setGames_played(games);
       p.setGames_won(wins);
       p.setGames_lost(losses);
@@ -145,7 +145,7 @@ public class ClientGui extends Application {
             @Override
             public void run() {
                 showAlert("Server Closed", "Closing Client ...");
-                 mainStage.close();
+                mainStage.close();
             }
         });
         

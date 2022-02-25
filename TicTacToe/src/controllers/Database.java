@@ -10,6 +10,9 @@ import java.util.Vector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Database {
@@ -18,7 +21,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "admin";
+    private final String password = "123456";
 
     public Database() throws SQLException {
         connect();
@@ -55,14 +58,13 @@ public class Database {
         
         rs = stmt.executeQuery(queryString);
         rs.next();
-            Person p = createPerson(rs);
+        Person p = createPerson(rs);
         return p ;
     }
    
     public Person createPerson(ResultSet rs) throws SQLException {
 
         Person p = new Person(rs.getString(1), rs.getString(4), rs.getInt(3), rs.getString(5), rs.getDate(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11));
-        Person p2 = new Person();
         return p;
         
     }
@@ -497,17 +499,17 @@ public class Database {
         return list;
     }
     
-    public boolean saveGame(Session session){
-         int gameId;
+     public boolean saveGame(JSONObject session) throws JSONException{
+        int gameId;
         try {
             
             conn = DriverManager.getConnection(url,user,password);
             
             // getting the game id 
-            String query = new String("select game_id from games where player_one_name=? and player_two_name=?");
+            String query = new String("select game_id from games where player_one_name=? or player_two_name=?");
             PreparedStatement selectGameID = conn.prepareStatement(query);
-            selectGameID.setString(1,session.p1);
-            selectGameID.setString(2, session.p2);
+            selectGameID.setString(1,session.getString("playerOne"));
+            selectGameID.setString(2,session.getString("playerOne"));
             ResultSet rs = selectGameID.executeQuery();
             rs.next();
             gameId = rs.getInt("game_id");
@@ -516,24 +518,23 @@ public class Database {
             query= new String("insert into save_game values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement saveStatement = conn.prepareStatement(query);
             saveStatement.setInt(1, gameId);
-            saveStatement.setString(2, session.p1);
-            saveStatement.setString(3, session.p1Pick);
-            saveStatement.setString(4, session.p2);
-            saveStatement.setString(5, session.p2Pick);
+            saveStatement.setString(2, session.getString("playerOne"));
+            saveStatement.setString(3, session.getString("playerOnePick"));
+            saveStatement.setString(4, session.getString("playerTwo"));
+            saveStatement.setString(5, session.getString("playerTwoPick"));
             
-           int i =6;
-            for (Button b : session.board.board) {
-                saveStatement.setString(i, b.getText());
+            int i =6;
+            JSONArray board = session.getJSONArray("board");
+            for (int j = 0; j < board.length();  j++) {
+                saveStatement.setString(i, (String) board.get(j));
                 i++;
             }
-            if(session.turn == 1){
-                saveStatement.setString(15 ,session.p1 );
+            if(session.getInt("turn") == 1){
+                saveStatement.setString(15 ,session.getString("playerOne") );
             }else{
-                saveStatement.setString(15 ,session.p2 );
+                saveStatement.setString(15 ,session.getString("playerTwo"));
             }
             
-            
-          
             saveStatement.executeUpdate();
             saveStatement.close();
             conn.close();
@@ -541,49 +542,38 @@ public class Database {
             ex.printStackTrace();
             return false;
         }
-        
-        
         return true;
     }
     
-    public Session getSavedGame(String playerOneName, String playerTwoName){
-        Session gameDetails = new Session(playerOneName, playerTwoName);
-        int gameId;
+    public JSONObject getSavedGame(String playerOneName, String playerTwoName) throws JSONException{
+        JSONObject gameDetails = new JSONObject();
+        
         try {
             conn = DriverManager.getConnection(url,user, password); 
-            String query = new String("select game_id from games where player_one_name=? and player_two_name=?");
-            PreparedStatement selectGameID = conn.prepareStatement(query);
-            selectGameID.setString(1,playerOneName);
-            selectGameID.setString(2, playerTwoName);
-            ResultSet rs = selectGameID.executeQuery();
-            rs.next();
-            gameId = rs.getInt("game_id");
-            selectGameID.close();
             
+
             
-            query= new String("select * from save_game where player_one_name='" +playerOneName+"' and player_two_name='" + playerTwoName +"'" +" and game_id='"+ gameId +"'");
-            Statement savedGameStatement = conn.createStatement();
+            String query= new String("select * from save_game player_one_name in (?,?) and player_two_name in (?, ?)");
+            PreparedStatement savedGameStatement = conn.prepareStatement(query);
+            savedGameStatement.setString(1,playerOneName );
+            savedGameStatement.setString(2,playerTwoName );
+            savedGameStatement.setString(3,playerOneName );
+            savedGameStatement.setString(4,playerTwoName );
             rs = savedGameStatement.executeQuery(query);
             rs.next();
-            //checking if the rs is null
-            if( rs == null){
-                return null;
-            }
-   
-            gameDetails = new Session(rs.getString("player_one_name"),rs.getString("player_two_name")); 
-            gameDetails.p1Pick = rs.getString("player_one_choice");
-            gameDetails.p2Pick = rs.getString("player_two_choice");
-            if( rs.getString("turn").equals(playerOneName)){
-                gameDetails.turn = 1;
-            }else{
-                gameDetails.turn =0;
-            }
+            gameDetails.put("playerOne", playerOneName);
+            gameDetails.put("playerOnePick", rs.getString("player_one_choice"));
+            gameDetails.put("playerTwo", playerTwoName);
+            gameDetails.put("playerTwoPick", rs.getString("player_two_choice") );
+            gameDetails.put("turn", rs.getString("turn"));
+            JSONArray board = new JSONArray();
             // Board 
             int i=6;
-            for (Button b : gameDetails.board.board) {
-                b.setText(rs.getString(i++));   
-
+            while (i<15) {
+                board.put(rs.getString(i++));  
             }
+            gameDetails.put("board", board);
+            
             savedGameStatement.close();
             conn.close();
         } catch (SQLException ex) {
@@ -592,19 +582,24 @@ public class Database {
         }
         return gameDetails;
     }
-    public ObservableList<Session> getPlayerSavedGames(String playerName){
-         ObservableList<Session> playerSavedGames = FXCollections.observableArrayList();
+    public JSONObject getPlayerSavedGames(String playerName) throws JSONException{
+         JSONObject playerSavedGames = new JSONObject();
 
         try {
             conn = DriverManager.getConnection(url,user, password); 
-            String query= new String("select * from save_game where player_one_name='" +playerName+"' or player_two_name='"+playerName +"'" );
-            Statement savedGameStatement = conn.createStatement();
-            ResultSet rs = savedGameStatement.executeQuery(query);
+            String query= new String("select * from save_game where player_one_name=? or player_two_name=?" );
+            PreparedStatement  savedGameStatement = conn.prepareStatement(query);
+            savedGameStatement.setString(1, playerName);
+            savedGameStatement.setString(2, playerName);
+            ResultSet rs = savedGameStatement.executeQuery();
+            JSONArray playerOneNames = new JSONArray();
+            JSONArray playerTwoNames = new JSONArray();
             while(rs.next()){
-              Session session = new Session(rs.getString("player_one_name"), rs.getString("player_two_name"));
-              playerSavedGames.add(session);
+              playerOneNames.put(rs.getString("player_one_name"));
+              playerTwoNames.put(rs.getString("player_two_name"));
             }
-            
+            playerSavedGames.put("playerOneNames", playerOneNames);
+            playerSavedGames.put("playerTwoNames", playerTwoNames);
             savedGameStatement.close();
             conn.close();
         } catch (SQLException ex) {
@@ -613,18 +608,24 @@ public class Database {
         }
         return playerSavedGames;
     }
-     public Vector<Person> Top5Players() throws SQLException {
-        Vector<Person> players = new Vector<Person>();
-        conn = DriverManager.getConnection(url, user, password);
-        Statement stmt = conn.createStatement();
-        String queryString = new String("select * from players order by total_score desc limit 5");
-        rs = stmt.executeQuery(queryString);
-        while (rs.next()) {
-            Person p = createPerson(rs);
-            players.add(p);
-
+    public boolean playerClosing(Person p){
+        try {
+          conn = DriverManager.getConnection(url, user, password);
+          String query = "update players set total_score=?,games_played=?, games_won=?, games_lost=?, draws=?, status='offline' where username=?";  
+          PreparedStatement saveDetails = conn.prepareStatement(query);
+          saveDetails.setInt(1, p.getTotal_score());
+          saveDetails.setInt(2, p.getGames_played());
+          saveDetails.setInt(3, p.getGames_won());
+          saveDetails.setInt(4, p.getGames_lost());
+          saveDetails.setInt(5, p.getDraws());
+          saveDetails.setString(6, p.getUsername());
+          saveDetails.executeUpdate();
+          saveDetails.close();
+          conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        return players;
+         return true;
     }
     
 }

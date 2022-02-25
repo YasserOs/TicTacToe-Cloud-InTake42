@@ -48,7 +48,7 @@ import views.GeneralController;
 public class MultiPlayerController extends GeneralController implements Initializable {
     @FXML AnchorPane ap;
     @FXML Button backbtn;
-    @FXML Button restartbtn;
+    @FXML Button pausebtn;
     @FXML Button btn1;
     @FXML Button btn2;
     @FXML Button btn3;
@@ -73,7 +73,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
     Alert alert;
     Thread playerSocketThread;
     boolean playerTurn;
-    boolean playerWon =false;
     boolean player1Restart = false;
     boolean player2Restart = false;
     boolean oppTurn;
@@ -85,6 +84,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         System.out.println("Init Session - Player 1 : " + player1.getUsername() + " , Player 2 : "+p2);
         player2=p2;
         invited = isInvited;
+        
         if(!invited){
             playerTurn = randomTurn();
             oppTurn = !playerTurn;     
@@ -100,6 +100,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
+            chattxt.appendText("System: " +String.valueOf(playerTurn));
             
         }
         currentSession = new Session(player1.getUsername(),p2);
@@ -132,12 +133,27 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 case "RestartMatch":
                     checkGameRestart(msg);
                     break;
+                case "Pause":
+                    checkPauseResponse(msg);
+                    break;
             }} catch (JSONException ex) {
             Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    
+    @FXML 
+    private void pauseGameRequest(ActionEvent event) throws JSONException{
+            JSONObject msg = new JSONObject();
+            msg.put("Action", "Pause");
+            msg.put("Receiver", player2);
+            msg.put("Sender",  ClientGui.loggedPlayer.getUsername());
+            ClientGui.printStream.println(msg.toString());
+            playerTurn= false;
+    }
+    private void checkPauseResponse(JSONObject msg) {
+
+
+    }
     private void checkGameRestart(JSONObject msg) throws IOException, JSONException {
         
         String response = msg.getString("Content");
@@ -146,6 +162,12 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     if(player1Restart&&player2Restart){
                         player1Restart = player2Restart= false;
                         resetGrid();
+//                        Platform.runLater(new Runnable() {
+//                               @Override
+//                               public void run() {
+//                                   alert.close();
+//                               }
+//                           });
                     }
         }
         else if(response.equals("false")){
@@ -153,8 +175,12 @@ public class MultiPlayerController extends GeneralController implements Initiali
             Platform.runLater(new Runnable(){
                 @Override
                 public void run() {
-                    alert.hide();
-                    showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
+                    try {
+                        alert.hide();
+                        showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
+                    } catch (JSONException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             });
             
@@ -193,7 +219,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             @Override
             public void run() {
                 numberOfPlays=0;
-                if(playerWon){
+                if(!invited){
                     try {
                         playerTurn = randomTurn();
                         oppTurn = !playerTurn;  
@@ -210,6 +236,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                
                 availablePositions.clear();
                 availablePositions.add(btn1);
                 availablePositions.add(btn2);
@@ -270,7 +297,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }  
     public void playerWin() throws IOException, JSONException{
         System.out.println(player1.getUsername()+" Won !");
-        playerWon=true;
         sendMsgToPlayer("Won","");
         gameresult("Won");
         
@@ -290,7 +316,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
             ClientGui.loggedPlayer.incrementTotal_score(10);        
 
         }else if(result.equals("Loss")){
-            playerWon=false;
             System.out.println(ClientGui.loggedPlayer + " Lost !");
             ClientGui.loggedPlayer.gameslost();
         }
@@ -313,7 +338,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         if(player2Restart){
                             resetGrid();
                             
-                        }else{
+                        }
+                        else
+                        {
                             showAlert("Restart Match", "Waitin Player 2 Response...", 0);
                         }
                     } catch (JSONException ex) {
@@ -383,10 +410,13 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }
     @FXML
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{
-        
-        
         JSONObject msg = new JSONObject();
-        msg.put ("Action", "playerFinishMatch");
+        msg.put("Action", "playerFinishMatch");
+        msg.put("score", ClientGui.loggedPlayer.getTotal_score());
+        msg.put("Wins", ClientGui.loggedPlayer.getGames_won());
+        msg.put("Draws", ClientGui.loggedPlayer.getDraws());
+        msg.put("Loses", ClientGui.loggedPlayer.getGames_lost());
+        msg.put("Games", ClientGui.loggedPlayer.getGames_played());
         ClientGui.printStream.println(msg.toString());
         
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));
@@ -401,6 +431,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
         ClientGui.currentLiveCtrl = this;
         
     }    
+
+    
 
     
     

@@ -119,6 +119,18 @@ public class Server
         }
         
     }
+    public static void updateplayerScore(Person player) 
+    {       
+        for (Person p : players)
+        {
+            if (p.getUsername().equals(player.getUsername())) 
+            {
+                players.set(players.indexOf(p), player);
+                break;
+            }
+        }
+        
+    }
     public static void updateObservablePlayerslist(String userName , String status)
     {
         for(int i=0 ; i <Playerslist.size();i++){
@@ -127,5 +139,8 @@ public class Server
                 break;
             }
         }
+    }
+    public static void getPlayer(String username){
+    
     }
 }
