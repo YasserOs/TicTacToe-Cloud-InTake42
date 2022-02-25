@@ -110,11 +110,17 @@ public class ServerHandler extends Thread {
                 getAllPlayers();
                 break;
             case "playerStartedMatch" :
-                changeplayerstatus("playerStartedMatch","in-game");
+                changeplayerstatus("playerStartedMatch","in-game",msg);
                 break;
             case "playerFinishMatch":
-                changeplayerstatus("playerFinishMatch","online");
-                updatePlayerScore(msg);
+                changeplayerstatus("playerFinishMatch","online",msg);
+               
+                break;
+            case "SaveSession":
+                Server.db.saveGame(msg);
+                break;
+            case "getSavedGames": 
+                getSavedGames();
                 break;
             default:
                 sendMsgToReceiver(msg);
@@ -122,17 +128,21 @@ public class ServerHandler extends Thread {
         }
     }
     
-    public void changeplayerstatus(String action,String status) throws JSONException
+    public void changeplayerstatus(String action, String status , JSONObject msgReceived) throws JSONException
     {
+        String mode = msgReceived.getString("Mode");
         Server.updateplayer(loggedPlayer.getUsername(),status);
+        if (mode.equals("Multiplayer") && action.equals("playerFinishMatch")) {
+             updatePlayerScore(msgReceived);
+        }
         JSONObject msg= new JSONObject();
         msg.put("Action",action);
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
     }
     private void updatePlayerScore(JSONObject msg) throws JSONException {
-        loggedPlayer.setTotal_score( msg.getInt("score"));
-        loggedPlayer.setGames_won( msg.getInt("Wins"));
+        loggedPlayer.setTotal_score(msg.getInt("score"));
+        loggedPlayer.setGames_won(msg.getInt("Wins"));
         loggedPlayer.setGames_lost(msg.getInt("Loses"));
         loggedPlayer.setDraws(msg.getInt("Draws"));
         loggedPlayer.setGames_played(msg.getInt("Games"));
@@ -156,12 +166,21 @@ public class ServerHandler extends Thread {
        
        }
        
-       msg.put("names", names);
-       msg.put("status", status);
-       msg.put("Action","Playerslist");
+        msg.put("names", names);
+        msg.put("status", status);
+        msg.put("Action","Playerslist");
+        this.printStream.println(msg.toString());msg.put("names", names);
+    }
+    
+     public void getSavedGames() throws JSONException
+    {
+       JSONArray savedGames = Server.db.getPlayerSavedGames(loggedPlayer.getUsername());
+       JSONObject msg = new JSONObject();
+       msg.put("Action","SaveGamesList");
+       msg.put("gamesArray", savedGames);
        this.printStream.println(msg.toString());
     }
-   
+    
     public void SignIn(JSONObject msg) throws SQLException, JSONException {
         int flag= Server.SignIn(msg);
         if( flag == 1)

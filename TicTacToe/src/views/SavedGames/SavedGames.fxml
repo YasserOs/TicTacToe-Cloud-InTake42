@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="750.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.SavedGames.SavedGamesController">
+   <children>
+      <ImageView fitHeight="685.0" fitWidth="980.0" layoutY="-8.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@testsvg.jpeg" />
+         </image>
+      </ImageView>
+      <TableView fx:id="tableView" layoutX="140.0" layoutY="68.0" prefHeight="342.0" prefWidth="685.0">
+        <columns>
+          <TableColumn fx:id="GameID" prefWidth="142.0" text="Game ID" />
+          <TableColumn fx:id="Player1Name" prefWidth="272.0" text="First Player Name" />
+            <TableColumn fx:id="Player2Name" prefWidth="271.0" text="Second Player Name" />
+        </columns>
+      </TableView>
+      <Button layoutX="24.0" layoutY="520.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="79.0" prefWidth="224.0" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="85.0" fitWidth="241.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@BackButton.jpeg" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="685.0" layoutY="535.0" mnemonicParsing="false" onAction="#Resume" prefHeight="61.0" prefWidth="207.0" style="-fx-background-color: #82E7C4;" text="Resume">
+         <font>
+            <Font name="System Bold" size="48.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

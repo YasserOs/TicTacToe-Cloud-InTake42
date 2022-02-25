@@ -69,20 +69,7 @@ public class Database {
         
     }
 
-    // Person p = new Person();
-    public void removeRecord(int ID) throws SQLException {
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            Statement stmt = conn.createStatement();
-            String queryString = new String("DELETE FROM players WHERE id=" + ID + ";");
-            stmt.executeUpdate(queryString);
-            System.out.println("Deleted successfully. ");
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        conn.close();
-
-    }
+    
 
     //Hashed and Encrypted Password
     public String passwordEnc(String password) {
@@ -174,43 +161,7 @@ public class Database {
     }
     
     
-    //get UserName By Email
-    public String getUsername(String email){
-        ResultSet rs ; 
-        String username;
-        PreparedStatement ps;
-        try{
-            conn = DriverManager.getConnection(url,user,password);
-            ps = conn.prepareStatement("select * from players where email = ?");
-            ps.setString(1,email);
-            rs = ps.executeQuery();
-            rs.next();
-            username = rs.getString(1);
-            return username;
-        }catch(SQLException ex){
-            System.out.print("Invaild Email");
-        }
-        return null;
-    }
     
-    //get Email By Username
-    public String getEmail(String username){
-        ResultSet rs ; 
-        String email;
-        PreparedStatement ps;
-        try{
-            conn = DriverManager.getConnection(url,user,password);
-            ps = conn.prepareStatement("select * from players where username = ?");
-            ps.setString(1,username);
-            rs = ps.executeQuery();
-            rs.next();
-            email = rs.getString(3);
-            return email;
-        }catch(SQLException ex){
-            System.out.print("Invaild Email");
-        }
-        return null;
-    }
     
     // login With username
     public int logIn(String username, String pswd) throws SQLException {
@@ -250,68 +201,33 @@ public class Database {
          return 1;// the username and pw are correct success
         // successful retrieved the user from the datebase and the password is entered correctly
     }
-    // login With email
-    public boolean logInUsingEmail(String email, String pswd) throws SQLException {
-            String passwordEncrypted = passwordEnc(pswd);
-            ResultSet rs;
-         try {
-             conn = DriverManager.getConnection(url, user, password);
-            Statement selectStatement = conn.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_INSENSITIVE);
-            String query = new String("select * from players where email='" + email +"'");
-            rs = selectStatement.executeQuery(query);
-            rs.next();
-            String retrievedPassword=rs.getString("password");
-            if(retrievedPassword.equals(passwordEncrypted ) ){
-                System.out.println("Logged in successfully");
-                String updatingStatus=rs.getString("status");
-                updatingStatus = "Online";
-                rs.updateString("status", updatingStatus);
-                
-                selectStatement.close();
-                conn.close();
-            }else{
-                System.out.println("The password you entered is incorrect");
-                selectStatement.close();
-                conn.close();
-                return false;
-            }
-            
-        } catch (SQLException ex) {
-            //can use it to print duplicate key error
-            System.err.println(ex.getMessage());
-             System.out.println("The email you entered is not correct");
-             conn.close();
-            return false;
-        }
-         conn.close();
-        return true;
-    }
+    
     //In database
-    public ArrayList<String> getLeaderBoard () throws SQLException{
-        String leaderBoard = new String();
-        ArrayList<String> leaderList = new ArrayList<String>();
+    public JSONObject getLeaderBoard() throws SQLException, JSONException {
+        JSONObject leaderboard = new JSONObject();
+        JSONArray names = new JSONArray();
+        JSONArray scores = new JSONArray();
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement selectstatement = conn.createStatement();
-            String leaderBoardQuery = new String("select id,username, status, last_seen,total_score, games_played, games_won, games_lost from players where username not in('Computer') order by total_score desc limit 10;");
+            String leaderBoardQuery = new String("select username,total_score from players where total_score not in(0) order by total_score desc limit 5");
             ResultSet rs = selectstatement.executeQuery(leaderBoardQuery);
-            while(rs.next()){
-                Date dateSql = rs.getDate("last_seen");
-                String date = dateSql.toString();
-                 leaderBoard=String.valueOf(rs.getInt("id")) + ":" + rs.getString("username") + ":" + rs.getString("status") + ":" + date + ":" + String.valueOf(rs.getInt("total_score")) + ":" + String.valueOf(rs.getInt("games_played")) + ":" + String.valueOf(rs.getInt("games_won")) + ":" + String.valueOf(rs.getInt("games_lost"));
-                leaderList.add(leaderBoard);
+            while (rs.next()) {
+                names.put(rs.getString("username"));
+                scores.put(rs.getInt("total_score"));
             }
+            leaderboard.put("names", names);
+            leaderboard.put("scores", scores);
+
             selectstatement.close();
+            conn.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
             conn.close();
         }
-        conn.close();
-        return leaderList;
-        
+        return leaderboard;
     }
     public ArrayList<String> allPlayers() throws SQLException {
-
         String allPlayers = new String();
         ArrayList<String> playerList = new ArrayList<String>();
         playerList.add(allPlayers);
@@ -336,44 +252,163 @@ public class Database {
 
     }
     public boolean createGame(String playerOneName, String playerTwoName){
-        String mode;
-        if(playerTwoName == "Computer"){
-            mode = new String("Single player");
-        }else{
-            mode = new String("MultiPlayer");
-        }
-        String query = new String("insert into games(player_one_name, player_two_name, game_state, game_mode, game_result, winner) values(?, ?, 'ongoing', ?, 'TBD','TBD')");
-        
+        String query = new String("insert into games(player_one_name, player_two_name) values(?, ?)");
         try {
-            conn = DriverManager.getConnection(url, user, password);
+            
             PreparedStatement createGameStatement = conn.prepareCall(query);
             createGameStatement.setString(1, playerOneName);
             createGameStatement.setString(2, playerTwoName);
-            createGameStatement.setString(3, mode);
             createGameStatement.executeUpdate();
             createGameStatement.close();
-           
-        } catch (SQLException ex) {
-           
-             System.err.println(ex.getMessage());
-            return false;
             
-        }
-        try {
-            Statement selectUserStatement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet rs= selectUserStatement.executeQuery("select * from players where username='" +playerOneName +"'");
-            rs.next();
-            int games = rs.getInt("games_played")+1;
-            rs.updateInt("games_played", games);
-            rs.updateRow();
-            selectUserStatement.close();
-          conn.close();
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
             return false;
         }
         return true;
     }
+    
+    
+    public ObservableList<DisplayPlayers> displayPlayers()
+    {
+        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
+
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement select = conn.createStatement();
+            String query ="select username, status from players where username not in ('Computer')";
+            ResultSet rs = select.executeQuery(query);
+            
+            while(rs.next()){
+            
+                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2)));
+            
+            }
+            select.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    
+    
+        return list;
+    }
+    
+     public boolean saveGame(JSONObject session) throws JSONException{
+        int gameId;
+        try {
+            conn = DriverManager.getConnection(url,user,password);
+            
+            String query = new String("insert into save_game(player_one_name, player_one_choice, player_two_name, player_two_choice,"
+                                 + " square1, square2, square3, square4 ,"
+				 +" square5, square6, square7, square8, square9, turn)"
+                                 + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement saveStatement = conn.prepareStatement(query);
+            
+            saveStatement.setString(1, session.getString("playerOne"));
+            saveStatement.setString(2, session.getString("playerOnePick"));
+            saveStatement.setString(3, session.getString("playerTwo"));
+            saveStatement.setString(4, session.getString("playerTwoPick"));
+            
+            int i =5;
+            JSONArray board = session.getJSONArray("board");
+            for (int j = 0; j < board.length();  j++) {
+                saveStatement.setString(i, (String) board.get(j));
+                i++;
+            }
+            saveStatement.setString(14 ,session.getString("turn") );
+            saveStatement.executeUpdate();
+            saveStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public JSONObject getSavedGame(String playerOneName, String playerTwoName) throws JSONException{
+        JSONObject gameDetails = new JSONObject();
+        
+        try {
+            conn = DriverManager.getConnection(url,user, password); 
+            
+            String query= new String("select * from save_game player_one_name in (?,?) and player_two_name in (?, ?)");
+            PreparedStatement savedGameStatement = conn.prepareStatement(query);
+            savedGameStatement.setString(1,playerOneName );
+            savedGameStatement.setString(2,playerTwoName );
+            savedGameStatement.setString(3,playerOneName );
+            savedGameStatement.setString(4,playerTwoName );
+            rs = savedGameStatement.executeQuery(query);
+            rs.next();
+            gameDetails.put("playerOne", playerOneName);
+            gameDetails.put("playerOnePick", rs.getString("player_one_choice"));
+            gameDetails.put("playerTwo", playerTwoName);
+            gameDetails.put("playerTwoPick", rs.getString("player_two_choice") );
+            gameDetails.put("turn", rs.getString("turn"));
+            JSONArray board = new JSONArray();
+            // Board 
+            int i=6;
+            while (i<15) {
+                board.put(rs.getString(i++));  
+            }
+            gameDetails.put("board", board);
+            
+            savedGameStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            
+        }
+        return gameDetails;
+    }
+    public JSONArray getPlayerSavedGames(String playerName) throws JSONException{
+         JSONArray savedGames = new JSONArray();
+
+        try {
+            conn = DriverManager.getConnection(url,user, password); 
+            String query= new String("select * from save_game where player_one_name=? or player_two_name=?" );
+            PreparedStatement  savedGameStatement = conn.prepareStatement(query);
+            savedGameStatement.setString(1, playerName);
+            savedGameStatement.setString(2, playerName);
+            ResultSet rs = savedGameStatement.executeQuery();
+            while(rs.next()){
+                JSONObject game = new JSONObject();
+                game.put("gameID", rs.getInt("game_id"));
+                  if (rs.getString("player_one_name").equals(playerName)) {
+                      game.put("Opponent", rs.getString("player_two_name"));
+                  }else{
+                      game.put("Opponent", rs.getString("player_one_name"));
+                  }
+                savedGames.put(game);
+            }
+            savedGameStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return savedGames;
+    }
+    public boolean playerClosing(Person p){
+        try {
+          conn = DriverManager.getConnection(url, user, password);
+          String query = "update players set total_score=?,games_played=?, games_won=?, games_lost=?, draws=?, status='offline' where username=?";  
+          PreparedStatement saveDetails = conn.prepareStatement(query);
+          saveDetails.setInt(1, p.getTotal_score());
+          saveDetails.setInt(2, p.getGames_played());
+          saveDetails.setInt(3, p.getGames_won());
+          saveDetails.setInt(4, p.getGames_lost());
+          saveDetails.setInt(5, p.getDraws());
+          saveDetails.setString(6, p.getUsername());
+          saveDetails.executeUpdate();
+          saveDetails.close();
+          conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+         return true;
+    }
+    
     public boolean updateGame(String winner, String loser, int gameID){
         String query = new String("update games set game_state= ?,game_result=?, winner= ? where game_id =?");
         try {
@@ -474,158 +509,92 @@ public class Database {
     
         return true;
     }
-    public ObservableList<DisplayPlayers> displayPlayers()
-    {
-        ObservableList<DisplayPlayers> list = FXCollections.observableArrayList(); 
-
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer')";
-            ResultSet rs = select.executeQuery(query);
-            
-            while(rs.next()){
-            
-                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2)));
-            
-            }
-            select.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    
-    
-        return list;
-    }
-    
-     public boolean saveGame(JSONObject session) throws JSONException{
-        int gameId;
-        try {
-            
-            conn = DriverManager.getConnection(url,user,password);
-            
-            // getting the game id 
-            String query = new String("select game_id from games where player_one_name=? or player_two_name=?");
-            PreparedStatement selectGameID = conn.prepareStatement(query);
-            selectGameID.setString(1,session.getString("playerOne"));
-            selectGameID.setString(2,session.getString("playerOne"));
-            ResultSet rs = selectGameID.executeQuery();
+    // login With email
+    public boolean logInUsingEmail(String email, String pswd) throws SQLException {
+            String passwordEncrypted = passwordEnc(pswd);
+            ResultSet rs;
+         try {
+             conn = DriverManager.getConnection(url, user, password);
+            Statement selectStatement = conn.createStatement(ResultSet.CONCUR_UPDATABLE, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            String query = new String("select * from players where email='" + email +"'");
+            rs = selectStatement.executeQuery(query);
             rs.next();
-            gameId = rs.getInt("game_id");
-            selectGameID.close();
-            // inserting into table save game
-            query= new String("insert into save_game values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            PreparedStatement saveStatement = conn.prepareStatement(query);
-            saveStatement.setInt(1, gameId);
-            saveStatement.setString(2, session.getString("playerOne"));
-            saveStatement.setString(3, session.getString("playerOnePick"));
-            saveStatement.setString(4, session.getString("playerTwo"));
-            saveStatement.setString(5, session.getString("playerTwoPick"));
-            
-            int i =6;
-            JSONArray board = session.getJSONArray("board");
-            for (int j = 0; j < board.length();  j++) {
-                saveStatement.setString(i, (String) board.get(j));
-                i++;
-            }
-            if(session.getInt("turn") == 1){
-                saveStatement.setString(15 ,session.getString("playerOne") );
+            String retrievedPassword=rs.getString("password");
+            if(retrievedPassword.equals(passwordEncrypted ) ){
+                System.out.println("Logged in successfully");
+                String updatingStatus=rs.getString("status");
+                updatingStatus = "Online";
+                rs.updateString("status", updatingStatus);
+                
+                selectStatement.close();
+                conn.close();
             }else{
-                saveStatement.setString(15 ,session.getString("playerTwo"));
+                System.out.println("The password you entered is incorrect");
+                selectStatement.close();
+                conn.close();
+                return false;
             }
             
-            saveStatement.executeUpdate();
-            saveStatement.close();
-            conn.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            //can use it to print duplicate key error
+            System.err.println(ex.getMessage());
+             System.out.println("The email you entered is not correct");
+             conn.close();
             return false;
         }
+         conn.close();
         return true;
     }
     
-    public JSONObject getSavedGame(String playerOneName, String playerTwoName) throws JSONException{
-        JSONObject gameDetails = new JSONObject();
-        
-        try {
-            conn = DriverManager.getConnection(url,user, password); 
-            
-
-            
-            String query= new String("select * from save_game player_one_name in (?,?) and player_two_name in (?, ?)");
-            PreparedStatement savedGameStatement = conn.prepareStatement(query);
-            savedGameStatement.setString(1,playerOneName );
-            savedGameStatement.setString(2,playerTwoName );
-            savedGameStatement.setString(3,playerOneName );
-            savedGameStatement.setString(4,playerTwoName );
-            rs = savedGameStatement.executeQuery(query);
+    //get UserName By Email
+    public String getUsername(String email){
+        ResultSet rs ; 
+        String username;
+        PreparedStatement ps;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            ps = conn.prepareStatement("select * from players where email = ?");
+            ps.setString(1,email);
+            rs = ps.executeQuery();
             rs.next();
-            gameDetails.put("playerOne", playerOneName);
-            gameDetails.put("playerOnePick", rs.getString("player_one_choice"));
-            gameDetails.put("playerTwo", playerTwoName);
-            gameDetails.put("playerTwoPick", rs.getString("player_two_choice") );
-            gameDetails.put("turn", rs.getString("turn"));
-            JSONArray board = new JSONArray();
-            // Board 
-            int i=6;
-            while (i<15) {
-                board.put(rs.getString(i++));  
-            }
-            gameDetails.put("board", board);
-            
-            savedGameStatement.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            
+            username = rs.getString(1);
+            return username;
+        }catch(SQLException ex){
+            System.out.print("Invaild Email");
         }
-        return gameDetails;
-    }
-    public JSONObject getPlayerSavedGames(String playerName) throws JSONException{
-         JSONObject playerSavedGames = new JSONObject();
-
-        try {
-            conn = DriverManager.getConnection(url,user, password); 
-            String query= new String("select * from save_game where player_one_name=? or player_two_name=?" );
-            PreparedStatement  savedGameStatement = conn.prepareStatement(query);
-            savedGameStatement.setString(1, playerName);
-            savedGameStatement.setString(2, playerName);
-            ResultSet rs = savedGameStatement.executeQuery();
-            JSONArray playerOneNames = new JSONArray();
-            JSONArray playerTwoNames = new JSONArray();
-            while(rs.next()){
-              playerOneNames.put(rs.getString("player_one_name"));
-              playerTwoNames.put(rs.getString("player_two_name"));
-            }
-            playerSavedGames.put("playerOneNames", playerOneNames);
-            playerSavedGames.put("playerTwoNames", playerTwoNames);
-            savedGameStatement.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            
-        }
-        return playerSavedGames;
-    }
-    public boolean playerClosing(Person p){
-        try {
-          conn = DriverManager.getConnection(url, user, password);
-          String query = "update players set total_score=?,games_played=?, games_won=?, games_lost=?, draws=?, status='offline' where username=?";  
-          PreparedStatement saveDetails = conn.prepareStatement(query);
-          saveDetails.setInt(1, p.getTotal_score());
-          saveDetails.setInt(2, p.getGames_played());
-          saveDetails.setInt(3, p.getGames_won());
-          saveDetails.setInt(4, p.getGames_lost());
-          saveDetails.setInt(5, p.getDraws());
-          saveDetails.setString(6, p.getUsername());
-          saveDetails.executeUpdate();
-          saveDetails.close();
-          conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-         return true;
+        return null;
     }
     
+    //get Email By Username
+    public String getEmail(String username){
+        ResultSet rs ; 
+        String email;
+        PreparedStatement ps;
+        try{
+            conn = DriverManager.getConnection(url,user,password);
+            ps = conn.prepareStatement("select * from players where username = ?");
+            ps.setString(1,username);
+            rs = ps.executeQuery();
+            rs.next();
+            email = rs.getString(3);
+            return email;
+        }catch(SQLException ex){
+            System.out.print("Invaild Email");
+        }
+        return null;
+    }
+    // Person p = new Person();
+    public void removeRecord(int ID) throws SQLException {
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            Statement stmt = conn.createStatement();
+            String queryString = new String("DELETE FROM players WHERE id=" + ID + ";");
+            stmt.executeUpdate(queryString);
+            System.out.println("Deleted successfully. ");
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        conn.close();
+
+    }
 }

@@ -11,7 +11,7 @@ package models;
  */
 public class DisplayPlayers {
    private String name, status;
-
+   
     public DisplayPlayers(String name, String status) {
         this.name = name;
         this.status = status;

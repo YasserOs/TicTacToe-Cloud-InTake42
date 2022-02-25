@@ -52,7 +52,7 @@ public class MainRoomController extends GeneralController implements Initializab
     private Button multiBTN;
     @FXML
     private Button showBTN;
-     @FXML
+    @FXML
     private BorderPane plist;
     @FXML Label labelName; // labelName.setText(person.getName());
     @FXML Label labelScore; // labelScore.setText(person.getScore());
@@ -60,25 +60,35 @@ public class MainRoomController extends GeneralController implements Initializab
     @FXML private TableView<DisplayPlayers> tableView;
     @FXML private TableColumn<DisplayPlayers, String> name;
     @FXML private TableColumn<DisplayPlayers, String> status; 
-    @FXML private Button info;
+    @FXML private Button Games;
     @FXML private Label pN;
     @FXML private Label pS;
     @FXML private Label pW;
-    
+    @FXML private TableView<savedGames> tableView2;
+    @FXML private TableColumn<savedGames, Integer> GameID;
+    @FXML private TableColumn<savedGames, String> Opponent;
+    @FXML private Button resume;
+    @FXML BorderPane gamesArea;
     Alert alert;
     String chosenOpponent;
     ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
-    
+    ObservableList<savedGames> savedGamesList=FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {     
         
           try {
+               GameID.setCellValueFactory(new PropertyValueFactory<savedGames, Integer>("gameID"));
+               Opponent.setCellValueFactory(new PropertyValueFactory<savedGames, String>("Opponent"));             
+      
               name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
               status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status"));
               ClientGui.currentLiveCtrl=this;
               JSONObject msg = new JSONObject();
               msg.put("Action", "getallplayers");
+              ClientGui.printStream.println(msg.toString());
+              msg = new JSONObject();
+              msg.put("Action", "getSavedGames");             
               ClientGui.printStream.println(msg.toString());
               PendingInvitation=false;
               labelName.setText(ClientGui.loggedPlayer.getUsername());
@@ -91,22 +101,26 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     public void fillList()
     {
-       
-        tableView.setItems(Playerslist);       
+       tableView.setItems(Playerslist);
+       tableView2.setItems(savedGamesList);
+       //ObservableList<DisplayPlayers> SelectedRow = tableView.getSelectionModel().getSelectedItems();
+       //chosenOpponent = SelectedRow.get(0).getName();
     }
+    
     
     // all functions implementation is just for test, feel free to put ur back end implementation   
 
-    public void PlayerStartedMatch() throws JSONException
+    public void PlayerStartedMatch(String mode) throws JSONException
     {
         JSONObject msg = new JSONObject();
         msg.put("Action", "playerStartedMatch");
+        msg.put("Mode", mode);
         ClientGui.printStream.println(msg.toString());
     
     }
     public void PlayVsAI(ActionEvent event) throws IOException, JSONException{
       
-        PlayerStartedMatch();
+        PlayerStartedMatch("Singleplayer");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/SinglePlayer/SinglePlayer.fxml"));
         Parent View = loader.load();
@@ -152,7 +166,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     controller.initSession(opponent,isInvited);
-                    PlayerStartedMatch();
+                    PlayerStartedMatch("Multiplayer");
                     window.show();   
                 } catch (JSONException ex) {
                     Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
@@ -186,6 +200,9 @@ public class MainRoomController extends GeneralController implements Initializab
                       break;
                   case "Playerslist":
                       initPlayersTable(msg);
+                      break;
+                  case "SaveGamesList": 
+                      initGamessTable(msg);
                       break;
                   case "playerFinishMatch":
                       updateplayerlist(msg,"online");
@@ -352,6 +369,25 @@ public class MainRoomController extends GeneralController implements Initializab
         }
         
     }
-    
+     public void initGamessTable(JSONObject msg) throws JSONException
+    {
+        savedGamesList.clear();
+        JSONArray games = msg.getJSONArray("gamesArray");
+        for(int i=0 ; i<games.length(); i++)
+        {
+         savedGamesList.add( new savedGames( games.getJSONObject(i).getString("Opponent") ,games.getJSONObject(i).getInt("gameID")));
+        }
+    }
+    public void SavedGames(ActionEvent event) throws IOException, JSONException{
+      
+          gamesArea.setVisible(true);
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getClassLoader().getResource("views/SavedGames/SavedGames.fxml"));
+//        Parent View = loader.load();
+//        Scene ViewScene = new Scene(View);
+//        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        window.setScene(ViewScene);
+//        window.show();
+    }
     
 }

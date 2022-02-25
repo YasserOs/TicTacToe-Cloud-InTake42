@@ -138,6 +138,7 @@ public class SinglePlayerController implements Initializable {
     {
         JSONObject msg = new JSONObject();
         msg.put("Action", "playerFinishMatch");
+        msg.put("Mode","Singleplayer");
         ClientGui.printStream.println(msg.toString());
         pc.stop();
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("views/MainRoom/MainRoom.fxml"));

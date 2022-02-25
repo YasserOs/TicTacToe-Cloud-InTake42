@@ -40,7 +40,7 @@
                   </ImageView>
                </center>
             </BorderPane>
-            <Button fx:id="backbtn" layoutX="51.0" layoutY="671.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="77.0" prefWidth="183.0" style="-fx-background-color: transparent;">
+            <Button fx:id="backbtn" layoutX="50.0" layoutY="721.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="51.0" prefWidth="183.0" style="-fx-background-color: transparent;">
                <font>
                   <Font size="24.0" />
                </font></Button>
@@ -121,11 +121,15 @@
                   </ImageView>
                </center>
             </BorderPane>
-            <ImageView fitHeight="89.0" fitWidth="226.0" layoutX="32.0" layoutY="707.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@BackButton%20.png" />
-               </image>
-            </ImageView>
+            <Button layoutX="50.0" layoutY="667.0" mnemonicParsing="false" onAction="#back2MainRoom">
+               <graphic>
+                  <ImageView fitHeight="89.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@BackButton%20.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </AnchorPane>
    </children>

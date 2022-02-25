@@ -37,6 +37,7 @@ import javafx.stage.Stage;
 import models.Message;
 import models.Person;
 import models.Session;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import views.GeneralController;
@@ -100,9 +101,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
-            chattxt.appendText("System: " +String.valueOf(playerTurn));
             
         }
+        chattxt.appendText("System: " +String.valueOf(playerTurn) + "\n");
         currentSession = new Session(player1.getUsername(),p2);
         resetGrid();
     }
@@ -147,12 +148,57 @@ public class MultiPlayerController extends GeneralController implements Initiali
             msg.put("Action", "Pause");
             msg.put("Receiver", player2);
             msg.put("Sender",  ClientGui.loggedPlayer.getUsername());
+            msg.put("Content", "Pending");
             ClientGui.printStream.println(msg.toString());
-            playerTurn= false;
     }
     private void checkPauseResponse(JSONObject msg) {
+        
+        Platform.runLater(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    if (msg.getString("Content").equals("true")) {
+                        showAlert("Pause", msg.getString("Sender") +  " has accepted to save the game", 1);
+                        playerTurn=false;
+                    } else if(msg.getString("Content").equals("Pending")) {
+                        Optional<ButtonType> res = showAlert("Pause game", msg.getString("Sender") + " wants to pause the game?", 1);
+                        //Button newb = new Button();
+                        ButtonType button = res.orElse(ButtonType.CANCEL);
+                        if (button == ButtonType.OK) {
+                            sendMsgToPlayer("Pause", "true");
+                            saveSession();
+                        } else if (button == ButtonType.CANCEL) {
+                            sendMsgToPlayer("Pause", "false");
+                        }
+                    }else{
+                        showAlert("Pause", msg.getString("Sender") +  "has refused saving game", 1);
+                    }
+                } catch (JSONException ex) {
+                    Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
-
+    }
+    private void saveSession() throws JSONException{
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "SaveSession");
+        msg.put("playerOne",player1.getUsername() );
+        msg.put("playerTwo", player2);
+        msg.put("playerOnePick", currentPlayerPick);
+        msg.put("playerTwoPick", opponentPick);
+        JSONArray board = new JSONArray();
+        for (Button button : currentSession.board.board) {
+            board.put(button.getText());
+        }
+        msg.put("board", board);
+        if (playerTurn) {
+            msg.put("turn", player1.getUsername());
+        }else{
+             msg.put("turn", player2);
+        }
+        ClientGui.printStream.println(msg.toString());
+        playerTurn=false;
     }
     private void checkGameRestart(JSONObject msg) throws IOException, JSONException {
         
@@ -365,10 +411,10 @@ public class MultiPlayerController extends GeneralController implements Initiali
         
        
     }
-    private Optional<ButtonType> showAlert(String title , String header , int flag){
-        alert = new Alert(Alert.AlertType.INFORMATION);
+    private Optional<ButtonType> showAlert(String title , String body , int flag){
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
-        alert.setHeaderText(header);
+        alert.setContentText(body);
         alert.setResizable(false);
         
         if(flag == 1){
@@ -412,8 +458,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{
         JSONObject msg = new JSONObject();
         msg.put("Action", "playerFinishMatch");
+        msg.put("Mode", "Multiplayer");
         msg.put("score", ClientGui.loggedPlayer.getTotal_score());
-        msg.put("Wins", ClientGui.loggedPlayer.getGames_won());
+        msg.put("Wins",  ClientGui.loggedPlayer.getGames_won());
         msg.put("Draws", ClientGui.loggedPlayer.getDraws());
         msg.put("Loses", ClientGui.loggedPlayer.getGames_lost());
         msg.put("Games", ClientGui.loggedPlayer.getGames_played());

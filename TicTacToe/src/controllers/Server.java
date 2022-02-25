@@ -26,6 +26,7 @@ public class Server
     public static Database db ;
     public static Vector<Person> players ;
     public static ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
+  //public static Vector<JSONObject> savedSessions = new Vector<JSONObject>();
 
     static{
         try {

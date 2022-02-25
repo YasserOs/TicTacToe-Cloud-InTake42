@@ -21,7 +21,7 @@
             <Image url="@testsvg.png" />
          </image>
       </ImageView>
-      <BorderPane fx:id="plist" layoutX="14.0" layoutY="347.0" prefHeight="424.0" prefWidth="305.0">
+      <BorderPane fx:id="plist" layoutX="947.0" layoutY="-14.0" prefHeight="424.0" prefWidth="304.0">
          <top>
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="305.0" style="-fx-background-color: #DBDBDB;" text="List of Players" BorderPane.alignment="CENTER">
                <font>
@@ -37,7 +37,7 @@
             </TableView>
          </center>
       </BorderPane>
-      <BorderPane layoutX="923.0" layoutY="331.0" prefHeight="402.0" prefWidth="308.0">
+      <BorderPane layoutX="942.0" layoutY="431.0" prefHeight="402.0" prefWidth="308.0">
          <top>
             <Label alignment="CENTER" prefHeight="35.0" prefWidth="309.0" style="-fx-background-color: #39b5ff;" text="Global Chat" textFill="WHITE" BorderPane.alignment="CENTER">
                <font>
@@ -86,17 +86,18 @@
                <font>
                   <Font name="System Bold Italic" size="24.0" />
                </font></Button>
-            <Button layoutX="87.0" layoutY="407.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="310.0" text="Saved Games" />
+            <Button fx:id="Games" layoutX="87.0" layoutY="407.0" mnemonicParsing="false" onAction="#SavedGames" prefHeight="80.0" prefWidth="310.0" text="Saved Games" />
+             <Button layoutX="119.0" layoutY="506.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="261.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="119.0" fitWidth="252.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@4.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
       </AnchorPane>
-       <Button layoutX="965.0" layoutY="35.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="261.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
-         <graphic>
-            <ImageView fitHeight="119.0" fitWidth="252.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@4.png" />
-               </image>
-            </ImageView>
-         </graphic></Button>
       <AnchorPane layoutX="32.0" layoutY="205.0" prefHeight="111.0" prefWidth="305.0">
          <children>
             <Label fx:id="pN" prefHeight="25.0" prefWidth="110.0" text="PlayerName:" textFill="#fffefe">
@@ -136,5 +137,18 @@
             <Image url="@boy.png" />
          </image>
       </ImageView>
+      <BorderPane fx:id="gamesArea" layoutX="12.0" layoutY="450.0" prefHeight="379.0" prefWidth="233.0" visible="false">
+         <center>
+            <TableView fx:id="tableView2" prefHeight="170.0" prefWidth="324.0" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn fx:id="GameID" prefWidth="75.0" text="game ID" />
+                <TableColumn fx:id="Opponent" prefWidth="157.6" text="Opponent" />
+              </columns>
+            </TableView>
+         </center>
+         <bottom>
+            <Button fx:id="resume" mnemonicParsing="false" text="resume" BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
    </children>
 </AnchorPane>
