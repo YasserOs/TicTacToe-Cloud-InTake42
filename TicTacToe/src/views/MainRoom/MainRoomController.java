@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -53,7 +54,6 @@ public class MainRoomController extends GeneralController implements Initializab
     private Button showBTN;
      @FXML
     private BorderPane plist;
-    private ActionEvent e;
     @FXML Label labelName; // labelName.setText(person.getName());
     @FXML Label labelScore; // labelScore.setText(person.getScore());
     @FXML Label labelWins; //labelScore.setText(person.getWins());     // mfrood el 3 dool yt7to fel init;
@@ -75,7 +75,7 @@ public class MainRoomController extends GeneralController implements Initializab
         globalchat.appendText(msgContent.getText()+"\n"); 
         msgContent.clear();
     }
-    
+
     public void PlayerStartedMatch() throws JSONException
     {
         JSONObject msg = new JSONObject();
@@ -98,7 +98,6 @@ public class MainRoomController extends GeneralController implements Initializab
     public void PlayVsFriend(ActionEvent event) throws IOException, JSONException
     {
       
-        e = event;
         DisplayPlayers chosen = tableView.getSelectionModel().getSelectedItems().get(0);
 
         if(plist.isVisible()){
@@ -119,13 +118,13 @@ public class MainRoomController extends GeneralController implements Initializab
             }
         }
     }
-    public void startMultiPlayerMatch(ActionEvent event , String opponent , boolean isInvited) throws IOException, JSONException{
+    public void startMultiPlayerMatch( String opponent , boolean isInvited) throws IOException, JSONException{
                
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
         Scene ViewScene = new Scene(View);
-        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage window = (Stage)multiBTN.getParent().getScene().getWindow();
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
@@ -206,7 +205,7 @@ public class MainRoomController extends GeneralController implements Initializab
         String content = msg.getString("Content");
         switch(content){
             case "Accept":
-                startMultiPlayerMatch(e , msg.getString("Sender") , false);
+                startMultiPlayerMatch(msg.getString("Sender") , false);
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
@@ -275,7 +274,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     sendInvitaionResponse(msg, decision);
                     if(decision.equals("Accept")){
                         try {
-                            startMultiPlayerMatch(e, msg.getString("Sender"), true);
+                            startMultiPlayerMatch( msg.getString("Sender"), true);
                         } catch (IOException ex) {
                             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                         }

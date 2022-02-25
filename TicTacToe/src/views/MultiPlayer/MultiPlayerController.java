@@ -141,18 +141,23 @@ public class MultiPlayerController extends GeneralController implements Initiali
     private void checkGameRestart(JSONObject msg) throws IOException, JSONException {
         
         String response = msg.getString("Content");
-//        if(response.equals("true")){
-//                    player2Restart = true;
-//                    if(player1Restart&&player2Restart){
-//                        player1Restart = player2Restart= false;
-//                        resetGrid();
-//                    }
-//        }
-        if(response.equals("false")){
+        if(response.equals("true")){
+                    player2Restart = true;
+                    if(player1Restart&&player2Restart){
+                        player1Restart = player2Restart= false;
+                        resetGrid();
+                    }
+        }
+        else if(response.equals("false")){
             
-            alert.hide();
-            showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
-            System.out.println("eeeeeeee");
+            Platform.runLater(new Runnable(){
+                @Override
+                public void run() {
+                    alert.hide();
+                    showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
+                }
+            });
+            
             
         }
     }
