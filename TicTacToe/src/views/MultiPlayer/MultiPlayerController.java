@@ -96,10 +96,17 @@ public class MultiPlayerController extends GeneralController implements Initiali
     
     public void initSession(String p2 , boolean isInvited ) throws JSONException{
         player1=ClientGui.loggedPlayer;
-        System.out.println("Init Session - Player 1 : " + player1.getUsername() + " , Player 2 : "+p2);
         player2=p2;
         invited = isInvited;
-        
+        turnRandomizer();
+        System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
+        currentSession = new Session(player1.getUsername(),p2);
+        resetGrid();        
+        leftPlayerName.setText(player1.getUsername());
+        rightPlayerName.setText(p2);
+         
+    }
+    public void turnRandomizer(){
         if(!invited){
             playerTurn = randomTurn();
             oppTurn = !playerTurn;     
@@ -114,18 +121,10 @@ public class MultiPlayerController extends GeneralController implements Initiali
             } catch (IOException ex) {
                 Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Turns - Player 1 : " + playerTurn + " , Player 2 : "+oppTurn);
-            
         }
-        chattxt.appendText("System: " +String.valueOf(playerTurn) + "\n");
-        currentSession = new Session(player1.getUsername(),p2);
-        resetGrid();
         
-         leftPlayerName.setText(player1.getUsername());
-         rightPlayerName.setText(p2);
-         
     }
-    public void resumeSession(JSONObject msg) throws JSONException{
+    public void resumeSession(JSONObject msg , boolean isInvited) throws JSONException{
         System.out.println(msg);
         JSONArray board = msg.getJSONObject("gameDetails").getJSONArray("board");
         player1 = ClientGui.loggedPlayer;
@@ -150,7 +149,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             playerTurn = false;
         }
         currentSession = new Session(player1.getUsername(), player2);
-        invited =true;
+        invited =isInvited;
         resetGrid();
         System.out.println(board);
         System.out.println(board.getString(2));
@@ -163,20 +162,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
         }
         
     }
-    //        msg.put("Action", "ResumeMatch");
-//        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
-//        msg.put("Receiver", opponent);
-//        msg.put("Content", "Resume");
-//        msg.put("gameID", gameID);
-//        msg.put("gameState", "Paused");
-//        msg.put("gameDetails", gameDetails);
-    //         msg.put("Action", "SaveSession");
-//session.getString("playerOne" );
-//session.getString("playerOnePick"); 
-//session.getString("playerTwo");
-//session.getString("playerTwoPick");
-//session.getJSONArray("board");
-//session.getString("turn");
     public void processMessage(JSONObject msg) throws IOException{
         try {
             String Action =msg.getString("Action");
@@ -276,13 +261,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     player2Restart = true;
                     if(player1Restart&&player2Restart){
                         player1Restart = player2Restart= false;
+                        turnRandomizer();
                         resetGrid();
-//                        Platform.runLater(new Runnable() {
-//                               @Override
-//                               public void run() {
-//                                   alert.close();
-//                               }
-//                           });
                     }
         }
         else if(response.equals("false")){
@@ -291,7 +271,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 @Override
                 public void run() {
                     try {
-                        alert.hide();
+                        //alert.hide();
                         showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
                     } catch (JSONException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -341,23 +321,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             @Override
             public void run() {
                 numberOfPlays=0;
-                if(!invited){
-                    try {
-                        playerTurn = randomTurn();
-                        oppTurn = !playerTurn;  
-                        JSONObject msg = new JSONObject();
-                        msg.put("Action", "chooseTurn");
-                        msg.put("Sender", player1.getUsername());
-                        msg.put("Receiver", player2);
-                        msg.put("Content", oppTurn);
-                        ClientGui.printStream.println(msg.toString());
-                        setPicks();
-                    } catch (IOException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+              
                 
                 availablePositions.clear();
                 availablePositions.add(btn1);
@@ -458,6 +422,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         player1Restart = true;
                         sendMsgToPlayer("RestartMatch","true");
                         if(player2Restart){
+                            turnRandomizer();
                             resetGrid();
                             
                         }

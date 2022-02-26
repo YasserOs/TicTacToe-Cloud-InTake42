@@ -172,6 +172,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     msg.put("Action","Invite");
                     msg.put("Sender",ClientGui.loggedPlayer.getUsername());
                     msg.put("Receiver", chosenOpponent);
+                    msg.put("gameState","New");
                     msg.put("Content","Pending");           
                     ClientGui.printStream.println(msg.toString());
                     PendingInvitation=true;
@@ -194,7 +195,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     if (msg.getString("gameState").equals("Paused")) {
-                        controller.resumeSession(msg);
+                        controller.resumeSession(msg , isInvited);
                     }else{
                         controller.initSession(msg.getString("Sender"),isInvited);
                     }
@@ -246,13 +247,6 @@ public class MainRoomController extends GeneralController implements Initializab
               Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
           }
     }
-//        msg.put("Action", "ResumeMatch");
-//        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
-//        msg.put("Receiver", opponent);
-//        msg.put("Content", "Resume");
-//        msg.put("gameID", gameID);
-//        msg.put("gameState", "Paused");
-//        msg.put("gameDetails", gameDetails);
     public void broadcastChat(JSONObject msg)
     {
         Platform.runLater(new Runnable(){
@@ -318,13 +312,15 @@ public class MainRoomController extends GeneralController implements Initializab
         }
     }
     
-    public void sendInvitaionResponse(JSONObject serverMsg,String decision) throws JSONException
+    public void sendInvitaionResponse(JSONObject playerResponse,String decision) throws JSONException
     {
-        JSONObject msg= new JSONObject();
-        msg.put("Action","Invite");
-        msg.put("Sender",ClientGui.loggedPlayer.getUsername());
-        msg.put("Receiver",serverMsg.getString("Sender"));
-        msg.put("Content",decision);
+        
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "Invite");
+        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
+        msg.put("Receiver", playerResponse.getString("Sender"));
+        msg.put("gameState","New");
+        msg.put("Content", decision);
         ClientGui.printStream.println(msg.toString());
 
     }
