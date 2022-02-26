@@ -122,12 +122,21 @@ public class ServerHandler extends Thread {
             case "getSavedGames": 
                 getSavedGames();
                 break;
+            case "ResumeMatch":
+                getGameDetails(msg);
+                break;
             default:
-                sendMsgToReceiver(msg);
+                sendMsgToReceiver(msg,msg.getString("Receiver"));
                 break;
         }
     }
-    
+    public void getGameDetails(JSONObject msg) throws JSONException{
+        JSONObject gameDetails = Server.db.getSavedGame(msg.getInt("gameID"));
+        msg.put("gameDetails", gameDetails);
+        this.sendMsgToReceiver(msg, msg.getString("Sender"));
+        this.printStream.println(msg.toString());
+    }
+
     public void changeplayerstatus(String action, String status , JSONObject msgReceived) throws JSONException
     {
         String mode = msgReceived.getString("Mode");
@@ -238,10 +247,10 @@ public class ServerHandler extends Thread {
     }
     // send to receiver
     // send response back to sender
-    public void sendMsgToReceiver(JSONObject msg) throws JSONException {
+    public void sendMsgToReceiver(JSONObject msg, String receiver) throws JSONException {
         
         for (ServerHandler sh : handlers) {
-            if (msg.getString("Receiver").equals(sh.loggedPlayer.getUsername())) {
+            if (receiver.equals(sh.loggedPlayer.getUsername())) {
                 sh.printStream.println(msg.toString());
                 break;
             }

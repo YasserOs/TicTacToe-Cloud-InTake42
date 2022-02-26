@@ -109,13 +109,34 @@ public class MainRoomController extends GeneralController implements Initializab
     {
        tableView.setItems(Playerslist);
        tableView2.setItems(savedGamesList);
-       //ObservableList<DisplayPlayers> SelectedRow = tableView.getSelectionModel().getSelectedItems();
-       //chosenOpponent = SelectedRow.get(0).getName();
     }
     
     
     // all functions implementation is just for test, feel free to put ur back end implementation   
-
+    public void requestResume(ActionEvent event) throws JSONException{
+    
+    ObservableList<savedGames> SelectedRow = tableView2.getSelectionModel().getSelectedItems();
+    int gameIDToResume = SelectedRow.get(0).getGameID();
+    chosenOpponent = SelectedRow.get(0).getOpponent();
+    System.out.println(gameIDToResume + "\t" + chosenOpponent);
+        for (DisplayPlayers player : Playerslist) {
+            if(player.getName().equals(chosenOpponent)){
+                if(player.getStatus().equals("online")){
+                    sendResumeRequest(chosenOpponent, gameIDToResume);
+                }
+            }
+        }
+    }
+    public void sendResumeRequest(String opponent,int gameID) throws JSONException{
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "Invite");
+        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
+        msg.put("Receiver", opponent);
+        msg.put("Content", "Pending");
+        msg.put("gameID", gameID);
+        msg.put("gameState", "Paused");
+        ClientGui.printStream.println(msg.toString());
+    }
     public void PlayerStartedMatch(String mode) throws JSONException
     {
         JSONObject msg = new JSONObject();
@@ -158,8 +179,9 @@ public class MainRoomController extends GeneralController implements Initializab
             }
         }
     }
-    public void startMultiPlayerMatch( String opponent , boolean isInvited) throws IOException, JSONException{
-               
+
+    public void startMultiPlayerMatch(JSONObject msg , boolean isInvited) throws IOException, JSONException{
+        
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -171,7 +193,11 @@ public class MainRoomController extends GeneralController implements Initializab
                 try {
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
-                    controller.initSession(opponent,isInvited);
+                    if (msg.getString("gameState").equals("Paused")) {
+                        controller.resumeSession(msg);
+                    }else{
+                        controller.initSession(msg.getString("Sender"),isInvited);
+                    }
                     PlayerStartedMatch("Multiplayer");
                     window.show();   
                 } catch (JSONException ex) {
@@ -212,12 +238,21 @@ public class MainRoomController extends GeneralController implements Initializab
                       break;
                   case "playerFinishMatch":
                       updateplayerlist(msg,"online");
-                      
+                      break;
+                  case  "ResumeMatch":
+                      startMultiPlayerMatch(msg, true);
+                      break;
               } } catch (JSONException ex) {
               Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
           }
     }
-    
+//        msg.put("Action", "ResumeMatch");
+//        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
+//        msg.put("Receiver", opponent);
+//        msg.put("Content", "Resume");
+//        msg.put("gameID", gameID);
+//        msg.put("gameState", "Paused");
+//        msg.put("gameDetails", gameDetails);
     public void broadcastChat(JSONObject msg)
     {
         Platform.runLater(new Runnable(){
@@ -252,7 +287,7 @@ public class MainRoomController extends GeneralController implements Initializab
         String content = msg.getString("Content");
         switch(content){
             case "Accept":
-                startMultiPlayerMatch(msg.getString("Sender") , false);
+                startMultiPlayerMatch(msg , false);
                 break;
             case "Refuse":
                 openInvitationRefusalScreen();
@@ -303,8 +338,16 @@ public class MainRoomController extends GeneralController implements Initializab
                 try {
                     String decision ;
                     PendingInvitation=true;
-                    Optional<ButtonType> result = showAlert("Invitation Recieved!",msg.getString("Sender")+" Invited you to a game");
-                    Button newb = new Button();
+                    String gameState = msg.getString("gameState");
+                    Optional<ButtonType> result = null;
+                    
+                    if (gameState.equals("New")) {
+                        result= showAlert("Invitation Recieved!",msg.getString("Sender")+" Invited you to a game");
+
+                    }else{
+                        result = showAlert("Resume match", msg.getString("Sender")+" requseted to resume a game.");
+                    }
+                    
                     ButtonType button = result.orElse(ButtonType.CANCEL);
                     if (button == ButtonType.OK) {
                         decision ="Accept"; // msg object
@@ -312,13 +355,16 @@ public class MainRoomController extends GeneralController implements Initializab
                         decision ="Refuse";
                         PendingInvitation=false;
                     }
-                    sendInvitaionResponse(msg, decision);
-                    if(decision.equals("Accept")){
+                    
+                    if(decision.equals("Accept") && gameState.equals("New")){
                         try {
-                            startMultiPlayerMatch( msg.getString("Sender"), true);
+                            sendInvitaionResponse(msg, decision);
+                            startMultiPlayerMatch(msg, true);
                         } catch (IOException ex) {
                             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                    }else{
+                        sendResumeAcceptMessage(msg);
                     }
                 } catch (JSONException ex) {
                     Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
@@ -327,7 +373,13 @@ public class MainRoomController extends GeneralController implements Initializab
         });
         
     }
-    
+    public void sendResumeAcceptMessage(JSONObject msg) throws JSONException{
+        msg.remove("Action");
+        msg.remove("Content");
+        msg.put("Action", "ResumeMatch");
+        msg.put("Content", "Resume");
+        ClientGui.printStream.println(msg.toString());
+    }
     public void openInvitationRefusalScreen()
             
     {

@@ -87,12 +87,12 @@ public class MultiPlayerController extends GeneralController implements Initiali
     ImageView leftPlayer;
     @FXML
     ImageView rightPlayer;
-  @FXML
-  Label leftPlayerName;
-  @FXML
-  Label rightPlayerName;
-  @FXML
-  TextArea SHOWTRUN;
+    @FXML
+    Label leftPlayerName;
+    @FXML
+    Label rightPlayerName;
+    @FXML
+    TextArea SHOWTRUN;
     
     public void initSession(String p2 , boolean isInvited ) throws JSONException{
         player1=ClientGui.loggedPlayer;
@@ -125,8 +125,58 @@ public class MultiPlayerController extends GeneralController implements Initiali
          rightPlayerName.setText(p2);
          
     }
-
-    
+    public void resumeSession(JSONObject msg) throws JSONException{
+        System.out.println(msg);
+        JSONArray board = msg.getJSONObject("gameDetails").getJSONArray("board");
+        player1 = ClientGui.loggedPlayer;
+        JSONObject gameDetails = msg.getJSONObject("gameDetails");
+        if( gameDetails.getString("playerOne").equals(player1.getUsername())) {
+           player2 =  gameDetails.getString("playerTwo");
+           currentPlayerPick =  gameDetails.getString("playerOnePick");
+           
+           
+        }else{
+           player2 =  gameDetails.getString("playerOne");
+           currentPlayerPick =  gameDetails.getString("playerTwoPick");
+        }
+        leftPlayerName.setText(player1.getUsername());
+        rightPlayerName.setText(player2);
+        setMyPick(currentPlayerPick);
+        if (gameDetails.getString("turn").equals(player1.getUsername())) {
+            oppTurn = false;
+            playerTurn = true;
+        }else{
+            oppTurn = true;
+            playerTurn = false;
+        }
+        currentSession = new Session(player1.getUsername(), player2);
+        invited =true;
+        resetGrid();
+        System.out.println(board);
+        System.out.println(board.getString(2));
+        for (int i = 0; i < board.length(); i++) {
+            if (board.getString(i).isEmpty()) {
+            }else{
+                updateBoard(i, board.getString(i));
+                System.out.println(board.getString(i));
+            }
+        }
+        
+    }
+    //        msg.put("Action", "ResumeMatch");
+//        msg.put("Sender", ClientGui.loggedPlayer.getUsername());
+//        msg.put("Receiver", opponent);
+//        msg.put("Content", "Resume");
+//        msg.put("gameID", gameID);
+//        msg.put("gameState", "Paused");
+//        msg.put("gameDetails", gameDetails);
+    //         msg.put("Action", "SaveSession");
+//session.getString("playerOne" );
+//session.getString("playerOnePick"); 
+//session.getString("playerTwo");
+//session.getString("playerTwoPick");
+//session.getJSONArray("board");
+//session.getString("turn");
     public void processMessage(JSONObject msg) throws IOException{
         try {
             String Action =msg.getString("Action");
@@ -141,7 +191,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     setMyPick(msg.getString("Content"));
                     break;
                 case "Move":
-                    updateBoard(msg.getInt("Content"));
+                    updateBoard(msg.getInt("Content"), opponentPick);
+                    playerTurn=true;
                     break;
                 case "Won":
                     gameresult("Loss");
@@ -468,16 +519,16 @@ public class MultiPlayerController extends GeneralController implements Initiali
     {
         return pos.getText().isEmpty();  
     }
-    public void updateBoard(int position)
+    public void updateBoard(int position, String pick)
     {
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                        currentSession.play(position, opponentPick);        
+                        currentSession.play(position, pick);        
             }
         });
         numberOfPlays++;
-        playerTurn=true;
+        
     }
     @FXML
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{

@@ -103,7 +103,7 @@
                <children>
                   <VBox spacing="20.0">
                      <children>
-                        <Label fx:id="pN" prefHeight="25.0" prefWidth="110.0" text="PlayerName:" textFill="#fffefe">
+                        <Label fx:id="pN" prefHeight="25.0" prefWidth="110.0" text="Name:" textFill="#fffefe">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -123,12 +123,12 @@
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Label fx:id="pW4" prefHeight="27.0" prefWidth="59.0" text="Losses" textFill="#fffefe">
+                        <Label fx:id="pW4" prefHeight="27.0" prefWidth="59.0" text="Losses:" textFill="#fffefe">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Label fx:id="pW2" prefHeight="27.0" prefWidth="59.0" text="Draws" textFill="#fffefe">
+                        <Label fx:id="pW2" prefHeight="27.0" prefWidth="59.0" text="Draws:" textFill="#fffefe">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -180,7 +180,7 @@
       </AnchorPane>
       <BorderPane fx:id="gamesArea" layoutX="31.0" layoutY="503.0" prefHeight="292.0" prefWidth="336.0" visible="false">
          <bottom>
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="347.0" text="Resume" BorderPane.alignment="CENTER" />
+            <Button fx:id="resume" mnemonicParsing="false" onAction="#requestResume" prefHeight="30.0" prefWidth="347.0" text="Resume" BorderPane.alignment="CENTER" />
          </bottom>
          <center>
             <TableView fx:id="tableView2" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">

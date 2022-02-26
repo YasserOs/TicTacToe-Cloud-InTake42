@@ -21,7 +21,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "admin";
+    private final String password = "123456";
 
     public Database() throws SQLException {
         connect();
@@ -35,7 +35,19 @@ public class Database {
             System.err.println(e.getMessage());
         }
     }
+     public Vector<Person> Top5Players() throws SQLException {  //--------> add this in db i guess!
+        Vector<Person> players = new Vector<Person>();
+        conn = DriverManager.getConnection(url, user, password);
+        Statement stmt = conn.createStatement();
+        String queryString = new String("select * from players order by total_score desc limit 5");
+        rs = stmt.executeQuery(queryString);
+        while (rs.next()) {
+            Person p = createPerson(rs);
+            players.add(p);
 
+        }
+        return players;
+    }
     public Vector<Person> getPlayers() throws SQLException {
         Vector<Person> players = new Vector<Person>();
         conn = DriverManager.getConnection(url, user, password);
@@ -327,23 +339,20 @@ public class Database {
         return true;
     }
     
-    public JSONObject getSavedGame(String playerOneName, String playerTwoName) throws JSONException{
+    public JSONObject getSavedGame(int gameID) throws JSONException{
         JSONObject gameDetails = new JSONObject();
-        
+
         try {
             conn = DriverManager.getConnection(url,user, password); 
             
-            String query= new String("select * from save_game player_one_name in (?,?) and player_two_name in (?, ?)");
+            String query= new String("select * from save_game where game_id=?");
             PreparedStatement savedGameStatement = conn.prepareStatement(query);
-            savedGameStatement.setString(1,playerOneName );
-            savedGameStatement.setString(2,playerTwoName );
-            savedGameStatement.setString(3,playerOneName );
-            savedGameStatement.setString(4,playerTwoName );
-            rs = savedGameStatement.executeQuery(query);
+            savedGameStatement.setInt(1,gameID );
+            rs = savedGameStatement.executeQuery();
             rs.next();
-            gameDetails.put("playerOne", playerOneName);
+            gameDetails.put("playerOne", rs.getString("player_one_name"));
             gameDetails.put("playerOnePick", rs.getString("player_one_choice"));
-            gameDetails.put("playerTwo", playerTwoName);
+            gameDetails.put("playerTwo", rs.getString("player_two_name"));
             gameDetails.put("playerTwoPick", rs.getString("player_two_choice") );
             gameDetails.put("turn", rs.getString("turn"));
             JSONArray board = new JSONArray();

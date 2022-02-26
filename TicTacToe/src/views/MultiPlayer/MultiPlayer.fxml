@@ -24,7 +24,7 @@
       </ImageView>
       <AnchorPane fx:id="ap" prefHeight="744.0" prefWidth="1115.0" stylesheets="@Style.css">
          <children>
-            <Button fx:id="restartbtn" layoutX="23.0" layoutY="517.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="222.0" text="Pause" />
+            <Button fx:id="restartbtn" layoutX="23.0" layoutY="517.0" mnemonicParsing="false" onAction="#pauseGameRequest" prefHeight="72.0" prefWidth="222.0" text="Pause" />
             <BorderPane layoutX="826.0" layoutY="26.0" prefHeight="350.0" prefWidth="285.0">
                <top>
                   <Label fx:id="rightPlayerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="284.0" text="Player 2 Name" textAlignment="CENTER" BorderPane.alignment="CENTER" />
