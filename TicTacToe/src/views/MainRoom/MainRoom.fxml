@@ -23,11 +23,11 @@
             <Image url="@testsvg.png" />
          </image>
       </ImageView>
-      <BorderPane fx:id="plist" layoutX="937.0" layoutY="-1.0" prefHeight="431.0" prefWidth="309.0">
+      <BorderPane fx:id="plist" layoutX="902.0" prefHeight="431.0" prefWidth="309.0" style="-fx-background-radius: 50px; -fx-border-radius: 50px;">
          <top>
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="315.0" style="-fx-background-color: #39b5ff;" text="List of Players" textFill="WHITE" BorderPane.alignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="315.0" style="-fx-background-color: #39b5ff; -fx-border-radius: 25px;" text="List of Players" textFill="WHITE" BorderPane.alignment="CENTER">
                <font>
-                  <Font name="System Bold" size="18.0" />
+                  <Font name="Comic Sans MS Bold" size="18.0" />
                </font></Label>
          </top>
          <center>
@@ -39,9 +39,9 @@
             </TableView>
          </center>
       </BorderPane>
-      <BorderPane layoutX="939.0" layoutY="454.0" prefHeight="373.0" prefWidth="309.0">
+      <BorderPane layoutX="902.0" layoutY="441.0" prefHeight="373.0" prefWidth="309.0" style="-fx-border-radius: 50px;">
          <top>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="309.0" style="-fx-background-color: #39b5ff;" text="Global Chat" textFill="WHITE" BorderPane.alignment="CENTER">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="322.0" style="-fx-background-color: #39b5ff;" text="Global Chat" textFill="WHITE" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -81,13 +81,13 @@
             </TextArea>
          </center>
       </BorderPane>
-      <AnchorPane id="anchorPane" layoutX="405.0" layoutY="79.0" prefHeight="671.0" prefWidth="465.0">
+      <AnchorPane id="anchorPane" layoutX="405.0" layoutY="120.0" prefHeight="630.0" prefWidth="465.0">
          <children>
             <VBox layoutX="87.0" layoutY="149.0" spacing="35.0">
                <children>
                   <Button fx:id="signleBTN" mnemonicParsing="false" onAction="#PlayVsAI" prefHeight="80.0" prefWidth="310.0" text="Play vs Computer" textFill="WHITE">
                      <font>
-                        <Font name="System Bold Italic" size="24.0" />
+                        <Font name="Comic Sans MS" size="24.0" />
                      </font>
                   </Button>
                   <Button fx:id="multiBTN" mnemonicParsing="false" onAction="#PlayVsFriend" prefHeight="80.0" prefWidth="310.0" text="Invite Player" />
@@ -97,81 +97,81 @@
             </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="31.0" layoutY="14.0" prefHeight="448.0" prefWidth="336.0" style="-fx-border-color: white; -fx-border-style: hidden dashed dashed hidden; -fx-border-radius: 25px;">
+      <AnchorPane layoutX="24.0" layoutY="14.0" prefHeight="247.0" prefWidth="598.0">
          <children>
-            <HBox layoutX="14.0" layoutY="198.0" prefHeight="229.0" prefWidth="320.0" spacing="20.0">
+            <HBox layoutX="225.0" prefHeight="229.0" prefWidth="346.0" spacing="20.0">
                <children>
-                  <VBox spacing="20.0">
+                  <VBox prefHeight="229.0" prefWidth="100.0" spacing="20.0">
                      <children>
                         <Label fx:id="pN" prefHeight="25.0" prefWidth="110.0" text="Name:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="pS" prefHeight="17.0" prefWidth="59.0" text="Score:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="pW" prefHeight="27.0" prefWidth="59.0" text="Wins:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="pW5" prefHeight="27.0" prefWidth="96.0" text="Games:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="pW4" prefHeight="27.0" prefWidth="59.0" text="Losses:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="pW2" prefHeight="27.0" prefWidth="59.0" text="Draws:" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox spacing="20.0">
+                  <VBox prefHeight="229.0" prefWidth="164.0" spacing="20.0">
                      <children>
-                        <Label fx:id="labelName" prefHeight="27.0" prefWidth="215.0" text="name" textFill="#fffefe">
+                        <Label fx:id="labelName" prefHeight="27.0" prefWidth="215.0" text="Hossam" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="labelScore" prefHeight="27.0" prefWidth="110.0" text="score" textFill="#fffefe">
+                        <Label fx:id="labelScore" prefHeight="27.0" prefWidth="110.0" text="Score" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="labelWins" prefHeight="27.0" prefWidth="96.0" text="wins" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="labelGames" prefHeight="27.0" prefWidth="59.0" text="games" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="labelLosses" prefHeight="27.0" prefWidth="59.0" text="losses" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                         <Label fx:id="labelDraws" prefHeight="27.0" prefWidth="59.0" text="draws" textFill="#fffefe">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font name="Comic Sans MS Bold" size="15.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <ImageView fitHeight="125.0" fitWidth="124.0" layoutX="98.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="MIcon" fitHeight="199.0" fitWidth="216.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@boy.png" />
                </image>

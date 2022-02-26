@@ -22,25 +22,28 @@
             <Image url="@testsvg.png" />
          </image>
       </ImageView>
-      <AnchorPane fx:id="ap" prefHeight="744.0" prefWidth="1115.0" stylesheets="@Style.css">
+      <AnchorPane fx:id="ap" prefHeight="744.0" prefWidth="1117.0" stylesheets="@Style.css">
          <children>
-            <Button fx:id="restartbtn" layoutX="23.0" layoutY="517.0" mnemonicParsing="false" onAction="#pauseGameRequest" prefHeight="72.0" prefWidth="222.0" text="Pause" />
+            <Button fx:id="restartbtn" layoutX="870.0" layoutY="513.0" mnemonicParsing="false" onAction="#pauseGameRequest" prefHeight="72.0" prefWidth="222.0" text="Pause" />
             <BorderPane layoutX="826.0" layoutY="26.0" prefHeight="350.0" prefWidth="285.0">
                <top>
-                  <Label fx:id="rightPlayerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="284.0" text="Player 2 Name" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                  <Label fx:id="rightPlayerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="284.0" style="-fx-background-color: transparent;" text="Player 2 Name" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font></Label>
                </top>
                <center>
-                  <ImageView fitHeight="83.0" fitWidth="74.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fx:id="Sicon" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@boy.png" />
                      </image></ImageView>
                </center>
                <bottom>
-                  <ImageView fx:id="rightPlayer" fitHeight="142.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                  <ImageView fx:id="rightPlayer" fitHeight="115.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                </bottom>
             </BorderPane>
-            <Button fx:id="backbtn" layoutX="23.0" layoutY="620.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="72.0" prefWidth="222.0" text="Back to MainRoom" />
-            <GridPane alignment="CENTER_RIGHT" layoutX="292.0" layoutY="186.0" prefHeight="434.0" prefWidth="482.0" vgap="20.0">
+            <Button fx:id="backbtn" layoutX="870.0" layoutY="610.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="72.0" prefWidth="222.0" text="Back to MainRoom" />
+            <GridPane alignment="CENTER_RIGHT" layoutX="319.0" layoutY="142.0" prefHeight="469.0" prefWidth="479.0" vgap="20.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -52,49 +55,49 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Button fx:id="btn1" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid none;">
+                  <Button fx:id="btn1" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="163.0" prefWidth="179.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid none;">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn4" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid none;" GridPane.rowIndex="1">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn7" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden hidden;" GridPane.rowIndex="2">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn2" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid solid;" GridPane.columnIndex="1">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btn5" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid solid;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Button fx:id="btn5" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="172.0" prefWidth="146.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid solid;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn3" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden hidden solid solid;" GridPane.columnIndex="2">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn6" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid hidden solid solid;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn8" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden solid;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btn9" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid hidden hidden solid;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <Button fx:id="btn9" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="152.0" style="-fx-border-width: 5; -fx-border-style: solid hidden hidden solid;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <font>
-                        <Font size="64.0" />
+                        <Font name="System Bold" size="72.0" />
                      </font>
                   </Button>
                </children>
@@ -104,25 +107,34 @@
             </GridPane>
             <BorderPane layoutX="7.0" layoutY="32.0" prefHeight="350.0" prefWidth="285.0">
                <top>
-                  <Label fx:id="leftPlayerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="284.0" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+                  <Label fx:id="leftPlayerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="58.0" prefWidth="284.0" style="-fx-background-color: transparent;" text="Player Name" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold Italic" size="24.0" />
+                     </font></Label>
                </top>
                <center>
-                  <ImageView fitHeight="134.0" fitWidth="127.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fx:id="Micon" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@boy.png" />
                      </image>
                   </ImageView>
                </center>
                <bottom>
-                  <ImageView fx:id="leftPlayer" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+                  <ImageView fx:id="leftPlayer" fitHeight="115.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
                </bottom>
             </BorderPane>
-            <BorderPane layoutX="832.0" layoutY="382.0" prefHeight="343.0" prefWidth="271.0">
+            <BorderPane layoutX="13.0" layoutY="420.0" prefHeight="318.0" prefWidth="274.0" style="-fx-background-color: none;">
                <top>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="280.0" style="-fx-background-color: #39B5FF;" text="Chat" BorderPane.alignment="CENTER" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="280.0" style="-fx-background-color: #39B5FF;" text="Chat" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Comic Sans MS" size="18.0" />
+                     </font></Label>
                </top>
                <center>
-                  <TextArea fx:id="chattxt" editable="false" prefHeight="444.0" prefWidth="266.0" stylesheets="@Style.css" BorderPane.alignment="CENTER" />
+                  <TextArea fx:id="chattxt" editable="false" prefHeight="444.0" prefWidth="266.0" stylesheets="@Style.css" text="&#10;" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="24.0" />
+                     </font></TextArea>
                </center>
                <bottom>
                   <FlowPane prefHeight="17.0" prefWidth="271.0" BorderPane.alignment="CENTER">
@@ -143,7 +155,11 @@
                   </FlowPane>
                </bottom>
             </BorderPane>
-            <TextArea fx:id="SHOWTRUN" layoutX="433.0" layoutY="32.0" prefHeight="55.0" prefWidth="228.0" />
+            <Label fx:id="boardLabel" alignment="CENTER" layoutX="301.0" layoutY="26.0" prefHeight="94.0" prefWidth="497.0" style="-fx-text-fill: linear-gradient(to right,#2556B7, #E4214C);" text="Yasser's turn" textFill="WHITE">
+               <font>
+                  <Font name="Comic Sans MS Bold" size="48.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

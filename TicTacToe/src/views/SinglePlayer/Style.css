@@ -1,7 +1,7 @@
 .label  {
    -fx-background-color:rgba(255, 255, 255, 0.8);
     -fx-opacity: 1;  
-    -fx-text-fill:black;
+    -fx-text-fill:white;
 }
 
 #btn1 ,#btn2 ,#btn3 ,#btn4 ,#btn5 ,#btn6 ,#btn7 ,#btn8 ,#btn9 {

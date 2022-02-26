@@ -7,6 +7,7 @@ package views.MainRoom;
 
 import models.*;
 import controllers.*;
+import static controllers.ClientGui.SelectedAvatar;
 import java.io.*;
 import java.util.logging.*;
 import javafx.fxml.*;
@@ -20,6 +21,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import views.MultiPlayer.MultiPlayerController;
@@ -74,6 +77,9 @@ public class MainRoomController extends GeneralController implements Initializab
     @FXML BorderPane gamesArea;
     Alert alert;
     String chosenOpponent;
+    @FXML
+    ImageView MIcon;
+    
     ObservableList<DisplayPlayers> Playerslist=FXCollections.observableArrayList();
     ObservableList<savedGames> savedGamesList=FXCollections.observableArrayList();
     @Override
@@ -104,6 +110,11 @@ public class MainRoomController extends GeneralController implements Initializab
           } catch (JSONException ex) {
               Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
           }
+          
+         MIcon.setImage(SelectedAvatar);
+          
+         
+          
     }
     public void fillList()
     {

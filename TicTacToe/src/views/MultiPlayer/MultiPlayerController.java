@@ -6,6 +6,7 @@
 package views.MultiPlayer;
 
 import controllers.ClientGui;
+import static controllers.ClientGui.SelectedAvatar;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -93,6 +94,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
     Label rightPlayerName;
     @FXML
     TextArea SHOWTRUN;
+    @FXML ImageView Micon,Sicon;
+    @FXML Label boardLabel;
+   
     
     public void initSession(String p2 , boolean isInvited ) throws JSONException{
         player1=ClientGui.loggedPlayer;
@@ -357,6 +361,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
         if( isEmpty(position) && playerTurn){
             System.out.println("Player 1 : "+player1.getUsername()+" - Pick : "+currentPlayerPick+" - Position : "+availablePositions.indexOf(position));
             position.setText(currentPlayerPick);
+            //currentPlayerPick.equals("x");
+            
             int buttPosition = currentSession.board.getBoard().indexOf(position);
             availablePositions.remove(position);
             playerTurn=false;
@@ -514,6 +520,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
         ClientGui.currentLiveCtrl = this;
          iconX = new Image("views/MultiPlayer/x.png");
          iconO = new Image("views/MultiPlayer/o.png");
+         Micon.setImage(SelectedAvatar);
+         //Sicon.setImage();
+         
     }    
 
     

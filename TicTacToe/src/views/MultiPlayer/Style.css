@@ -1,7 +1,7 @@
 .label  {
-   -fx-background-color:rgba(255, 255, 255, 0.8);
+   
     -fx-opacity: 1;  
-    -fx-text-fill:black;
+    -fx-text-fill:white;
 }
 
 #btn1 ,#btn2 ,#btn3 ,#btn4 ,#btn5 ,#btn6 ,#btn7 ,#btn8 ,#btn9 {
@@ -25,6 +25,7 @@ background: linear-gradient(to right, #274046, #E6DADA);   */
 .text-area .content {
     -fx-background-color: #E5F3FF;
 /*     -fx-text-fill: ;*/
+-fx-font-size: 18;
 }
 #restartbtn , #backbtn{
     
@@ -32,7 +33,7 @@ background: linear-gradient(to right, #274046, #E6DADA);   */
     -fx-background-radius: 30;
     -fx-font-weight: bold;
     -fx-font-size: 14;
-    -fx-text-fill: white;
+    -fx-text-fill: linear-gradient(to right,#2556B7, #E4214C);
 }
 
 #restartbtn:hover,#backbtn:hover{

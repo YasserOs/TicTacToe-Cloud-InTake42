@@ -16,24 +16,24 @@
    <children>
       <AnchorPane fx:id="ap" layoutX="-12.0" prefHeight="707.0" prefWidth="1204.0">
          <children>
-            <ImageView fitHeight="853.0" fitWidth="1211.0" layoutY="-5.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="821.0" fitWidth="1220.0" layoutX="-7.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@testsvg.png" />
                </image>
             </ImageView>
-            <Button fx:id="restartbtn" layoutX="937.0" layoutY="696.0" mnemonicParsing="false" onAction="#restart" prefHeight="70.0" prefWidth="255.0" style="-fx-background-color: #80E4C9;" text="Restart">
+            <Button fx:id="restartbtn" layoutX="942.0" layoutY="677.0" mnemonicParsing="false" onAction="#restart" prefHeight="70.0" prefWidth="255.0" style="-fx-background-color: #80E4C9;" text="Restart">
                <font>
                   <Font size="24.0" />
                </font></Button>
             <BorderPane layoutX="878.0" layoutY="149.0" prefHeight="412.0" prefWidth="314.0">
                <top>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="326.0" text="Bot" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="326.0" style="-fx-background-color: transparent;" text="Bot" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Comic Sans MS" size="36.0" />
                      </font></Label>
                </top>
                <center>
-                  <ImageView fitHeight="120.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fitHeight="161.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@robot.png" />
                      </image>
@@ -51,7 +51,7 @@
                <font>
                   <Font size="24.0" />
                </font></Button>
-            <GridPane fx:id="grid" alignment="CENTER_RIGHT" layoutX="376.0" layoutY="149.0" prefHeight="412.0" prefWidth="463.0" vgap="20.0">
+            <GridPane fx:id="grid" alignment="CENTER_RIGHT" layoutX="376.0" layoutY="194.0" prefHeight="412.0" prefWidth="463.0" vgap="20.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -115,13 +115,13 @@
             </GridPane>
             <BorderPane layoutX="43.0" layoutY="149.0" prefHeight="412.0" prefWidth="314.0">
                <top>
-                  <Label fx:id="playerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="326.0" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                  <Label fx:id="playerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="326.0" style="-fx-background-color: transparent;" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Comic Sans MS" size="36.0" />
                      </font></Label>
                </top>
                <center>
-                  <ImageView fitHeight="108.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                  <ImageView fx:id="Micon" fitHeight="143.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
                         <Image url="@boy.png" />
                      </image>
@@ -144,6 +144,11 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Label fx:id="BoardLabel" alignment="CENTER" layoutX="427.0" layoutY="91.0" prefHeight="70.0" prefWidth="359.0" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right,#2556B7, #E4214C);" text="Label">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

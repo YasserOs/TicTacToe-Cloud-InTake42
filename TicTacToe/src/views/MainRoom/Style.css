@@ -17,7 +17,7 @@
 }*/
 
 .button {
-    
+     -fx-font-family: Comic Sans MS;
     -fx-background-color:  #39b5ff;
     -fx-background-radius: 30;
     -fx-font-weight: bold;
@@ -90,6 +90,7 @@
     -fx-border-color:#69BBC0;
     -fx-font-weight: bold;
     -fx-font-size: 16;
+     -fx-font-family: Comic Sans MS;
 }
 
 

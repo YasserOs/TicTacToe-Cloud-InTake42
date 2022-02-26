@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Optional;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -47,6 +48,10 @@ public class ClientGui extends Application {
     public static GeneralController currentLiveCtrl;
     public static Stage mainStage;
     public static Alert alert;
+    public static Image SelectedAvatar;
+    public static int AvatarIndex;
+    
+
     @Override
     public void start(Stage primaryStage) throws IOException
     {
@@ -70,12 +75,21 @@ public class ClientGui extends Application {
         Scene scene = new Scene(root);
         //set transparent
         scene.setFill(Color.TRANSPARENT);
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest((event) -> {
             System.exit(1);
         });       
 
+         
+          
+          Image[] Avatars = { new Image ("controllers/11.png"),new Image ("controllers/33.png"),new Image ("controllers/44.png"), new Image ("controllers/55.png"),new Image ("controllers/66.png")};
+          
+          Random rand = new Random();
+          AvatarIndex = rand.nextInt(Avatars.length);
+          SelectedAvatar = Avatars[AvatarIndex];
+          
     }
     public static void createSocket()
     {
@@ -89,6 +103,8 @@ public class ClientGui extends Application {
               System.out.println("Server is not running .");
         }  
 
+          
+        
 
     }
  

@@ -6,6 +6,7 @@
 package views.SinglePlayer;
 
 import controllers.ClientGui;
+import static controllers.ClientGui.SelectedAvatar;
 import models.*;
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 public class SinglePlayerController implements Initializable {
     @FXML AnchorPane ap;
     @FXML GridPane grid;
+    @FXML Label BoardLabel;
     
     ArrayList<Button> availablePositions = new ArrayList<Button>();
     
@@ -51,6 +54,7 @@ public class SinglePlayerController implements Initializable {
     @FXML Button btn7;
     @FXML Button btn8;
     @FXML Button btn9;
+    @FXML ImageView Micon;
     
     Board current_board= new Board();
     int numberOfPlays=0;
@@ -186,6 +190,7 @@ public class SinglePlayerController implements Initializable {
         resetGrid();    
         createPc();   
          playerName.setText(ClientGui.loggedPlayer.getUsername());
+         Micon.setImage(SelectedAvatar);
     }    
  
 }
