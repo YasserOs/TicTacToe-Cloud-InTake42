@@ -19,8 +19,10 @@ import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,7 +38,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import models.Message;
 import models.Person;
 import models.Session;
@@ -97,6 +105,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
     TextArea SHOWTRUN;
     @FXML ImageView Micon,Sicon;
     @FXML Label boardLabel;
+    MediaPlayer videoForWinner;
+    MediaPlayer videoForLoser;
+    MediaPlayer VideoForDraw;
    
     
     public void initSession(JSONObject msg , boolean isInvited ) throws JSONException{
@@ -457,18 +468,21 @@ public class MultiPlayerController extends GeneralController implements Initiali
         {
             changeBoardLabel("You won");
             ClientGui.loggedPlayer.gameswon();
-            ClientGui.loggedPlayer.incrementTotal_score(10);        
+            ClientGui.loggedPlayer.incrementTotal_score(10); 
+            displayVideo(videoForWinner,result);
 
         }else if(result.equals("Loss")){
             changeBoardLabel("You Lost");
             System.out.println(ClientGui.loggedPlayer + " Lost !");
             ClientGui.loggedPlayer.gameslost();
+            displayVideo(videoForLoser,result);
         }
         else
         {
             changeBoardLabel("Draw");
             ClientGui.loggedPlayer.gamesdraws();
-            ClientGui.loggedPlayer.incrementTotal_score(2);    
+            ClientGui.loggedPlayer.incrementTotal_score(2);   
+            displayVideo(VideoForDraw,result);
         }
         // then send a messag object with the content= accept or refuse back to the server handler
         Platform.runLater(new Runnable(){
@@ -590,12 +604,79 @@ public class MultiPlayerController extends GeneralController implements Initiali
         ClientGui.currentLiveCtrl = this;
          iconX = new Image("views/MultiPlayer/x.png");
          iconO = new Image("views/MultiPlayer/o.png");
-         
+         videoForWinner = new MediaPlayer(new Media(getClass().getResource("1.mp4").toExternalForm()));
+         videoForLoser = new MediaPlayer(new Media(getClass().getResource("2.mp4").toExternalForm()));
+         VideoForDraw =new MediaPlayer(new Media(getClass().getResource("3.mp4").toExternalForm()));
          
     }    
 
     
 
+        public void displayVideo(MediaPlayer video, String result)
+    {
+            Platform.runLater(new Runnable(){
+             @Override
+                 public void run() {
+                StackPane secondaryLayout2 = new StackPane();
+                MediaView mediaView2 = new MediaView(video);
+                secondaryLayout2.getChildren().addAll(mediaView2);
+                Scene secondScene2 = new Scene(secondaryLayout2, 700, 700);
+                Stage secondStage2 = new Stage();
+                secondStage2.setResizable(false);
+                secondStage2.setScene(secondScene2);
+                secondStage2.setX(0);
+                secondStage2.setY(50);
+                secondStage2.show();
+                video.play();
+                PauseTransition delay = new PauseTransition(Duration.seconds(7));
+                delay.setOnFinished( event -> secondStage2.close());
+                secondStage2.setOnHidden(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                        later(result);
+                    }
+                });
+                delay.play();
+                  }
+        });
+    }
+    
+    public void later(String result){
     
     
+    
+                 pausebtn.setDisable(true);
+                Optional<ButtonType> res = showAlert(result, "Want to Play again ?", 1);
+                ButtonType button = res.orElse(ButtonType.CANCEL);
+                if (button == ButtonType.OK) {
+                    try {
+                        player1Restart = true;
+                        sendMsgToPlayer("RestartMatch","true");
+                        if(player2Restart){
+                            turnRandomizer();
+                            resetGrid();
+                            
+                        }
+                        else
+                        {
+                            showAlert("Restart Match", "Waiting Player 2 Response...", 0);
+                        }
+                    } catch (JSONException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } else if(button==ButtonType.CANCEL) {
+                    try {
+                        sendMsgToPlayer("RestartMatch","false");
+                        try {
+                        back2MainRoom(e);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (JSONException ex) {
+                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+           
+    }
 }

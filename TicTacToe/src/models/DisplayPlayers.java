@@ -11,27 +11,44 @@ package models;
  */
 public class DisplayPlayers {
    private String name, status;
-   
-    public DisplayPlayers(String name, String status) {
+   private Integer score;
+
+    public DisplayPlayers(String name, String status, Integer score) {
         this.name = name;
         this.status = status;
+        this.score = score;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DisplayPlayers(String name, String status) {
+        this.name = name;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+   
+   
     
     
 }

@@ -38,6 +38,7 @@ public class ServerController implements Initializable {
     @FXML private TableView<DisplayPlayers> tableView;
     @FXML private TableColumn<DisplayPlayers, String> name;
     @FXML private TableColumn<DisplayPlayers, String> status;
+    @FXML private TableColumn<DisplayPlayers, Integer> score;
     @FXML
     private Button onbtn;
     @FXML
@@ -77,7 +78,9 @@ public class ServerController implements Initializable {
            Platform.runLater(()->lblonstatus.setText(new Date()+ ":Server Started at socket 12345"));
           th.start();
         
-
+          offbtn.setDisable(false);
+          onbtn.setDisable(true);
+          showbtn.setDisable(false);
     }
       
     // Stop Server
@@ -91,6 +94,10 @@ public class ServerController implements Initializable {
                             ex.printStackTrace();
                         }
                         th.stop();
+                  
+                         offbtn.setDisable(true);
+                        onbtn.setDisable(false);
+                         showbtn.setDisable(true);
     }
     
     public void closeServerHandler() throws IOException{
@@ -100,6 +107,7 @@ public class ServerController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         name.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("name"));
         status.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, String>("status"));
+        score.setCellValueFactory(new PropertyValueFactory<DisplayPlayers, Integer>("score"));
          //tableView.setItems(Server.db.displayPlayers( ClientGui.loggedPlayer.getUsername()));
          
     }    

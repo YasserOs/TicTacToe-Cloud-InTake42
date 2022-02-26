@@ -21,7 +21,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "123456";
+    private final String password = "admin";
 
     public Database() throws SQLException {
         connect();
@@ -288,12 +288,12 @@ public class Database {
         try {
             conn = DriverManager.getConnection(url, user, password);
             Statement select = conn.createStatement();
-            String query ="select username, status from players where username not in ('Computer')";
+            String query ="select username, status,total_score from players";
             ResultSet rs = select.executeQuery(query);
             
             while(rs.next()){
             
-                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2)));
+                list.add(new DisplayPlayers(rs.getString(1), rs.getString(2),rs.getInt(3)));
             
             }
             select.close();
