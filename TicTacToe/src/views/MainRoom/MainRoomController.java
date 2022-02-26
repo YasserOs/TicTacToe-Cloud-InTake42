@@ -341,7 +341,7 @@ public class MainRoomController extends GeneralController implements Initializab
                         result= showAlert("Invitation Recieved!",msg.getString("Sender")+" Invited you to a game");
 
                     }else{
-                        result = showAlert("Resume match", msg.getString("Sender")+" requseted to resume a game.");
+                        result = showAlert("Resume match", msg.getString("Sender")+" Invite you to resume a game.");
                     }
                     
                     ButtonType button = result.orElse(ButtonType.CANCEL);
@@ -359,8 +359,11 @@ public class MainRoomController extends GeneralController implements Initializab
                         } catch (IOException ex) {
                             Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                    }else if(decision.equals("Refuse")){
+                        sendInvitaionResponse(msg, decision);
                     }else{
                         sendResumeAcceptMessage(msg);
+
                     }
                 } catch (JSONException ex) {
                     Logger.getLogger(MainRoomController.class.getName()).log(Level.SEVERE, null, ex);
