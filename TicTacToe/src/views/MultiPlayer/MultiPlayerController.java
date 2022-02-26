@@ -154,10 +154,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
         System.out.println(board);
         System.out.println(board.getString(2));
         for (int i = 0; i < board.length(); i++) {
-            if (board.getString(i).isEmpty()) {
-            }else{
-                updateBoard(i, board.getString(i));
-                System.out.println(board.getString(i));
+            if (!board.getString(i).isEmpty()) {
+                 updateBoard(i, board.getString(i));
             }
         }
         
@@ -216,7 +214,6 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         playerTurn=false;
                     } else if(msg.getString("Content").equals("Pending")) {
                         Optional<ButtonType> res = showAlert("Pause game", msg.getString("Sender") + " wants to pause the game?", 1);
-                        //Button newb = new Button();
                         ButtonType button = res.orElse(ButtonType.CANCEL);
                         if (button == ButtonType.OK) {
                             sendMsgToPlayer("Pause", "true");
@@ -271,7 +268,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 @Override
                 public void run() {
                     try {
-                        //alert.hide();
+                        alert.hide();
                         showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
                     } catch (JSONException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -317,12 +314,10 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }
      public void resetGrid()
     {
+        numberOfPlays=0;             
         Platform.runLater(new Runnable(){
             @Override
             public void run() {
-                numberOfPlays=0;
-              
-                
                 availablePositions.clear();
                 availablePositions.add(btn1);
                 availablePositions.add(btn2);
@@ -492,8 +487,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         currentSession.play(position, pick);        
             }
         });
-        numberOfPlays++;
         
+        numberOfPlays+=1;        
     }
     @FXML
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{

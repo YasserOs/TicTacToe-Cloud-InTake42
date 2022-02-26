@@ -18,7 +18,7 @@ public class Session {
     public int turn ;
     boolean status; // 0 for paused session 1 for running
     public Board board;
-    
+    int numberOfPlays=0;
     public Session(String p1 , String p2){
         this.p1=p1;
         this.p2=p2;
@@ -26,6 +26,16 @@ public class Session {
     }
     public void play(int position , String pick){
         board.move(position, pick);
+        
+    }
+    public void resetNumOfPlays(){
+        numberOfPlays=0;
+    }
+    public void increasePlays(){
+        numberOfPlays++;
+    }
+    public int getNumOfPlays(){
+        return numberOfPlays;
     }
     
 }
