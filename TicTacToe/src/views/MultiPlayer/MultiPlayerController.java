@@ -106,7 +106,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         rightPlayerName.setText(p2);
          
     }
-    public void turnRandomizer(){
+    public void turnRandomizer() throws JSONException{
         if(!invited){
             playerTurn = randomTurn();
             oppTurn = !playerTurn;     

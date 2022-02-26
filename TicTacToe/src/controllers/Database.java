@@ -21,7 +21,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "123456";
+    private final String password = "admin";
 
     public Database() throws SQLException {
         connect();
