@@ -92,6 +92,7 @@ public class SignUpController  extends GeneralController implements Initializabl
                 msg.put("username", userName);
                 msg.put("email", email);
                 msg.put("password", password);
+                msg.put("Avatar",ClientGui.AvatarIndex);
                 ClientGui.printStream.println(msg.toString());       
          }
       // signed user

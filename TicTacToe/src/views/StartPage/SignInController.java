@@ -87,6 +87,7 @@ public class SignInController extends GeneralController implements Initializable
             msg.put("Action", "SignIn");
             msg.put("username", userName);
             msg.put("password", password);
+            msg.put("Avatar",ClientGui.AvatarIndex);
             ClientGui.printStream.println(msg.toString());  
         }  
 

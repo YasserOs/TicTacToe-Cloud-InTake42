@@ -28,7 +28,15 @@ public class Person extends Player{
     private int games_lost;
     private int draws;
     static Vector<Session> pause_session = new Vector<Session>();
-    
+    public int AvatarIndex;
+
+    public int getAvatarIndex() {
+        return AvatarIndex;
+    }
+
+    public void setAvatarIndex(int AvatarIndex) {
+        this.AvatarIndex = AvatarIndex;
+    }
 //Constructor
     public Person(){
         this.username = "";

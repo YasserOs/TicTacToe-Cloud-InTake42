@@ -21,7 +21,7 @@ public class Database {
     Connection conn;
     private final String url = "jdbc:postgresql://localhost/tic-tac-toe";
     private final String user = "postgres";
-    private final String password = "admin";
+    private final String password = "123456";
 
     public Database() throws SQLException {
         connect();
@@ -362,7 +362,10 @@ public class Database {
                 board.put(rs.getString(i++));  
             }
             gameDetails.put("board", board);
-            
+            query = "delete from save_game where game_id=?";
+            savedGameStatement = conn.prepareStatement(query);
+            savedGameStatement.setInt(1, gameID);
+            savedGameStatement.executeUpdate();
             savedGameStatement.close();
             conn.close();
         } catch (SQLException ex) {

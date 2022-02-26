@@ -144,6 +144,7 @@ public class MainRoomController extends GeneralController implements Initializab
         msg.put("Sender", ClientGui.loggedPlayer.getUsername());
         msg.put("Receiver", opponent);
         msg.put("Content", "Pending");
+        msg.put("Avatar", ClientGui.AvatarIndex);
         msg.put("gameID", gameID);
         msg.put("gameState", "Paused");
         ClientGui.printStream.println(msg.toString());
@@ -183,6 +184,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     msg.put("Action","Invite");
                     msg.put("Sender",ClientGui.loggedPlayer.getUsername());
                     msg.put("Receiver", chosenOpponent);
+                    msg.put("Avatar", ClientGui.AvatarIndex);
                     msg.put("gameState","New");
                     msg.put("Content","Pending");           
                     ClientGui.printStream.println(msg.toString());
@@ -193,7 +195,7 @@ public class MainRoomController extends GeneralController implements Initializab
     }
 
     public void startMultiPlayerMatch(JSONObject msg , boolean isInvited) throws IOException, JSONException{
-        
+        System.out.println(msg);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("views/MultiPlayer/MultiPlayer.fxml"));
         Parent View = loader.load();
@@ -206,9 +208,10 @@ public class MainRoomController extends GeneralController implements Initializab
                     window.setScene(ViewScene);
                     MultiPlayerController controller = loader.getController();
                     if (msg.getString("gameState").equals("Paused")) {
+                      
                         controller.resumeSession(msg , isInvited);
                     }else{
-                        controller.initSession(msg.getString("Sender"),isInvited);
+                        controller.initSession(msg ,isInvited);
                     }
                     PlayerStartedMatch("Multiplayer");
                     window.show();   
@@ -331,6 +334,7 @@ public class MainRoomController extends GeneralController implements Initializab
         msg.put("Sender", ClientGui.loggedPlayer.getUsername());
         msg.put("Receiver", playerResponse.getString("Sender"));
         msg.put("gameState","New");
+        msg.put("Avatar", ClientGui.AvatarIndex);
         msg.put("Content", decision);
         ClientGui.printStream.println(msg.toString());
 
@@ -373,6 +377,7 @@ public class MainRoomController extends GeneralController implements Initializab
                     }else if(decision.equals("Refuse")){
                         sendInvitaionResponse(msg, decision);
                     }else{
+                        
                         sendResumeAcceptMessage(msg);
 
                     }
@@ -386,8 +391,10 @@ public class MainRoomController extends GeneralController implements Initializab
     public void sendResumeAcceptMessage(JSONObject msg) throws JSONException{
         msg.remove("Action");
         msg.remove("Content");
+       // msg.remove("Avatar");
         msg.put("Action", "ResumeMatch");
         msg.put("Content", "Resume");
+        //msg.put("Avatar", ClientGui.AvatarIndex);
         ClientGui.printStream.println(msg.toString());
     }
     public void openInvitationRefusalScreen()
@@ -404,7 +411,7 @@ public class MainRoomController extends GeneralController implements Initializab
     }
     
     private Optional<ButtonType> showAlert(String title , String header ){
-        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setResizable(false);

@@ -27,7 +27,7 @@ background: linear-gradient(to right, #274046, #E6DADA);   */
 /*     -fx-text-fill: ;*/
 -fx-font-size: 18;
 }
-#restartbtn , #backbtn{
+#pausebtn , #backbtn{
     
     -fx-background-color:  #39b5ff;
     -fx-background-radius: 30;
@@ -36,7 +36,7 @@ background: linear-gradient(to right, #274046, #E6DADA);   */
     -fx-text-fill: linear-gradient(to right,#2556B7, #E4214C);
 }
 
-#restartbtn:hover,#backbtn:hover{
+#pausebtn:hover,#backbtn:hover{
     
     
     -fx-background-color: white;
@@ -52,7 +52,7 @@ background: linear-gradient(to right, #274046, #E6DADA);   */
 
 
 
-#restartbtn:pressed, #backbtn:pressed{
+#pausebtn:pressed, #backbtn:pressed{
     
     -fx-background-color: white;
     -fx-text-fill:  #39b5ff;

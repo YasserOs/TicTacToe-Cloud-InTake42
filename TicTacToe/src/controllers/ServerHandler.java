@@ -133,8 +133,11 @@ public class ServerHandler extends Thread {
     public void getGameDetails(JSONObject msg) throws JSONException{
         JSONObject gameDetails = Server.db.getSavedGame(msg.getInt("gameID"));
         msg.put("gameDetails", gameDetails);
-        this.sendMsgToReceiver(msg, msg.getString("Sender"));
         this.printStream.println(msg.toString());
+        msg.remove("Avatar");
+        msg.put("Avatar", loggedPlayer.getAvatarIndex());
+        this.sendMsgToReceiver(msg, msg.getString("Sender"));
+        
     }
 
     public void changeplayerstatus(String action, String status , JSONObject msgReceived) throws JSONException
@@ -192,9 +195,11 @@ public class ServerHandler extends Thread {
     
     public void SignIn(JSONObject msg) throws SQLException, JSONException {
         int flag= Server.SignIn(msg);
+        System.out.println("From Server handler Signin" +msg);
         if( flag == 1)
         {  
             loggedPlayer = db.getPlayer(msg.getString("username"));
+            loggedPlayer.setAvatarIndex(msg.getInt("Avatar"));
             System.out.println("From Signin Server handler" + loggedPlayer.getUsername());
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignin");
@@ -209,6 +214,7 @@ public class ServerHandler extends Thread {
         if (flag == 1) 
         {
             loggedPlayer = db.getPlayer(msg.getString("username"));
+            loggedPlayer.setAvatarIndex(msg.getInt("Avatar"));
             System.out.println("From Signin Server handler" + loggedPlayer.getUsername());
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignup");

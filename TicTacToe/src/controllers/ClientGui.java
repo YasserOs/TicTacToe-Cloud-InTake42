@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -50,7 +51,7 @@ public class ClientGui extends Application {
     public static Alert alert;
     public static Image SelectedAvatar;
     public static int AvatarIndex;
-    
+    public static Vector<Image> Avatars = new Vector<Image>();
 
     @Override
     public void start(Stage primaryStage) throws IOException
@@ -81,15 +82,14 @@ public class ClientGui extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             System.exit(1);
         });       
-
-         
-          
-          Image[] Avatars = { new Image ("controllers/11.png"),new Image ("controllers/33.png"),new Image ("controllers/44.png"), new Image ("controllers/55.png"),new Image ("controllers/66.png")};
-          
-          Random rand = new Random();
-          AvatarIndex = rand.nextInt(Avatars.length);
-          SelectedAvatar = Avatars[AvatarIndex];
-          
+        Avatars.add(new Image ("controllers/11.png"));
+        Avatars.add(new Image ("controllers/33.png"));
+        Avatars.add( new Image ("controllers/44.png"));
+        Avatars.add(new Image ("controllers/55.png"));
+        Avatars.add( new Image ("controllers/66.png"));
+        Random rand = new Random();
+        AvatarIndex = rand.nextInt(Avatars.size());
+        SelectedAvatar = Avatars.get(AvatarIndex);
     }
     public static void createSocket()
     {
