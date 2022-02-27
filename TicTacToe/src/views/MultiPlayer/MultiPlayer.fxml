@@ -57,47 +57,47 @@
                <children>
                   <Button fx:id="btn1" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="163.0" prefWidth="179.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid none;">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn4" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid none;" GridPane.rowIndex="1">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn7" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden hidden;" GridPane.rowIndex="2">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn2" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid solid;" GridPane.columnIndex="1">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn5" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="172.0" prefWidth="146.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid solid;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn3" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden hidden solid solid;" GridPane.columnIndex="2">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn6" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid hidden solid solid;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn8" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden solid;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                   <Button fx:id="btn9" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="152.0" style="-fx-border-width: 5; -fx-border-style: solid hidden hidden solid;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <font>
-                        <Font name="System Bold" size="72.0" />
+                        <Font size="72.0" />
                      </font>
                   </Button>
                </children>
