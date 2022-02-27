@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="707.0" prefWidth="1192.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.SinglePlayer.SinglePlayerController">
+   <children>
+      <AnchorPane fx:id="ap" layoutX="-12.0" prefHeight="707.0" prefWidth="1204.0">
+         <children>
+            <ImageView fitHeight="821.0" fitWidth="1220.0" layoutX="-7.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Media/MainRoomBG.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="restartbtn" layoutX="839.0" layoutY="635.0" mnemonicParsing="false" onAction="#restart" prefHeight="89.0" prefWidth="337.0" style="-fx-background-color: Tranparent;">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="121.0" fitWidth="244.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Media/Restart.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <BorderPane layoutX="878.0" layoutY="149.0" prefHeight="412.0" prefWidth="314.0">
+               <top>
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="326.0" style="-fx-background-color: transparent;" text="Bot" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Comic Sans MS" size="36.0" />
+                     </font></Label>
+               </top>
+               <center>
+                  <ImageView fitHeight="161.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../Media/robot.png" />
+                     </image>
+                  </ImageView>
+               </center>
+               <bottom>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../Media/o.png" />
+                     </image>
+                  </ImageView>
+               </bottom>
+            </BorderPane>
+            <Button fx:id="backbtn" layoutX="50.0" layoutY="721.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="51.0" prefWidth="183.0" style="-fx-background-color: transparent;">
+               <font>
+                  <Font size="24.0" />
+               </font></Button>
+            <GridPane fx:id="grid" alignment="CENTER_RIGHT" layoutX="376.0" layoutY="194.0" prefHeight="434.0" prefWidth="505.0" vgap="20.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Button fx:id="btn1" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="131.0" prefWidth="206.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid none;">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn4" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid none;" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn7" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden hidden;" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn2" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden solid solid solid;" GridPane.columnIndex="1">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn5" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid solid solid;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn3" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: hidden hidden solid solid;" GridPane.columnIndex="2">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn6" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid hidden solid solid;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn8" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid solid hidden solid;" textFill="#172d62" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btn9" mnemonicParsing="false" onAction="#PlayerMove" prefHeight="147.0" prefWidth="155.0" style="-fx-border-width: 5; -fx-border-style: solid hidden hidden solid;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                     <font>
+                        <Font size="64.0" />
+                     </font>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" />
+               </padding>
+            </GridPane>
+            <BorderPane layoutX="43.0" layoutY="149.0" prefHeight="412.0" prefWidth="314.0">
+               <top>
+                  <Label fx:id="playerName" alignment="CENTER" contentDisplay="CENTER" prefHeight="35.0" prefWidth="326.0" style="-fx-background-color: transparent;" text="Player Name" textAlignment="CENTER" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Comic Sans MS" size="36.0" />
+                     </font></Label>
+               </top>
+               <center>
+                  <ImageView fx:id="Micon" fitHeight="143.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../Media/Btoot.png" />
+                     </image>
+                  </ImageView>
+               </center>
+               <bottom>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <image>
+                        <Image url="@../Media/x.png" />
+                     </image>
+                  </ImageView>
+               </bottom>
+            </BorderPane>
+            <Button layoutX="50.0" layoutY="649.0" mnemonicParsing="false" onAction="#back2MainRoom" style="-fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="90.0" fitWidth="257.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Media/BackButton%20.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label fx:id="BoardLabel" alignment="CENTER" layoutX="449.0" layoutY="91.0" prefHeight="70.0" prefWidth="359.0" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right,#2556B7, #E4214C);" text="Label">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+   <stylesheets>
+      <URL value="@../Images/SinglePlayer.css" />
+      <URL value="@../Media/SinglePlayer.css" />
+   </stylesheets>
+</AnchorPane>

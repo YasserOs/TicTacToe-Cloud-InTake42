@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="551.0" prefWidth="844.0" style="-fx-background-color: blue;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Server.views.ServerController">
+   <children>
+      <ImageView fitHeight="576.0" fitWidth="863.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@bc.png" />
+         </image>
+      </ImageView>
+      <TableView fx:id="tableView" layoutX="9.0" layoutY="16.0" prefHeight="426.0" prefWidth="403.0" style="-fx-border-color: white;" visible="false">
+        <columns>
+          <TableColumn fx:id="name" prefWidth="191.0" text="Name" />
+          <TableColumn fx:id="status" prefWidth="102.0" text="Status" />
+            <TableColumn fx:id="score" prefWidth="108.0" text="Score" />
+        </columns>
+      </TableView>
+      <Label fx:id="lblonstatus" alignment="CENTER" layoutX="119.0" layoutY="472.0" prefHeight="36.0" prefWidth="665.0" style="-fx-text-fill: white;" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font></Label>
+      <Button fx:id="offbtn" disable="true" layoutX="697.0" layoutY="210.0" mnemonicParsing="false" onAction="#stopServer" prefHeight="59.0" prefWidth="118.0" style="-fx-background-color: #39b5ff;" text="OFF" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@off.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button fx:id="showbtn" disable="true" layoutX="559.0" layoutY="344.0" mnemonicParsing="false" onAction="#fillList" prefHeight="59.0" prefWidth="256.0" style="-fx-background-color: #39b5ff;" text="Show Players" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+      </Button>
+      <Button fx:id="onbtn" layoutX="697.0" layoutY="114.0" mnemonicParsing="false" onAction="#startServer" prefHeight="59.0" prefWidth="118.0" style="-fx-background-color: #39b5ff;" text="ON" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="44.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@green_power_on_button.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+   <stylesheets>
+      <URL value="@server.css" />
+      <URL value="@Style.css" />
+   </stylesheets>
+</AnchorPane>

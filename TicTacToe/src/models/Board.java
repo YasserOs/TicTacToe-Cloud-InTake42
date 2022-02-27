@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 public class Board 
 {
     public ArrayList<Button> board = new ArrayList<Button>();
- 
     public void move(int position , String pick){
         
         board.get(position).setText(pick);
@@ -20,12 +19,14 @@ public class Board
     public ArrayList<Button> getBoard(){
         return board;
     }
-  public boolean checkWin(String pick){
+   
+    public boolean checkWin(String pick){
         return ( checkRows(pick) || checkColumns(pick) || checkDiagonal(pick));        
     }
     
     boolean checkRows(String pick){
         if(board.get(0).getText().equals(pick) && board.get(1).getText().equals(pick) && board.get(2).getText().equals(pick)){
+            
             return true;
         }
          if(board.get(3).getText().equals(pick) && board.get(4).getText().equals(pick) && board.get(5).getText().equals(pick)){

@@ -11,7 +11,7 @@ package models;
  *
  * @author Mostafa
  */
-public class Pc extends Player
+public class Pc 
 {
     
     

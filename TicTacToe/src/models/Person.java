@@ -6,15 +6,13 @@
 package models;
 
 import java.util.Date;
-import java.util.Vector;
-
 
 
 /**
  *
  * @author Mostafa
  */
-public class Person extends Player{
+public class Person {
     //Person attribute
     private String username;
     private String email;
@@ -27,7 +25,6 @@ public class Person extends Player{
     private int games_won;
     private int games_lost;
     private int draws;
-    static Vector<Session> pause_session = new Vector<Session>();
     public int AvatarIndex;
 
     public int getAvatarIndex() {
