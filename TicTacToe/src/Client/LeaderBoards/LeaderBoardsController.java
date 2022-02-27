@@ -6,6 +6,7 @@
 package Client.LeaderBoards;
 
 
+import Client.ClientGui;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,15 +24,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import models.GeneralController;
 import models.Person;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * FXML Controller class
  *
  * @author Hossam
  */
-public class LeaderBoardsController implements Initializable {
+public class LeaderBoardsController extends GeneralController implements Initializable {
 
     @FXML
     private Label p1;
@@ -55,11 +60,8 @@ public class LeaderBoardsController implements Initializable {
     private Vector<Person> players ;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            fillleaderboard();
-        } catch (SQLException ex) {
-            Logger.getLogger(LeaderBoardsController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ClientGui.currentLiveCtrl=this;
+        sendMsgToServer();
     }
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException
     
@@ -71,20 +73,55 @@ public class LeaderBoardsController implements Initializable {
         window.show();
     
     } 
-     public void fillleaderboard() throws SQLException{
-            //players = Server.db.Top5Players();
-            p1.setText(players.get(0).getUsername());
-            p2.setText(players.get(1).getUsername());
-            p3.setText(players.get(2).getUsername());
-            p4.setText(players.get(3).getUsername());
-            p5.setText(players.get(4).getUsername());
-            p11.setText(String.valueOf(players.get(0).getTotal_score()));
-            p21.setText(String.valueOf(players.get(1).getTotal_score()));
-            p31.setText(String.valueOf(players.get(2).getTotal_score()));
-            p41.setText(String.valueOf(players.get(3).getTotal_score()));
-            p51.setText(String.valueOf(players.get(4).getTotal_score()));
+    public void sendMsgToServer(){
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "LeaderBoard");
+        ClientGui.printStream.println(msg.toString());
+    }
+     public void fillleaderboard(JSONObject msg) throws SQLException{
+            JSONArray players = msg.getJSONArray("TopPlayers");
+            Vector<String> topPlayersNames = new Vector<String>() ;
+            Vector<Integer> topPlayersScores = new Vector<Integer>() ;
+
+            for (int i = 0; i < players.length(); i++) {
+                topPlayersNames.add(players.getJSONObject(i).getString("name"));
+                topPlayersScores.add(players.getJSONObject(i).getInt("score"));
+            }
+            
+            Platform.runLater(new Runnable(){
+                @Override
+                public void run() {
+                    p1.setText(topPlayersNames.get(0));
+                    p2.setText(topPlayersNames.get(1));
+                    p3.setText(topPlayersNames.get(2));
+                    p4.setText(topPlayersNames.get(3));
+                    p5.setText(topPlayersNames.get(4));
+                    p11.setText(String.valueOf(topPlayersScores.get(0)));
+                    p21.setText(String.valueOf(topPlayersScores.get(1)));
+                    p31.setText(String.valueOf(topPlayersScores.get(2)));
+                    p41.setText(String.valueOf(topPlayersScores.get(3)));
+                    p51.setText(String.valueOf(topPlayersScores.get(4)));
+                }
+            });
+            
      
        }
+
+    @Override
+    public void processMessage(JSONObject msg) {
+        String Action = msg.getString("Action");
+        switch(Action){
+            case "LeaderBoard":
+        {
+            try {
+                fillleaderboard(msg);
+            } catch (SQLException ex) {
+                Logger.getLogger(LeaderBoardsController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+                break;
+        }
+    }
       
     
 }

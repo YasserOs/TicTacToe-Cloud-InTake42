@@ -250,12 +250,15 @@ public class MainRoomController extends GeneralController implements Initializab
                     break;
                 case "playersignup":
                     addplayer(msg);
+                    broadcastChat(msg);
                     break;
                 case "playersignin":
                     updateplayerlist(msg, "online");
+                    broadcastChat(msg);
                     break;
                 case "playersignout":
                     updateplayerlist(msg, "offline");
+                    broadcastChat(msg);
                     break;
                 case "playerStartedMatch":
                     updateplayerlist(msg, "in-game");
@@ -401,10 +404,8 @@ public class MainRoomController extends GeneralController implements Initializab
     public void sendResumeAcceptMessage(JSONObject msg) throws JSONException {
         msg.remove("Action");
         msg.remove("Content");
-        // msg.remove("Avatar");
         msg.put("Action", "ResumeMatch");
         msg.put("Content", "Resume");
-        //msg.put("Avatar", ClientGui.AvatarIndex);
         ClientGui.printStream.println(msg.toString());
     }
 
@@ -430,7 +431,6 @@ public class MainRoomController extends GeneralController implements Initializab
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("../Media/MainRoom.css").toExternalForm());
-        //dialog.getDialogPane().setStyle("fx-font-weight: bold;-fx-font-family:Tahoma;-fx-background-color:#e8f5ff;-fx-text-alignment: center ;-fx-font-size: 18px;-fx-font-style: bold;");
         Optional<ButtonType> res = dialog.showAndWait();
 
         return res;

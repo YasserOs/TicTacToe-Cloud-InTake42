@@ -69,6 +69,8 @@ public class ServerHandler extends Thread {
             Server.updateplayer(loggedPlayer.getUsername(), "offline");
             JSONObject msg=new JSONObject();
             msg.put("Action", "playersignout");
+            msg.put("Sender", "GM");
+            msg.put("Content",loggedPlayer.getUsername()+" left the room .");
             msg.put("username",loggedPlayer.getUsername());
             sendMsgToAll(msg);
         
@@ -103,6 +105,9 @@ public class ServerHandler extends Thread {
             case "SignIn":
                 SignIn(msg);
                 break;
+            case "LeaderBoard":
+                getTopPlayers();
+                break;
             case "BroadcastChat":
                 broadcastMsg(msg);
                 break;
@@ -128,6 +133,20 @@ public class ServerHandler extends Thread {
                 sendMsgToReceiver(msg,msg.getString("Receiver"));
                 break;
         }
+    }
+    public void getTopPlayers() throws SQLException{
+        Vector<Person> topPlayers = Server.db.Top5Players();
+        JSONArray top = new JSONArray();
+        for (Person p : topPlayers) {
+            JSONObject player = new JSONObject();
+            player.put("name",p.getUsername());
+            player.put("score",p.getTotal_score());
+            top.put(player);
+        }
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "LeaderBoard");
+        msg.put("TopPlayers", top);
+        printStream.println(msg.toString());
     }
     public void getGameDetails(JSONObject msg) throws JSONException{
         JSONObject gameDetails = Server.db.getSavedGame(msg.getInt("gameID"));
@@ -200,6 +219,8 @@ public class ServerHandler extends Thread {
             loggedPlayer.setAvatarIndex(msg.getInt("Avatar"));
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignin");
+            reply.put("Sender", "GM");
+            reply.put("Content",loggedPlayer.getUsername()+" joined the room .");
             reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);
         }
@@ -214,6 +235,8 @@ public class ServerHandler extends Thread {
             loggedPlayer.setAvatarIndex(msg.getInt("Avatar"));
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignup");
+            reply.put("Sender", "GM");
+            reply.put("Content",loggedPlayer.getUsername()+" joined the room .");
             reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);
         }
