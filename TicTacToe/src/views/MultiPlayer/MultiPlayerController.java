@@ -32,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -261,18 +262,24 @@ public class MultiPlayerController extends GeneralController implements Initiali
                         isPaused = true;
                         playerTurn=false;
                     } else if(msg.getString("Content").equals("Pending")) {
-                        Optional<ButtonType> res = showAlert("Pause game", msg.getString("Sender") + " wants to pause the game?", 1);
-                        ButtonType button = res.orElse(ButtonType.CANCEL);
-                        if (button == ButtonType.OK) {
-                            sendMsgToPlayer("Pause", "true");
-                            pausebtn.setDisable(true);
-                            System.out.println(pausebtn.isDisabled());
-                            changeBoardLabel("The Game is saved");
-                            isPaused = true;
-                            saveSession();
-                        } else if (button == ButtonType.CANCEL) {
-                            sendMsgToPlayer("Pause", "false");
-                        }
+                        Alert res = showAlert("Pause game", msg.getString("Sender") + " wants to pause the game?", 1);
+                        res.setOnCloseRequest(new EventHandler<DialogEvent>(){
+                            @Override
+                            public void handle(DialogEvent event) {
+                                    ButtonType result = res.getResult();
+                                    if (result.getText().equals("OK")) {
+                                        sendMsgToPlayer("Pause", "true");
+                                        pausebtn.setDisable(true);
+                                        System.out.println(pausebtn.isDisabled());
+                                        changeBoardLabel("The Game is saved");
+                                        isPaused = true;
+                                        saveSession();
+                                    } else {
+                                        sendMsgToPlayer("Pause", "false");
+                                    }
+                            }
+                        });
+                        
                     }else{
                         showAlert("Pause", msg.getString("Sender") +  " has refused saving game", 1);
                     }
@@ -309,7 +316,8 @@ public class MultiPlayerController extends GeneralController implements Initiali
         if(response.equals("true")){
                     player2Restart = true;
                     if(player1Restart&&player2Restart){
-                        player1Restart = player2Restart= false;
+                        player1Restart = false;
+                        player2Restart= false;
                         turnRandomizer();
                         resetGrid();
                     }
@@ -320,7 +328,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
                 @Override
                 public void run() {
                     try {
-                        alert.hide();
+                        //alert.hide();
                         showAlert("Restart Match", msg.getString("Sender")+" Returned to main room .", 0);
                     } catch (JSONException ex) {
                         Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -464,6 +472,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         isPaused = true;
         playerTurn=false;
         ClientGui.loggedPlayer.gamesplayed();
+        restartVideos();
         if(result.equals("Won"))
         {
             changeBoardLabel("You won");
@@ -483,59 +492,16 @@ public class MultiPlayerController extends GeneralController implements Initiali
             ClientGui.loggedPlayer.gamesdraws();
             ClientGui.loggedPlayer.incrementTotal_score(2);   
             displayVideo(VideoForDraw,result);
-        }
-        // then send a messag object with the content= accept or refuse back to the server handler
-        Platform.runLater(new Runnable(){
-            @Override
-            public void run() {
-                 pausebtn.setDisable(true);
-                Optional<ButtonType> res = showAlert(result, "Want to Play again ?", 1);
-                ButtonType button = res.orElse(ButtonType.CANCEL);
-                if (button == ButtonType.OK) {
-                    try {
-                        player1Restart = true;
-                        sendMsgToPlayer("RestartMatch","true");
-                        if(player2Restart){
-                            turnRandomizer();
-                            resetGrid();
-                            
-                        }
-                        else
-                        {
-                            showAlert("Restart Match", "Waiting Player 2 Response...", 0);
-                        }
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                } else if(button==ButtonType.CANCEL) {
-                    try {
-                        sendMsgToPlayer("RestartMatch","false");
-                        try {
-                        back2MainRoom(e);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        });      
+        }       
     }
-    private Optional<ButtonType> showAlert(String title , String body , int flag){
+    private Alert showAlert(String title , String body , int flag){
         alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(body);
         alert.setResizable(false);
-        
-        if(flag == 1){
-            Optional<ButtonType> res = alert.showAndWait();
-             return res;
-        }else{
-            alert.show();
-            return null;
-        }
+        alert.show();
+        return alert;
+       
     }
     private void sendMsgToPlayer(String Action , String Content) throws JSONException{
         JSONObject msg = new JSONObject();
@@ -568,15 +534,29 @@ public class MultiPlayerController extends GeneralController implements Initiali
     }
     @FXML
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException{
+        ActionEvent e = event;
         if(!isPaused){
-            Optional<ButtonType>  res = showAlert("Leaving the game", "If you leave the game, you would lose", 1);
-            ButtonType button = res.orElse(ButtonType.CANCEL);
-                if (button == ButtonType.OK) {
-                   playerSurrender();
-                   savePlayerBeforeLeavingTheMatch(event);
-                } 
+            Alert  res = showAlert("Leaving the game", "If you leave the game, you would lose", 1);
+            res.setOnCloseRequest(new EventHandler<DialogEvent>(){
+                @Override
+                public void handle(DialogEvent event) {
+                    ButtonType result = res.getResult();
+                    if (result.getText().equals("OK")) {
+                        try {
+                            playerSurrender();
+                            savePlayerBeforeLeavingTheMatch(e);
+                        } catch (JSONException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                       
+                    }                
+                }
+            });
+                
         }else{
-            savePlayerBeforeLeavingTheMatch(event);
+            savePlayerBeforeLeavingTheMatch(e);
         }
         
     
@@ -604,79 +584,85 @@ public class MultiPlayerController extends GeneralController implements Initiali
         ClientGui.currentLiveCtrl = this;
          iconX = new Image("views/MultiPlayer/x.png");
          iconO = new Image("views/MultiPlayer/o.png");
-         videoForWinner = new MediaPlayer(new Media(getClass().getResource("1.mp4").toExternalForm()));
-         videoForLoser = new MediaPlayer(new Media(getClass().getResource("2.mp4").toExternalForm()));
-         VideoForDraw =new MediaPlayer(new Media(getClass().getResource("3.mp4").toExternalForm()));
+         restartVideos();
          
     }    
 
-    
+    public void restartVideos(){
+        videoForWinner = new MediaPlayer(new Media(getClass().getResource("1.mp4").toExternalForm()));
+         videoForLoser = new MediaPlayer(new Media(getClass().getResource("2.mp4").toExternalForm()));
+         VideoForDraw =new MediaPlayer(new Media(getClass().getResource("3.mp4").toExternalForm()));
+    }
 
         public void displayVideo(MediaPlayer video, String result)
     {
             Platform.runLater(new Runnable(){
              @Override
                  public void run() {
-                StackPane secondaryLayout2 = new StackPane();
-                MediaView mediaView2 = new MediaView(video);
-                secondaryLayout2.getChildren().addAll(mediaView2);
-                Scene secondScene2 = new Scene(secondaryLayout2, 700, 700);
-                Stage secondStage2 = new Stage();
-                secondStage2.setResizable(false);
-                secondStage2.setScene(secondScene2);
-                secondStage2.setX(0);
-                secondStage2.setY(50);
-                secondStage2.show();
-                video.play();
-                PauseTransition delay = new PauseTransition(Duration.seconds(7));
-                delay.setOnFinished( event -> secondStage2.close());
-                secondStage2.setOnHidden(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent event) {
-                        later(result);
-                    }
-                });
-                delay.play();
+                    StackPane secondaryLayout2 = new StackPane();
+                    MediaView mediaView2 = new MediaView(video);
+                    secondaryLayout2.getChildren().addAll(mediaView2);
+                    Scene secondScene2 = new Scene(secondaryLayout2, 700, 700);
+                    Stage secondStage2 = new Stage();
+                    secondStage2.setResizable(false);
+                    secondStage2.setScene(secondScene2);
+                    secondStage2.show();
+                    video.play();
+                    PauseTransition delay = new PauseTransition(Duration.seconds(7));
+                    delay.setOnFinished( event -> secondStage2.close());
+                    secondStage2.setOnHidden(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent event) {
+                            later(result);
+                        }
+                    });
+                    delay.play();                   
                   }
         });
     }
     
     public void later(String result){
-    
-    
-    
-                 pausebtn.setDisable(true);
-                Optional<ButtonType> res = showAlert(result, "Want to Play again ?", 1);
-                ButtonType button = res.orElse(ButtonType.CANCEL);
-                if (button == ButtonType.OK) {
-                    try {
-                        player1Restart = true;
-                        sendMsgToPlayer("RestartMatch","true");
-                        if(player2Restart){
-                            turnRandomizer();
-                            resetGrid();
-                            
-                        }
-                        else
-                        {
-                            showAlert("Restart Match", "Waiting Player 2 Response...", 0);
-                        }
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                pausebtn.setDisable(true);
+                Alert res = showAlert(result, "Want to Play again ?", 1);
+                res.setOnCloseRequest(new EventHandler<DialogEvent>(){
+                    @Override
+                    public void handle(DialogEvent event) {
+                        ButtonType result = res.getResult();
+                        if (result.getText().equals("OK")) {
+                            try {
+                                player1Restart = true;
+                                sendMsgToPlayer("RestartMatch","true");
+                                if(player2Restart){
+                                    player1Restart = false;
+                                    player2Restart=false;
+                                    turnRandomizer();
+                                    resetGrid();
 
-                } else if(button==ButtonType.CANCEL) {
-                    try {
-                        sendMsgToPlayer("RestartMatch","false");
-                        try {
-                        back2MainRoom(e);
-                        } catch (IOException ex) {
-                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                else
+                                {
+                                    showAlert("Restart Match", "Waiting Player 2 Response...", 0);
+                                }
+                            } catch (JSONException ex) {
+                                Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        } else{
+                            try {
+                                sendMsgToPlayer("RestartMatch","false");
+                                try {
+                                back2MainRoom(e);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } catch (JSONException ex) {
+                                Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                    } catch (JSONException ex) {
-                        Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                        
                     }
-                }
+                });
+                
            
     }
 }
