@@ -12,13 +12,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="707.0" prefWidth="1192.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.SinglePlayer.SinglePlayerController">
+<AnchorPane id="AnchorPane" prefHeight="707.0" prefWidth="1192.0" stylesheets="@../Images/SinglePlayer.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.SinglePlayer.SinglePlayerController">
    <children>
       <AnchorPane fx:id="ap" layoutX="-12.0" prefHeight="707.0" prefWidth="1204.0">
          <children>
             <ImageView fitHeight="821.0" fitWidth="1220.0" layoutX="-7.0" layoutY="-7.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@testsvg.png" />
+                  <Image url="@../Images/testsvg.png" />
                </image>
             </ImageView>
             <Button fx:id="restartbtn" layoutX="942.0" layoutY="677.0" mnemonicParsing="false" onAction="#restart" prefHeight="70.0" prefWidth="255.0" style="-fx-background-color: #80E4C9;" text="Restart">
@@ -35,14 +35,14 @@
                <center>
                   <ImageView fitHeight="161.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@robot.png" />
+                        <Image url="@../Images/robot.png" />
                      </image>
                   </ImageView>
                </center>
                <bottom>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@o.png" />
+                        <Image url="@../Images/o.png" />
                      </image>
                   </ImageView>
                </bottom>
@@ -123,14 +123,14 @@
                <center>
                   <ImageView fx:id="Micon" fitHeight="143.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@boy.png" />
+                        <Image url="@../Images/boy.png" />
                      </image>
                   </ImageView>
                </center>
                <bottom>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@x.png" />
+                        <Image url="@../Images/x.png" />
                      </image>
                   </ImageView>
                </bottom>
@@ -139,7 +139,7 @@
                <graphic>
                   <ImageView fitHeight="90.0" fitWidth="257.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@BackButton%20.png" />
+                        <Image url="@../Images/BackButton%20.png" />
                      </image>
                   </ImageView>
                </graphic>

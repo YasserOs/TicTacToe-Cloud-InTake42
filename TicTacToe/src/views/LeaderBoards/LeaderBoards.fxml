@@ -11,7 +11,7 @@
    <children>
       <ImageView fitHeight="753.0" fitWidth="1039.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@BG.jpg" />
+            <Image url="@../Images/BG.jpg" />
          </image>
       </ImageView>
       <Label fx:id="p5" alignment="CENTER" contentDisplay="CENTER" layoutX="390.0" layoutY="525.0" prefHeight="40.0" prefWidth="209.0" style="-fx-background-color: #2C5AC3;" text="Label" textFill="WHITE">
@@ -64,11 +64,11 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Button layoutY="583.0" mnemonicParsing="false" onAction="#back2MainRoom" style="-fx-background-color: transparent;">
+      <Button layoutX="27.0" layoutY="565.0" mnemonicParsing="false" onAction="#back2MainRoom" prefHeight="114.0" prefWidth="262.0" style="-fx-background-color: transparent;">
          <graphic>
             <ImageView fitHeight="106.0" fitWidth="215.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@BackButton%20.png" />
+                  <Image url="@../Images/BackButton%20.png" />
                </image>
             </ImageView>
          </graphic>

@@ -16,11 +16,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.MainRoom.MainRoomController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" stylesheets="@../Images/MainRoom.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.MainRoom.MainRoomController">
    <children>
       <ImageView id="img" fitHeight="834.0" fitWidth="1246.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@testsvg.png" />
+            <Image url="@../Images/testsvg.png" />
          </image>
       </ImageView>
       <BorderPane fx:id="plist" layoutX="902.0" prefHeight="431.0" prefWidth="309.0" style="-fx-background-radius: 50px; -fx-border-radius: 50px;">
@@ -59,7 +59,7 @@
                      <graphic>
                         <ImageView fitHeight="22.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@android-send_icon-icons.com_50500.png" />
+                              <Image url="@../Images/android-send_icon-icons.com_50500.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -173,7 +173,7 @@
             </HBox>
             <ImageView fx:id="MIcon" fitHeight="199.0" fitWidth="216.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@boy.png" />
+                  <Image url="@../Images/boy.png" />
                </image>
             </ImageView>
          </children>

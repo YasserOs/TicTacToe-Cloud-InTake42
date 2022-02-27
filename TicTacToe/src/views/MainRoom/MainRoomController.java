@@ -432,7 +432,7 @@ public class MainRoomController extends GeneralController implements Initializab
         dialog.getDialogPane().setPrefSize(400, 200);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        dialog.getDialogPane().getStylesheets().add(getClass().getResource("Style.css").toExternalForm());
+        dialog.getDialogPane().getStylesheets().add(getClass().getResource("../Images/MainRoom.css").toExternalForm());
         //dialog.getDialogPane().setStyle("fx-font-weight: bold;-fx-font-family:Tahoma;-fx-background-color:#e8f5ff;-fx-text-alignment: center ;-fx-font-size: 18px;-fx-font-style: bold;");
         Optional<ButtonType> res = dialog.showAndWait();
 

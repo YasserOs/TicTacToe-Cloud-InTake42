@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -12,20 +11,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="679.0" prefWidth="1170.0" style="-fx-background-color: #075EEA;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignUpController">
+<AnchorPane id="AnchorPane" prefHeight="679.0" prefWidth="1170.0" style="-fx-background-color: #075EEA;" stylesheets="@../Images/Signin&amp;up.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.StartPage.SignUpController">
     <children>
       <AnchorPane prefHeight="703.0" prefWidth="581.0" style="-fx-background-color: #075EEA;">
          <children>
-            <ImageView fitHeight="712.0" fitWidth="581.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="725.0" fitWidth="591.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@images/bc.png" />
+                  <Image url="@../Images/BGS.png" />
                </image>
             </ImageView>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="560.0">
          <children>
-            <AnchorPane id="anchorPane" layoutX="22.0" prefHeight="712.0" prefWidth="625.0" style="-fx-background-color: #ffffff;">
+            <AnchorPane id="anchorPane" layoutX="22.0" prefHeight="725.0" prefWidth="625.0" style="-fx-background-color: #ffffff;">
                <children>
                   <FlowPane alignment="CENTER" hgap="1.0" layoutX="128.0" layoutY="537.0" prefHeight="58.0" prefWidth="385.0">
                      <children>
@@ -94,8 +93,4 @@
          </children>
       </AnchorPane>
     </children>
-   <stylesheets>
-      <URL value="@newCascadeStyleSheet.css" />
-      <URL value="@Style.css" />
-   </stylesheets>
 </AnchorPane>

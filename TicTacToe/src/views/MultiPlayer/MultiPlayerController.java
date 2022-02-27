@@ -268,14 +268,22 @@ public class MultiPlayerController extends GeneralController implements Initiali
                             public void handle(DialogEvent event) {
                                     ButtonType result = res.getResult();
                                     if (result.getText().equals("OK")) {
-                                        sendMsgToPlayer("Pause", "true");
-                                        pausebtn.setDisable(true);
-                                        System.out.println(pausebtn.isDisabled());
-                                        changeBoardLabel("The Game is saved");
-                                        isPaused = true;
-                                        saveSession();
+                                        try {
+                                            sendMsgToPlayer("Pause", "true");
+                                            pausebtn.setDisable(true);
+                                            System.out.println(pausebtn.isDisabled());
+                                            changeBoardLabel("The Game is saved");
+                                            isPaused = true;
+                                            saveSession();
+                                        } catch (JSONException ex) {
+                                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     } else {
-                                        sendMsgToPlayer("Pause", "false");
+                                            try {
+                                            sendMsgToPlayer("Pause", "false");
+                                        } catch (JSONException ex) {
+                                            Logger.getLogger(MultiPlayerController.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
                                     }
                             }
                         });
@@ -582,16 +590,16 @@ public class MultiPlayerController extends GeneralController implements Initiali
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ClientGui.currentLiveCtrl = this;
-         iconX = new Image("views/MultiPlayer/x.png");
-         iconO = new Image("views/MultiPlayer/o.png");
+         iconX = new Image("views/Images/x.png");
+         iconO = new Image("views/Images/o.png");
          restartVideos();
          
     }    
 
     public void restartVideos(){
-        videoForWinner = new MediaPlayer(new Media(getClass().getResource("1.mp4").toExternalForm()));
-         videoForLoser = new MediaPlayer(new Media(getClass().getResource("2.mp4").toExternalForm()));
-         VideoForDraw =new MediaPlayer(new Media(getClass().getResource("3.mp4").toExternalForm()));
+        videoForWinner = new MediaPlayer(new Media(getClass().getResource("../Images/1.mp4").toExternalForm()));
+         videoForLoser = new MediaPlayer(new Media(getClass().getResource("../Images/2.mp4").toExternalForm()));
+         VideoForDraw =new MediaPlayer(new Media(getClass().getResource("../Images/3.mp4").toExternalForm()));
     }
 
         public void displayVideo(MediaPlayer video, String result)
