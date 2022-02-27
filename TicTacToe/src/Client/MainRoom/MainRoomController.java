@@ -253,15 +253,15 @@ public class MainRoomController extends GeneralController implements Initializab
                     broadcastChat(msg);
                     break;
                 case "playersignin":
-                    updateplayerlist(msg, "online");
+                    updateplayerlist(msg);
                     broadcastChat(msg);
                     break;
                 case "playersignout":
-                    updateplayerlist(msg, "offline");
+                    updateplayerlist(msg);
                     broadcastChat(msg);
                     break;
                 case "playerStartedMatch":
-                    updateplayerlist(msg, "in-game");
+                    updateplayerlist(msg);
                     break;
                 case "Playerslist":
                     initPlayersTable(msg);
@@ -270,7 +270,10 @@ public class MainRoomController extends GeneralController implements Initializab
                     initGamessTable(msg);
                     break;
                 case "playerFinishMatch":
-                    updateplayerlist(msg, "online");
+                    updateplayerlist(msg);
+                    break;
+                case "playerBusy":
+                    updateplayerlist(msg);
                     break;
                 case "ResumeMatch":
                     startMultiPlayerMatch(msg, true);
@@ -440,10 +443,10 @@ public class MainRoomController extends GeneralController implements Initializab
         Playerslist.add(new DisplayPlayers(msg.getString("username"), "online"));
     }
 
-    public void updateplayerlist(JSONObject msg, String status) throws JSONException {
+    public void updateplayerlist(JSONObject msg) throws JSONException {
         for (int i = 0; i < Playerslist.size(); i++) {
             if (Playerslist.get(i).getName().equals(msg.getString("username"))) {
-                Playerslist.set(i, new DisplayPlayers(msg.getString("username"), status));
+                Playerslist.set(i, new DisplayPlayers(msg.getString("username"), msg.getString("status")));
                 break;
             }
         }

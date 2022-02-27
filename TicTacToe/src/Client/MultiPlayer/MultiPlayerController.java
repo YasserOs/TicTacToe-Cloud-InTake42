@@ -72,7 +72,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
     ActionEvent e;
     ArrayList<Button> availablePositions = new ArrayList<Button>();
     Person player1; // loggedPlayer
-    String player2;
+    public static String player2;
     String currentPlayerPick="";
     String opponentPick="" ;
     Session currentSession;
@@ -83,7 +83,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
     boolean player2Restart = false;
     boolean oppTurn;
     boolean invited =false;
-    boolean isPaused= false;
+    public static boolean isPaused= false;
     int numberOfPlays = 0 ;
     Image iconX ;
     Image iconO;
@@ -192,6 +192,9 @@ public class MultiPlayerController extends GeneralController implements Initiali
                     updateBoard(msg.getInt("Content"), opponentPick);
                     playerTurn=true;
                     changeBoardLabel("Your Turn");
+                    break;
+                case "playerLeftWhilePlaying":
+                    opponentSurrendered(msg);
                     break;
                 case "Won":
                     gameresult("Loss");
@@ -414,6 +417,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
         });
         ;        
     }
+    
     private void receiveChat(JSONObject msg) throws JSONException{
         chattxt.appendText(msg.getString("Sender")+": "+msg.getString("Content")+"\n");
     }  
@@ -495,6 +499,7 @@ public class MultiPlayerController extends GeneralController implements Initiali
             displayVideo(VideoForDraw,result);
         }       
     }
+     
     private Alert showAlert(String title , String body , int flag){
         alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);

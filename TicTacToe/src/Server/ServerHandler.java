@@ -70,6 +70,7 @@ public class ServerHandler extends Thread {
             JSONObject msg=new JSONObject();
             msg.put("Action", "playersignout");
             msg.put("Sender", "GM");
+            msg.put("status", "offline");
             msg.put("Content",loggedPlayer.getUsername()+" left the room .");
             msg.put("username",loggedPlayer.getUsername());
             sendMsgToAll(msg);
@@ -107,6 +108,7 @@ public class ServerHandler extends Thread {
                 break;
             case "LeaderBoard":
                 getTopPlayers();
+                changeplayerstatus("playerBusy","busy",msg);
                 break;
             case "BroadcastChat":
                 broadcastMsg(msg);
@@ -119,6 +121,11 @@ public class ServerHandler extends Thread {
                 break;
             case "playerFinishMatch":
                 changeplayerstatus("playerFinishMatch","online",msg);              
+                break;
+            case "playerLeftWhilePlaying":
+                sendMsgToReceiver(msg, msg.getString("Receiver"));
+                updatePlayerScore(msg);
+                closeConnection();
                 break;
             case "SaveSession":
                 Server.db.saveGame(msg);
@@ -167,6 +174,7 @@ public class ServerHandler extends Thread {
         }
         JSONObject msg= new JSONObject();
         msg.put("Action",action);
+        msg.put("status", status);
         msg.put("username",loggedPlayer.getUsername());
         sendMsgToAll(msg);
     }
@@ -220,6 +228,7 @@ public class ServerHandler extends Thread {
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignin");
             reply.put("Sender", "GM");
+            reply.put("status", "online");
             reply.put("Content",loggedPlayer.getUsername()+" joined the room .");
             reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);
@@ -236,6 +245,7 @@ public class ServerHandler extends Thread {
             JSONObject reply = new JSONObject();
             reply.put("Action", "playersignup");
             reply.put("Sender", "GM");
+            reply.put("status", "online");
             reply.put("Content",loggedPlayer.getUsername()+" joined the room .");
             reply.put("username", loggedPlayer.getUsername());
             sendMsgToAll(reply);

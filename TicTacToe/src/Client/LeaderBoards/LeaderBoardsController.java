@@ -66,6 +66,12 @@ public class LeaderBoardsController extends GeneralController implements Initial
     public void back2MainRoom(ActionEvent event) throws IOException, JSONException
     
     {
+        
+        JSONObject msg = new JSONObject();
+        msg.put("Action", "playerFinishMatch");
+        msg.put("Mode","Left");
+        msg.put("status", "online");
+        ClientGui.printStream.println(msg.toString());
         Parent View = FXMLLoader.load(getClass().getClassLoader().getResource("Client/MainRoom/MainRoom.fxml"));
         Scene ViewScene = new Scene(View);       
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -76,6 +82,7 @@ public class LeaderBoardsController extends GeneralController implements Initial
     public void sendMsgToServer(){
         JSONObject msg = new JSONObject();
         msg.put("Action", "LeaderBoard");
+        msg.put("Mode","Busy");
         ClientGui.printStream.println(msg.toString());
     }
      public void fillleaderboard(JSONObject msg) throws SQLException{

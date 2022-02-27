@@ -5,6 +5,7 @@
  */
 package Client;
  
+import Client.MultiPlayer.MultiPlayerController;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,6 @@ import models.Person;
 import org.json.JSONException;
 import org.json.JSONObject;
 import models.GeneralController;
-
  
 /**
  *
@@ -61,6 +61,7 @@ public class ClientGui extends Application {
             yOffset = event.getSceneY();
         });
  
+ 
         //move around here
         root.setOnMouseDragged(event -> {
             primaryStage.setX(event.getScreenX() - xOffset);
@@ -77,6 +78,22 @@ public class ClientGui extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest((event) -> {
+            if(currentLiveCtrl instanceof MultiPlayerController){
+                if(!MultiPlayerController.isPaused){
+                    loggedPlayer.gameslost();
+                    JSONObject msg = new JSONObject();
+                    msg.put("Action", "playerLeftWhilePlaying");
+                    msg.put("Mode", "Multiplayer");
+                    msg.put("Sender", loggedPlayer.getUsername());
+                    msg.put("Receiver", MultiPlayerController.player2);
+                    msg.put("score", ClientGui.loggedPlayer.getTotal_score());
+                    msg.put("Wins",  ClientGui.loggedPlayer.getGames_won());
+                    msg.put("Draws", ClientGui.loggedPlayer.getDraws());
+                    msg.put("Loses", ClientGui.loggedPlayer.getGames_lost());
+                    msg.put("Games", ClientGui.loggedPlayer.getGames_played());
+                    ClientGui.printStream.println(msg.toString());                   
+                }
+            }
             System.exit(1);
         });
         f = new File("Client/Media/Bojack1.png");
